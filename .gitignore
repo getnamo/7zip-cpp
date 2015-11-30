@@ -1,0 +1,9 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.sdf
+*.ipch
+*.obj
+*.pdb
+*.DS_Store

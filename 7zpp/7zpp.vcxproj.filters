@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="ArchiveExtractCallback.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchiveOpenCallback.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ArchiveUpdateCallback.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSys.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GUIDs.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="InStreamWrapper.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="OutStreamWrapper.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PathScanner.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PropVariant.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SevenZipCompressor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SevenZipException.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SevenZipExtractor.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SevenZipLibrary.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="7zpp.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchiveExtractCallback.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchiveOpenCallback.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ArchiveUpdateCallback.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="CompressionFormat.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="CompressionLevel.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="FileInfo.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSys.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIDs.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="InStreamWrapper.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="OutStreamWrapper.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="PathScanner.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="PropVariant.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SevenZipCompressor.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SevenZipException.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SevenZipExtractor.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SevenZipLibrary.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{a95ea252-a1de-4a69-8282-535be5202310}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>Source</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
