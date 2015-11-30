@@ -40,7 +40,7 @@ extractor.ExtractArchive(destination);
 
 Don't forget to wrap the operations in a try/catch block to handle errors:
 
-```
+```cpp
 ...
 catch (SevenZip::SevenZipException& ex)
 {
