@@ -102,10 +102,10 @@
     <ClInclude Include="stdafx.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="String.h">
+    <ClInclude Include="targetver.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="MyString.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

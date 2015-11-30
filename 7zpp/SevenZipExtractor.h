@@ -22,10 +22,10 @@ namespace SevenZip
 
 		void SetCompressionFormat( const CompressionFormatEnum& format );
 
-		virtual void ExtractArchive( const TString& directory );
+		virtual bool ExtractArchive( const TString& directory );
 
 	private:
 
-		void ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& directory );
+		bool ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& directory );
 	};
 }
