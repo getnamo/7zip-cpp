@@ -16,10 +16,11 @@ namespace intl
 const TString EmptyFileAlias = _T( "[Content]" );
 
 
-ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory )
-	: m_refCount( 0 )
+ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback)
+	: m_refCount(0)
 	, m_archiveHandler( archiveHandler )
 	, m_directory( directory )
+	, m_callback( callback )
 {
 }
 
@@ -75,6 +76,17 @@ STDMETHODIMP ArchiveExtractCallback::SetTotal( UInt64 size )
 
 STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 {
+	//Callback Event calls
+	if (m_callback != nullptr) 
+	{
+		float completeness = *completeValue / 100.f;
+		m_callback->Progress(completeness);
+
+		if (completeness >= 100.f) 
+		{
+			m_callback->Done();
+		}
+	}
 	return S_OK;
 }
 

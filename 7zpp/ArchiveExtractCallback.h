@@ -6,6 +6,8 @@
 #include <7zip/Archive/IArchive.h>
 #include <7zip/IPassword.h>
 
+#include "ProgressCallback.h"
+
 //#include "7zip/Archive/IArchive.h"
 
 
@@ -34,9 +36,11 @@ namespace intl
 		bool m_hasNewFileSize;
 		UInt64 m_newFileSize;
 
+		ProgressCallback* m_callback;
+
 	public:
 
-		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory );
+		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback );
 		virtual ~ArchiveExtractCallback();
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );

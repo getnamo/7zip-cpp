@@ -326,13 +326,16 @@
     <ClCompile Include="FileSys.cpp" />
     <ClCompile Include="GUIDs.cpp" />
     <ClCompile Include="InStreamWrapper.cpp" />
+    <ClCompile Include="ListCallback.cpp" />
     <ClCompile Include="OutStreamWrapper.cpp" />
     <ClCompile Include="PathScanner.cpp" />
+    <ClCompile Include="ProgressCallback.cpp" />
     <ClCompile Include="PropVariant.cpp" />
     <ClCompile Include="SevenZipCompressor.cpp" />
     <ClCompile Include="SevenZipException.cpp" />
     <ClCompile Include="SevenZipExtractor.cpp" />
     <ClCompile Include="SevenZipLibrary.cpp" />
+    <ClCompile Include="SevenZipLister.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|x64'">Create</PrecompiledHeader>
@@ -356,14 +359,17 @@
     <ClInclude Include="FileSys.h" />
     <ClInclude Include="GUIDs.h" />
     <ClInclude Include="InStreamWrapper.h" />
+    <ClInclude Include="ListCallback.h" />
     <ClInclude Include="MyString.h" />
     <ClInclude Include="OutStreamWrapper.h" />
     <ClInclude Include="PathScanner.h" />
+    <ClInclude Include="ProgressCallback.h" />
     <ClInclude Include="PropVariant.h" />
     <ClInclude Include="SevenZipCompressor.h" />
     <ClInclude Include="SevenZipException.h" />
     <ClInclude Include="SevenZipExtractor.h" />
     <ClInclude Include="SevenZipLibrary.h" />
+    <ClInclude Include="SevenZipLister.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

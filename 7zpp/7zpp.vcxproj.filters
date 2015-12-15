@@ -43,6 +43,15 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="ProgressCallback.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SevenZipLister.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ListCallback.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="7zpp.h">
@@ -106,6 +115,15 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="MyString.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressCallback.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SevenZipLister.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ListCallback.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>

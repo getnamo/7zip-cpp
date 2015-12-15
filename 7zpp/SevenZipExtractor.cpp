@@ -82,7 +82,7 @@ void SevenZipExtractor::SetCompressionFormat( const CompressionFormatEnum& forma
 	m_format = format;
 }
 
-bool SevenZipExtractor::ExtractArchive( const TString& destDirectory )
+bool SevenZipExtractor::ExtractArchive( const TString& destDirectory, ProgressCallback* callback )
 {
 	CComPtr< IStream > fileStream = FileSys::OpenFileToRead( m_archivePath );
 	if ( fileStream == NULL )
@@ -91,10 +91,10 @@ bool SevenZipExtractor::ExtractArchive( const TString& destDirectory )
 		//throw SevenZipException( StrFmt( _T( "Could not open archive \"%s\"" ), m_archivePath.c_str() ) );
 	}
 
-	return ExtractArchive( fileStream, destDirectory );
+	return ExtractArchive( fileStream, destDirectory, callback);
 }
 
-bool SevenZipExtractor::ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& destDirectory )
+bool SevenZipExtractor::ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& destDirectory, ProgressCallback* callback)
 {
 	CComPtr< IInArchive > archive = GetArchiveReader( m_library, m_format );
 	CComPtr< InStreamWrapper > inFile = new InStreamWrapper( archiveStream );
@@ -107,7 +107,7 @@ bool SevenZipExtractor::ExtractArchive( const CComPtr< IStream >& archiveStream,
 		//throw SevenZipException( GetCOMErrMsg( _T( "Open archive" ), hr ) );
 	}
 
-	CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory );
+	CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, callback );
 
 	hr = archive->Extract( NULL, -1, false, extractCallback );
 	if ( hr != S_OK ) // returning S_FALSE also indicates error
