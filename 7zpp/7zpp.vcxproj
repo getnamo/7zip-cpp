@@ -360,7 +360,7 @@
     <ClInclude Include="GUIDs.h" />
     <ClInclude Include="InStreamWrapper.h" />
     <ClInclude Include="ListCallback.h" />
-    <ClInclude Include="MyString.h" />
+    <ClInclude Include="SevenString.h" />
     <ClInclude Include="OutStreamWrapper.h" />
     <ClInclude Include="PathScanner.h" />
     <ClInclude Include="ProgressCallback.h" />

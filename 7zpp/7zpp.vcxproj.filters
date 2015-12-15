@@ -114,9 +114,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="MyString.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="ProgressCallback.h">
       <Filter>Source</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="ListCallback.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="SevenString.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
