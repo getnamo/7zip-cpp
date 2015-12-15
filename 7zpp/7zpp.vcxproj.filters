@@ -43,13 +43,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="ProgressCallback.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="SevenZipLister.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ListCallback.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

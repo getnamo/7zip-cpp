@@ -10,6 +10,9 @@ namespace SevenZip
 	class ListCallback
 	{
 	public:
-		virtual void FileFound(WCHAR* path, int size);
+		/*
+		Called for each file found in the archive. Size in bytes.
+		*/
+		virtual void OnFileFound(WCHAR* path, int size) {}
 	};
 }
