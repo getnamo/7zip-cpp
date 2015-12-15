@@ -20,10 +20,10 @@ namespace SevenZip
 		SevenZipLibrary();
 		~SevenZipLibrary();
 
-		void Load();
-		void Load( const TString& libraryPath );
+		bool Load();
+		bool Load( const TString& libraryPath );
 		void Free();
 
-		void CreateObject( const GUID& clsID, const GUID& interfaceID, void** outObject ) const;
+		bool CreateObject( const GUID& clsID, const GUID& interfaceID, void** outObject ) const;
 	};
 }

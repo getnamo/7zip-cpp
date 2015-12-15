@@ -3,6 +3,7 @@
 
 #include "SevenZipLibrary.h"
 #include "CompressionFormat.h"
+#include "ProgressCallback.h"
 
 
 namespace SevenZip
@@ -22,10 +23,10 @@ namespace SevenZip
 
 		void SetCompressionFormat( const CompressionFormatEnum& format );
 
-		virtual void ExtractArchive( const TString& directory );
+		virtual bool ExtractArchive( const TString& directory, ProgressCallback* callback);
 
 	private:
 
-		void ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& directory );
+		bool ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& directory, ProgressCallback* callback);
 	};
 }
