@@ -326,10 +326,8 @@
     <ClCompile Include="FileSys.cpp" />
     <ClCompile Include="GUIDs.cpp" />
     <ClCompile Include="InStreamWrapper.cpp" />
-    <ClCompile Include="ListCallback.cpp" />
     <ClCompile Include="OutStreamWrapper.cpp" />
     <ClCompile Include="PathScanner.cpp" />
-    <ClCompile Include="ProgressCallback.cpp" />
     <ClCompile Include="PropVariant.cpp" />
     <ClCompile Include="SevenZipCompressor.cpp" />
     <ClCompile Include="SevenZipException.cpp" />

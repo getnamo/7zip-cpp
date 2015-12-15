@@ -105,7 +105,7 @@ namespace SevenZip
 				if (prop.vt == VT_BSTR) {
 					WCHAR* path = prop.bstrVal;
 					if (callback) {
-						callback->FileFound(path, size);
+						callback->OnFileFound(path, size);
 					}
 				}
 			}

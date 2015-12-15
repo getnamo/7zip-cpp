@@ -80,11 +80,11 @@ STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 	if (m_callback != nullptr) 
 	{
 		float completeness = *completeValue / 100.f;
-		m_callback->Progress(completeness);
+		m_callback->OnProgress(completeness);
 
 		if (completeness >= 100.f) 
 		{
-			m_callback->Done();
+			m_callback->OnDone();
 		}
 	}
 	return S_OK;
