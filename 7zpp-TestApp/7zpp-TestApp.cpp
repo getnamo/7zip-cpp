@@ -24,7 +24,7 @@ int main()
 	SevenZip::SevenZipLibrary lib;
 	lib.Load();
 
-	SevenZip::TString myArchive(L"ReadMe.zip");
+	SevenZip::TString myArchive(L"files.zip");
 
 	SevenZip::TString myDest(L"temp");
 	SevenZip::SevenZipExtractor extractor(lib, myArchive);
