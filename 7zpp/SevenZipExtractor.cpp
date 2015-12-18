@@ -13,7 +13,7 @@ namespace SevenZip
 using namespace intl;
 
 
-CComPtr< IInArchive > GetArchiveReader( const SevenZipLibrary& library, const CompressionFormatEnum& format )
+CComPtr< IInArchive > GetArchiveReaderForExtractor( const SevenZipLibrary& library, const CompressionFormatEnum& format )
 {
 	const GUID* guid = NULL;
 
@@ -96,7 +96,7 @@ bool SevenZipExtractor::ExtractArchive( const TString& destDirectory, ProgressCa
 
 bool SevenZipExtractor::ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& destDirectory, ProgressCallback* callback)
 {
-	CComPtr< IInArchive > archive = GetArchiveReader( m_library, m_format );
+	CComPtr< IInArchive > archive = GetArchiveReaderForExtractor( m_library, m_format );
 	CComPtr< InStreamWrapper > inFile = new InStreamWrapper( archiveStream );
 	CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
 
