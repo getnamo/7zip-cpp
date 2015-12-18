@@ -7,3 +7,10 @@
 *.obj
 *.pdb
 *.DS_Store
+
+# Visual Studio Files
+*.opendb
+
+# Compilation Directories
+Lib/
+Intermediate/
