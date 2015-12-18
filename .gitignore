@@ -10,7 +10,10 @@
 
 # Visual Studio Files
 *.opendb
+*.suo
+.vs/
 
 # Compilation Directories
 Lib/
+Exe/
 Intermediate/
