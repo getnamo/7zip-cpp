@@ -26,10 +26,10 @@ int main()
 
 	SevenZip::TString myArchive(L"ReadMe.zip");
 
-	//SevenZip::TString myDest(L"temp");
-	//SevenZip::SevenZipExtractor extractor(lib, myArchive);
-	//extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-	//extractor.ExtractArchive(myDest, nullptr);
+	SevenZip::TString myDest(L"temp");
+	SevenZip::SevenZipExtractor extractor(lib, myArchive);
+	extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+	extractor.ExtractArchive(myDest, nullptr);
 
 	ListCallBackOutput myListCallBack;
 
