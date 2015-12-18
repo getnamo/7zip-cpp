@@ -71,21 +71,21 @@ STDMETHODIMP_(ULONG) ArchiveExtractCallback::Release()
 
 STDMETHODIMP ArchiveExtractCallback::SetTotal( UInt64 size )
 {
+	//	- SetTotal is never called for ZIP amd 7z formats
 	return S_OK;
 }
 
 STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 {
 	//Callback Event calls
+	/*
+	NB:
+	- For ZIP format SetCompleted only called once per 1000 files in central directory and once per 100 in local ones.
+	- For 7Z format SetCompleted is never called.
+	*/
 	if (m_callback != nullptr) 
 	{
-		float completeness = *completeValue / 100.f;
-		m_callback->OnProgress(completeness);
-
-		if (completeness >= 100.f) 
-		{
-			m_callback->OnDone();
-		}
+		m_callback->OnProgress(*completeValue);
 	}
 	return S_OK;
 }
@@ -147,6 +147,7 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 {
 	if ( m_absPath.empty() )
 	{
+		EmitDoneCallback();
 		return S_OK;
 	}
 
@@ -165,6 +166,7 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 		SetFileAttributes( m_absPath.c_str(), m_attrib );
 	}
 
+	EmitDoneCallback();
 	return S_OK;
 }
 
@@ -307,6 +309,15 @@ void ArchiveExtractCallback::GetPropertySize( UInt32 index )
 	}
 
 	m_hasNewFileSize = true;
+}
+
+void ArchiveExtractCallback::EmitDoneCallback()
+{
+	if (m_callback != nullptr)
+	{
+		m_callback->OnProgress(m_newFileSize);
+		m_callback->OnDone();
+	}
 }
 
 }

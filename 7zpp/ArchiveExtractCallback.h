@@ -66,6 +66,8 @@ namespace intl
 		void GetPropertyIsDir( UInt32 index );
 		void GetPropertyModifiedTime( UInt32 index );
 		void GetPropertySize( UInt32 index );
+
+		void EmitDoneCallback();
 	};
 }
 }
