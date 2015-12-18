@@ -12,8 +12,10 @@
 *.opendb
 *.suo
 .vs/
+ipch/
 
 # Compilation Directories
 Lib/
 Exe/
 Intermediate/
+dll/
