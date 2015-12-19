@@ -40,17 +40,17 @@
 //
 // For wrappers...
 //
-//class ListCallBackOutput : SevenZip::ListCallback
-//{
-//	virtual void OnFileFound(WCHAR* path, int size)
-//	{
-//		std::wcout
-//			<< path
-//			<< L" "
-//			<< size
-//			<< std::endl;
-//	}
-//};
+class ListCallBackOutput : SevenZip::ListCallback
+{
+	virtual void OnFileFound(WCHAR* path, int size)
+	{
+		std::wcout
+			<< path
+			<< L" "
+			<< size
+			<< std::endl;
+	}
+};
 
 
 int main()
@@ -64,20 +64,37 @@ int main()
 
 	if (result)
 	{
-		SevenZip::TString myArchive(L"files.zip");
+		SevenZip::TString myArchive(L"\\source\\7zip-cpp\\exe\\x64\\files.zip");
 
-		SevenZip::TString myDest(L"temp");
+		wchar_t currdir[2000];
+		GetCurrentDirectory(2000, currdir);
+
+		SevenZip::TString myDest(L"\\source\\7zip-cpp\\exe\\x64\\temp");
 		SevenZip::SevenZipExtractor extractor(lib, myArchive);
 		extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-		extractor.ExtractArchive(myDest, nullptr);
+		result = extractor.ExtractArchive(myDest, nullptr);
 
-		//ListCallBackOutput myListCallBack;
+		if (!result)
+		{
+			std::wcerr
+				<< "Could not extract the file!"
+				<< std::endl;
+		}
 
-		//SevenZip::TString myDir(L"");
+		ListCallBackOutput myListCallBack;
 
-		//SevenZip::SevenZipLister lister(lib, myArchive);
-		//lister.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
-		//lister.ListArchive(myDir, (SevenZip::ListCallback *)&myListCallBack);
+		SevenZip::TString myDir(L"");
+
+		SevenZip::SevenZipLister lister(lib, myArchive);
+		lister.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
+		result = lister.ListArchive(myDir, (SevenZip::ListCallback *)&myListCallBack);
+
+		if (!result)
+		{
+			std::wcerr
+				<< "Could not list the file!"
+				<< std::endl;
+		}
 	}
 	else
 	{
@@ -85,17 +102,6 @@ int main()
 			<< "Could not load the 7z.dll!"
 			<< std::endl;
 	}
-
-	//
-	// Use 7z.dll directly like Client7z..
-	//
-	//NWindows::NDLL::CLibrary lib;
-	//if (!lib.Load(NWindows::NDLL::GetModuleDirPrefix() + FTEXT("7z.dll")))
-	//{
-	//	std::wcerr << L"Can not load 7-zip library";
-	//	return -1;
-	//}
-
 
 	return 0;
 }

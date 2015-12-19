@@ -61,7 +61,7 @@ CComPtr< IInArchive > GetArchiveReaderForExtractor( const SevenZipLibrary& libra
 	}
 	
 	CComPtr< IInArchive > archive;
-	library.CreateObject( *guid, IID_IInArchive, reinterpret_cast< void** >( &archive ) );
+	library.CreateObject( *guid, IID_IInArchive, reinterpret_cast< void** >( &(archive.p) ) );
 	return archive;
 }
 
