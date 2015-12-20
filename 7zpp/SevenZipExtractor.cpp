@@ -5,6 +5,7 @@
 #include "ArchiveOpenCallback.h"
 #include "ArchiveExtractCallback.h"
 #include "InStreamWrapper.h"
+#include "UsefulFunctions.h"
 
 
 namespace SevenZip

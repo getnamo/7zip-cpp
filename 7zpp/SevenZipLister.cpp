@@ -6,6 +6,7 @@
 #include "ArchiveExtractCallback.h"
 #include "InStreamWrapper.h"
 #include "PropVariant.h"
+#include "UsefulFunctions.h"
 
 
 namespace SevenZip
