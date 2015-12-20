@@ -40,7 +40,7 @@ extractor.ExtractArchive(destination, callbackfunc);
 
 ```cpp
 SevenZip::SevenZipLister lister(lib, archiveName);
-lister.ListArchive(destination, callbackfunc);
+lister.ListArchive(callbackfunc);
 ```
 
 
