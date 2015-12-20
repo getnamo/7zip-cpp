@@ -31,7 +31,8 @@ namespace SevenZip
 	class UsefulFunctions
 	{
 		public:
+			static const GUID* GetCompressionGUID(const CompressionFormatEnum& format);
 			static CComPtr< IInArchive > GetArchiveReader(const SevenZipLibrary& library, const CompressionFormatEnum& format);
-
+			static CComPtr< IInArchiveGetStream > GetArchiveStreamer(const SevenZipLibrary& library, const CompressionFormatEnum& format);
 	};
 }

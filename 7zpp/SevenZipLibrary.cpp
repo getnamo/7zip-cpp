@@ -73,6 +73,24 @@ bool SevenZipLibrary::CreateObject( const GUID& clsID, const GUID& interfaceID, 
 
 CComPtr< IInArchive > UsefulFunctions::GetArchiveReader(const SevenZipLibrary& library, const CompressionFormatEnum& format)
 {
+	const GUID* guid = GetCompressionGUID(format);
+
+	CComPtr< IInArchive > archive;
+	library.CreateObject(*guid, IID_IInArchive, reinterpret_cast<void**>(&archive));
+	return archive;
+}
+
+CComPtr< IInArchiveGetStream > UsefulFunctions::GetArchiveStreamer(const SevenZipLibrary& library, const CompressionFormatEnum& format)
+{
+	const GUID* guid = GetCompressionGUID(format);
+
+	CComPtr< IInArchiveGetStream > archivestream;
+	library.CreateObject(*guid, IID_IInArchiveGetStream, reinterpret_cast<void**>(&archivestream));
+	return archivestream;
+}
+
+const GUID* UsefulFunctions::GetCompressionGUID(const CompressionFormatEnum& format)
+{
 	const GUID* guid = NULL;
 
 	switch (format)
@@ -117,11 +135,7 @@ CComPtr< IInArchive > UsefulFunctions::GetArchiveReader(const SevenZipLibrary& l
 		guid = &SevenZip::intl::CLSID_CFormat7z;
 		break;
 	}
-
-	CComPtr< IInArchive > archive;
-	library.CreateObject(*guid, IID_IInArchive, reinterpret_cast<void**>(&archive));
-	return archive;
+	return guid;
 }
-
 
 }
