@@ -28,6 +28,7 @@ Then create and use a compressor:
 
 ```cpp
 SevenZip::SevenZipCompressor compressor(lib, archiveName);
+compressor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 compressor.CompressDirectory(targetDir, callbackfunc);
 ```
 
@@ -35,11 +36,13 @@ Or an extractor:
 
 ```cpp
 SevenZip::SevenZipExtractor extractor(lib, archiveName);
+extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 extractor.ExtractArchive(destination, callbackfunc);
 ```
 
 ```cpp
 SevenZip::SevenZipLister lister(lib, archiveName);
+lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 lister.ListArchive(callbackfunc);
 ```
 
