@@ -28,15 +28,21 @@ Then create and use a compressor:
 
 ```cpp
 SevenZip::SevenZipCompressor compressor(lib, archiveName);
-compressor.CompressDirectory(targetDir);
+compressor.CompressDirectory(targetDir, callbackfunc);
 ```
 
 Or an extractor:
 
 ```cpp
 SevenZip::SevenZipExtractor extractor(lib, archiveName);
-extractor.ExtractArchive(destination);
+extractor.ExtractArchive(destination, callbackfunc);
 ```
+
+```cpp
+SevenZip::SevenZipLister lister(lib, archiveName);
+lister.ListArchive(destination, callbackfunc);
+```
+
 
 Don't forget to wrap the operations in a try/catch block to handle errors:
 
@@ -46,4 +52,7 @@ catch (SevenZip::SevenZipException& ex)
 {
     std::cerr << ex.GetMessage() << std::endl;
 }
+
 ```
+Note:  Most of the functions now return a boolean to indicate if it worked
+instead of throwing an exception.
