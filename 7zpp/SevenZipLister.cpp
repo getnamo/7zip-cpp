@@ -5,64 +5,13 @@
 #include "ArchiveOpenCallback.h"
 #include "ArchiveExtractCallback.h"
 #include "InStreamWrapper.h"
+#include "PropVariant.h"
 
 
 namespace SevenZip
 {
 
 	using namespace intl;
-
-	CComPtr< IInArchive > GetArchiveReaderForLister(const SevenZipLibrary& library, const CompressionFormatEnum& format)
-	{
-		const GUID* guid = NULL;
-
-		switch (format)
-		{
-		case CompressionFormat::Zip:
-			guid = &CLSID_CFormatZip;
-			break;
-
-		case CompressionFormat::GZip:
-			guid = &CLSID_CFormatGZip;
-			break;
-
-		case CompressionFormat::BZip2:
-			guid = &CLSID_CFormatBZip2;
-			break;
-
-		case CompressionFormat::Rar:
-			guid = &CLSID_CFormatRar;
-			break;
-
-		case CompressionFormat::Tar:
-			guid = &CLSID_CFormatTar;
-			break;
-
-		case CompressionFormat::Iso:
-			guid = &CLSID_CFormatIso;
-			break;
-
-		case CompressionFormat::Cab:
-			guid = &CLSID_CFormatCab;
-			break;
-
-		case CompressionFormat::Lzma:
-			guid = &CLSID_CFormatLzma;
-			break;
-
-		case CompressionFormat::Lzma86:
-			guid = &CLSID_CFormatLzma86;
-			break;
-
-		default:
-			guid = &CLSID_CFormat7z;
-			break;
-		}
-
-		CComPtr< IInArchive > archive;
-		library.CreateObject(*guid, IID_IInArchive, reinterpret_cast<void**>(&archive));
-		return archive;
-	}
 
 	void SevenZipLister::SetCompressionFormat(const CompressionFormatEnum& format)
 	{
@@ -82,10 +31,31 @@ namespace SevenZip
 
 	}
 
-	bool SevenZipLister::ListArchive(const TString& directory, ListCallback* callback)
+	bool SevenZipLister::ListArchive(ListCallback* callback)
 	{
+		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
+		if (fileStream == NULL)
+		{
+			return false;
+			//throw SevenZipException( StrFmt( _T( "Could not open archive \"%s\"" ), m_archivePath.c_str() ) );
+		}
 
-		CComPtr< IInArchive > archive = GetArchiveReaderForLister(m_library, m_format);
+		return ListArchive(fileStream, callback);
+	}
+
+	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback)
+	{
+		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_format);
+		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(archiveStream);
+		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+
+		HRESULT hr = archive->Open(inFile, 0, openCallback);
+		if (hr != S_OK)
+		{
+			return false;
+			//throw SevenZipException( GetCOMErrMsg( _T( "Open archive" ), hr ) );
+		}
+
 		// List command
 		UInt32 numItems = 0;
 		archive->GetNumberOfItems(&numItems);
@@ -93,7 +63,7 @@ namespace SevenZip
 		{
 			{
 				// Get uncompressed size of file
-				PROPVARIANT prop;
+				CPropVariant prop;
 				archive->GetProperty(i, kpidSize, &prop);
 
 				int size = prop.intVal;
@@ -110,6 +80,7 @@ namespace SevenZip
 				}
 			}
 		}
+		archive->Close();
 		return true;
 	}
 }

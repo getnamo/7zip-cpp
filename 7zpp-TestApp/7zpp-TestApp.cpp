@@ -60,8 +60,7 @@ int main()
 	//
 
 	SevenZip::SevenZipLibrary lib;
-	bool result = lib.Load();
-
+	bool result = lib.Load(SevenZip::TString(L"\\source\\7zip-cpp\\Exe\\x64\\7z_dist.dll"));
 	if (result)
 	{
 		SevenZip::TString myArchive(L"\\source\\7zip-cpp\\exe\\x64\\files.zip");
@@ -77,7 +76,7 @@ int main()
 		if (!result)
 		{
 			std::wcerr
-				<< "Could not extract the file!"
+				<< "Could not extract the files!"
 				<< std::endl;
 		}
 
@@ -86,20 +85,20 @@ int main()
 		SevenZip::TString myDir(L"");
 
 		SevenZip::SevenZipLister lister(lib, myArchive);
-		lister.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
-		result = lister.ListArchive(myDir, (SevenZip::ListCallback *)&myListCallBack);
+		lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+		result = lister.ListArchive((SevenZip::ListCallback *)&myListCallBack);
 
 		if (!result)
 		{
 			std::wcerr
-				<< "Could not list the file!"
+				<< "Could not list the files!"
 				<< std::endl;
 		}
 	}
 	else
 	{
 		std::wcerr
-			<< "Could not load the 7z.dll!"
+			<< "Could not load the 7Zip DLL!"
 			<< std::endl;
 	}
 
