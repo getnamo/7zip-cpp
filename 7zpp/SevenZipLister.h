@@ -22,8 +22,11 @@ namespace SevenZip
 
 		void SetCompressionFormat(const CompressionFormatEnum& format);
 
-		virtual bool ListArchive( const TString& directory, ListCallback* callback);
+		bool DetectCompressionFormat(CompressionFormatEnum & format);
+
+		virtual bool ListArchive(ListCallback* callback);
 
 	private:
+		bool ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback);
 	};
 }
