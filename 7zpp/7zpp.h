@@ -3,6 +3,7 @@
 
 #include "SevenZipCompressor.h"
 #include "SevenZipExtractor.h"
+#include "SevenZipLister.h"
 
 
 #ifdef _DEBUG
