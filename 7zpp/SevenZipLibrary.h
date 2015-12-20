@@ -3,7 +3,7 @@
 
 #include "SevenZipException.h"
 #include "CompressionFormat.h"
-#include <7zip\Archive\IArchive.h>
+#include <7zip/Archive/IArchive.h>
 
 namespace SevenZip
 {
