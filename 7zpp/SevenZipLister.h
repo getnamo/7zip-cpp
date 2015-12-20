@@ -22,6 +22,8 @@ namespace SevenZip
 
 		void SetCompressionFormat(const CompressionFormatEnum& format);
 
+		bool DetectCompressionFormat(CompressionFormatEnum & format);
+
 		virtual bool ListArchive(ListCallback* callback);
 
 	private:

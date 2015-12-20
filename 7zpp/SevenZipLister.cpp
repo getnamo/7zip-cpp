@@ -32,6 +32,11 @@ namespace SevenZip
 
 	}
 
+	bool SevenZipLister::DetectCompressionFormat(CompressionFormatEnum & format)
+	{
+		return UsefulFunctions::DetectCompressionFormat(m_library, m_archivePath, format);
+	}
+
 	bool SevenZipLister::ListArchive(ListCallback* callback)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);

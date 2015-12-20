@@ -29,6 +29,11 @@ void SevenZipExtractor::SetCompressionFormat( const CompressionFormatEnum& forma
 	m_format = format;
 }
 
+bool SevenZipExtractor::DetectCompressionFormat(CompressionFormatEnum & format)
+{
+	return UsefulFunctions::DetectCompressionFormat(m_library, m_archivePath, format);
+}
+
 bool SevenZipExtractor::ExtractArchive( const TString& destDirectory, ProgressCallback* callback )
 {
 	CComPtr< IStream > fileStream = FileSys::OpenFileToRead( m_archivePath );

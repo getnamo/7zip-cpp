@@ -69,7 +69,31 @@ int main()
 		GetCurrentDirectory(2000, currdir);
 
 		SevenZip::TString myDest(L"\\source\\7zip-cpp\\exe\\x64\\temp");
+
+		// 
+		// Extract
+		//
 		SevenZip::SevenZipExtractor extractor(lib, myArchive);
+
+		// Try to detect compression format
+		SevenZip::CompressionFormatEnum myCompressionFormat;
+		result = extractor.DetectCompressionFormat(myCompressionFormat);
+
+		if (!result)
+		{
+			std::wcerr
+				<< "Could not detect the compression format!"
+				<< std::endl;
+		}
+		else
+		{
+			std::wcout
+				<< "Detected compression: "
+				<< myCompressionFormat.GetValue()
+				<< std::endl
+				<< std::endl;
+		}
+
 		extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 		result = extractor.ExtractArchive(myDest, nullptr);
 
@@ -80,9 +104,10 @@ int main()
 				<< std::endl;
 		}
 
+		//
+		// List
+		//
 		ListCallBackOutput myListCallBack;
-
-		SevenZip::TString myDir(L"");
 
 		SevenZip::SevenZipLister lister(lib, myArchive);
 		lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);

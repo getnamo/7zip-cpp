@@ -23,6 +23,8 @@ namespace SevenZip
 
 		void SetCompressionFormat( const CompressionFormatEnum& format );
 
+		bool DetectCompressionFormat(CompressionFormatEnum & format);
+
 		virtual bool ExtractArchive( const TString& directory, ProgressCallback* callback);
 
 	private:
