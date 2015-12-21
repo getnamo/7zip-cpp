@@ -46,11 +46,11 @@ if (!extractor.DetectCompressionFormat())
 ...
 
 // Change this function to suit
-SevenZip::ProgressCallBack callbackfunc = nullptr;
+SevenZip::ProgressCallBack *extractcallbackfunc = nullptr;
 
 ...
 
-extractor.ExtractArchive(destination, callbackfunc);
+extractor.ExtractArchive(destination, extractcallbackfunc);
 ```
 
 ```cpp
@@ -75,7 +75,11 @@ if (!lister.DetectCompressionFormat())
 {
 	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 }
-lister.ListArchive(callbackfunc);
+
+ListCallBackOutput myListCallBack;
+
+
+lister.ListArchive((SevenZip::ListCallback *)&myListCallBack);
 ```
 
 Note:  Most of the functions now return a boolean to indicate if it worked
