@@ -17,7 +17,7 @@ namespace SevenZip
 
 		const SevenZipLibrary& m_library;
 		TString m_archivePath;
-      CompressionFormatEnum m_compressionFormat;
+		CompressionFormatEnum m_compressionFormat;
 		CompressionLevelEnum m_compressionLevel;
 
 	public:
