@@ -12,7 +12,7 @@ namespace SevenZip
 
 	using namespace intl;
 
-	CComPtr< IInArchive > GetArchiveReader(const SevenZipLibrary& library, const CompressionFormatEnum& format)
+	CComPtr< IInArchive > GetArchiveLister(const SevenZipLibrary& library, const CompressionFormatEnum& format)
 	{
 		const GUID* guid = NULL;
 
@@ -85,7 +85,7 @@ namespace SevenZip
 	bool SevenZipLister::ListArchive(const TString& directory, ListCallback* callback)
 	{
 
-		CComPtr< IInArchive > archive = GetArchiveReader(m_library, m_format);
+		CComPtr< IInArchive > archive = GetArchiveLister(m_library, m_format);
 		// List command
 		UInt32 numItems = 0;
 		archive->GetNumberOfItems(&numItems);

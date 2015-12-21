@@ -115,6 +115,9 @@ bool SevenZipExtractor::ExtractArchive( const CComPtr< IStream >& archiveStream,
 		return false;
 		//throw SevenZipException( GetCOMErrMsg( _T( "Extract archive" ), hr ) );
 	}
+
+
+	callback->OnDone();
 	return true;
 }
 
