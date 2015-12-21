@@ -53,6 +53,8 @@ SevenZip::ProgressCallBack *extractcallbackfunc = nullptr;
 extractor.ExtractArchive(destination, extractcallbackfunc);
 ```
 
+Or a lister:
+
 ```cpp
 class ListCallBackOutput : SevenZip::ListCallback
 {
