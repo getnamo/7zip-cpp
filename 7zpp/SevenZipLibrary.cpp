@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SevenZipLibrary.h"
+#include "GUIDs.h"
 
 
 namespace SevenZip

@@ -1,8 +1,7 @@
 #pragma once
 
-
 #include "SevenZipException.h"
-
+#include "CompressionFormat.h"
 
 namespace SevenZip
 {
