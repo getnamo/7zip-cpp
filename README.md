@@ -36,22 +36,50 @@ Or an extractor:
 
 ```cpp
 SevenZip::SevenZipExtractor extractor(lib, archiveName);
+
 // Try to detect compression type
 if (!extractor.DetectCompressionFormat())
 {
 	extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 }
-extractor.ExtractArchive(destination, callbackfunc);
+
+...
+
+// Change this function to suit
+SevenZip::ProgressCallBack *extractcallbackfunc = nullptr;
+
+...
+
+extractor.ExtractArchive(destination, extractcallbackfunc);
 ```
 
 ```cpp
+class ListCallBackOutput : SevenZip::ListCallback
+{
+	virtual void OnFileFound(WCHAR* path, int size)
+	{
+		std::wcout
+			<< path
+			<< L" "
+			<< size
+			<< std::endl;
+	}
+};
+
+...
+
 SevenZip::SevenZipLister lister(lib, archiveName);
+
 // Try to detect compression type
 if (!lister.DetectCompressionFormat())
 {
 	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 }
-lister.ListArchive(callbackfunc);
+
+ListCallBackOutput myListCallBack;
+
+
+lister.ListArchive((SevenZip::ListCallback *)&myListCallBack);
 ```
 
 Note:  Most of the functions now return a boolean to indicate if it worked
