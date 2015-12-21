@@ -121,27 +121,27 @@
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetExt>.lib</TargetExt>
-    <TargetName>7zpp_ad</TargetName>
+    <TargetName>7zpp_ud</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|x64'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>7zpp_ad</TargetName>
+    <TargetName>7zpp_ud</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|Win32'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetExt>.lib</TargetExt>
-    <TargetName>7zpp_a</TargetName>
+    <TargetName>$(ProjectName)_u</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|x64'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <TargetName>7zpp_a</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)_u</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
@@ -176,13 +176,11 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <ProgramDataBaseFileName>$(OutDir)7zpp_ad.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)7zpp_ud.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)7zpp_ad.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|x64'">
     <Midl>
@@ -196,13 +194,11 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <ProgramDataBaseFileName>$(OutDir)7zpp_ad.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)7zpp_ud.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)7zpp_ad.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|Win32'">
     <ClCompile>
@@ -213,14 +209,12 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <ProgramDataBaseFileName>$(OutDir)7zpp_a.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)7zpp_u.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)7zpp_a.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|x64'">
     <Midl>
@@ -234,14 +228,12 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <ProgramDataBaseFileName>$(OutDir)7zpp_a.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(OutDir)7zpp_u.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
-    <Lib>
-      <OutputFile>$(OutDir)7zpp_a.lib</OutputFile>
-    </Lib>
+    <Lib />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <ClCompile>

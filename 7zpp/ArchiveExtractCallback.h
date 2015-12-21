@@ -68,6 +68,7 @@ namespace intl
 		void GetPropertySize( UInt32 index );
 
 		void EmitDoneCallback();
+		void EmitFileDoneCallback(const TString& path);
 	};
 }
 }
