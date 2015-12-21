@@ -24,6 +24,16 @@ namespace SevenZip
 		m_compressionFormat = format;
 	}
 
+	void SevenZipArchive::SetCompressionLevel(const CompressionLevelEnum& level)
+	{
+		m_compressionLevel = level;
+	}
+
+	CompressionLevelEnum SevenZipArchive::GetCompressionLevel()
+	{
+		return m_compressionLevel;
+	}
+
 	CompressionFormatEnum SevenZipArchive::GetCompressionFormat()
 	{
 		return m_compressionFormat;

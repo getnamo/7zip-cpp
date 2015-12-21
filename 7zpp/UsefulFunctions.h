@@ -19,7 +19,8 @@ namespace SevenZip
 		static const GUID* GetCompressionGUID(const CompressionFormatEnum& format);
 
 		static CComPtr< IInArchive > GetArchiveReader(const SevenZipLibrary& library, const CompressionFormatEnum& format);
-		
+		static CComPtr< IOutArchive > GetArchiveWriter(const SevenZipLibrary& library, const CompressionFormatEnum& format);
+
 		static bool DetectCompressionFormat(const SevenZipLibrary& library, const TString& archivePath,
 			CompressionFormatEnum & archiveCompressionFormat);
 		
