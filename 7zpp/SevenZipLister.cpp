@@ -32,6 +32,11 @@ namespace SevenZip
 
 	}
 
+	bool SevenZipLister::DetectCompressionFormat()
+	{
+		return DetectCompressionFormat(m_format);
+	}
+
 	bool SevenZipLister::DetectCompressionFormat(CompressionFormatEnum & format)
 	{
 		return UsefulFunctions::DetectCompressionFormat(m_library, m_archivePath, format);
