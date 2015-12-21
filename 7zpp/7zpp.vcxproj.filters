@@ -46,6 +46,9 @@
     <ClCompile Include="SevenZipLister.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="UsefulFunctions.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="7zpp.h">
@@ -118,6 +121,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="SevenString.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="UsefulFunctions.h">
       <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
