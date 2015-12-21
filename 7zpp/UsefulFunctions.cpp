@@ -112,7 +112,7 @@ namespace SevenZip
 
 	bool UsefulFunctions::GetItemsNames(const SevenZipLibrary & library, const TString & archivePath,
 		CompressionFormatEnum &format, size_t & numberofitems, 
-		std::vector<std::wstring> & itemnames, std::vector<size_t> & origsizes)
+		std::vector<TString> & itemnames, std::vector<size_t> & origsizes)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
 

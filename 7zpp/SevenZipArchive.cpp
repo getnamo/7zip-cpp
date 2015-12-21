@@ -44,7 +44,7 @@ namespace SevenZip
 		return m_numberofitems;
 	}
 
-	std::vector<std::wstring> SevenZipArchive::GetItemsNames()
+	std::vector<TString> SevenZipArchive::GetItemsNames()
 	{
 		return m_itemnames;
 	}
