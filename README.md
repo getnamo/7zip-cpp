@@ -36,18 +36,28 @@ Or an extractor:
 
 ```cpp
 SevenZip::SevenZipExtractor extractor(lib, archiveName);
-extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+// Try to detect compression type
+if (!extractor.DetectCompressionFormat())
+{
+	extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+}
 extractor.ExtractArchive(destination, callbackfunc);
 ```
 
 ```cpp
 SevenZip::SevenZipLister lister(lib, archiveName);
-lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+// Try to detect compression type
+if (!lister.DetectCompressionFormat())
+{
+	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+}
 lister.ListArchive(callbackfunc);
 ```
 
+Note:  Most of the functions now return a boolean to indicate if it worked
+instead of throwing an exception.
 
-Don't forget to wrap the operations in a try/catch block to handle errors:
+Otherwise, don't forget to wrap the operations in a try/catch block to handle errors:
 
 ```cpp
 ...
@@ -55,7 +65,6 @@ catch (SevenZip::SevenZipException& ex)
 {
     std::cerr << ex.GetMessage() << std::endl;
 }
-
+...
 ```
-Note:  Most of the functions now return a boolean to indicate if it worked
-instead of throwing an exception.
+
