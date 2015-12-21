@@ -45,39 +45,69 @@ int main()
 		//
 		SevenZip::SevenZipExtractor extractor(lib, myArchive);
 
-		// Try to detect compression format
+		//
+		// Try to detect compression format, num of items, and names
+		//
 		SevenZip::CompressionFormatEnum myCompressionFormat;
-		result = extractor.DetectCompressionFormat(myCompressionFormat);
+		myCompressionFormat = extractor.GetCompressionFormat();
+		size_t numberofitems = extractor.GetNumberOfItems();
+		std::vector<std::wstring> itemnames = extractor.GetItemsNames();
+		std::vector<size_t> origsizes = extractor.GetOrigSizes();
 
-		if (!result)
-		{
-			std::wcerr
-				<< "Could not detect the compression format!"
-				<< std::endl;
-		}
-		else
+		std::wcout
+			<< L"Detected compression: "
+			<< myCompressionFormat.GetValue()
+			<< std::endl
+			<< std::endl;
+
+		std::wcout
+			<< L"Number of Items: "
+			<< numberofitems
+			<< std::endl
+			<< std::endl;
+
+		std::wcout
+			<< L"Names of Items: "
+			<< std::endl
+			<< std::endl;
+
+		for (int i = 0; i < itemnames.size(); i++)
 		{
 			std::wcout
-				<< "Detected compression: "
-				<< myCompressionFormat.GetValue()
-				<< std::endl
+				<< i+1
+				<< L": "
+				<< itemnames[i]
+				<< L" "
+				<< origsizes[i]
 				<< std::endl;
 		}
 
+		std::wcout
+			<< std::endl
+			<< std::endl;
+
+		//
+		//  Using callbacks
+		//
 		extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
 		result = extractor.ExtractArchive(myDest, nullptr);
 
 		if (!result)
 		{
 			std::wcerr
-				<< "Could not extract the files!"
+				<< L"Could not extract the files!"
 				<< std::endl;
 		}
 
 		//
-		// List
+		// Lister
 		//
 		ListCallBackOutput myListCallBack;
+
+		std::wcout
+			<< L"List using callbacks: "
+			<< std::endl
+			<< std::endl;
 
 		SevenZip::SevenZipLister lister(lib, myArchive);
 		lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
@@ -86,14 +116,14 @@ int main()
 		if (!result)
 		{
 			std::wcerr
-				<< "Could not list the files!"
+				<< L"Could not list the files!"
 				<< std::endl;
 		}
 	}
 	else
 	{
 		std::wcerr
-			<< "Could not load the 7Zip DLL!"
+			<< L"Could not load the 7Zip DLL!"
 			<< std::endl;
 	}
 

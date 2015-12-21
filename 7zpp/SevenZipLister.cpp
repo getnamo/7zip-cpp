@@ -14,32 +14,13 @@ namespace SevenZip
 
 	using namespace intl;
 
-	void SevenZipLister::SetCompressionFormat(const CompressionFormatEnum& format)
-	{
-		m_format = format;
-	}
-
 	SevenZipLister::SevenZipLister(const SevenZipLibrary& library, const TString& archivePath)
-		: m_library(library)
-		, m_archivePath(archivePath)
-		, m_format(CompressionFormat::SevenZip)
+		: SevenZipArchive(library, archivePath)
 	{
-
 	}
 
 	SevenZipLister::~SevenZipLister()
 	{
-
-	}
-
-	bool SevenZipLister::DetectCompressionFormat()
-	{
-		return DetectCompressionFormat(m_format);
-	}
-
-	bool SevenZipLister::DetectCompressionFormat(CompressionFormatEnum & format)
-	{
-		return UsefulFunctions::DetectCompressionFormat(m_library, m_archivePath, format);
 	}
 
 	bool SevenZipLister::ListArchive(ListCallback* callback)
@@ -56,7 +37,7 @@ namespace SevenZip
 
 	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback)
 	{
-		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_format);
+		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_compressionFormat);
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(archiveStream);
 		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
 
