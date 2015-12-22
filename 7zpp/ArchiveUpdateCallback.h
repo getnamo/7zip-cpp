@@ -8,7 +8,7 @@
 #include <7zip/IPassword.h>
 #include <vector>
 #include "FileInfo.h"
-
+#include "ProgressCallback.h"
 
 namespace SevenZip
 {
@@ -21,10 +21,11 @@ namespace intl
 		long m_refCount;
 		TString m_dirPrefix;
 		const std::vector< FilePathInfo >& m_filePaths;
+		ProgressCallback* m_callback;
 
 	public:
 
-		ArchiveUpdateCallback( const TString& dirPrefix, const std::vector< FilePathInfo >& filePaths );
+		ArchiveUpdateCallback( const TString& dirPrefix, const std::vector< FilePathInfo >& filePaths, ProgressCallback* callback );
 		virtual ~ArchiveUpdateCallback();
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );

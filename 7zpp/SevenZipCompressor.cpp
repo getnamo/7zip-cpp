@@ -87,34 +87,37 @@ void SevenZipCompressor::SetCompressionLevel( const CompressionLevelEnum& level 
 	m_compressionLevel = level;
 }
 
-bool SevenZipCompressor::CompressDirectory( const TString& directory, bool includeSubdirs )
+bool SevenZipCompressor::CompressDirectory( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
 {	
 	return FindAndCompressFiles( 
 			directory, 
 			SearchPatternAllFiles, 
 			FileSys::GetPath( directory ), 
-			includeSubdirs );
+		includeSubdirs,
+		callback);
 }
 
-bool SevenZipCompressor::CompressFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs )
+bool SevenZipCompressor::CompressFiles( const TString& directory, const TString& searchFilter, ProgressCallback* callback, bool includeSubdirs )
 {
 	return FindAndCompressFiles( 
 			directory, 
 			searchFilter, 
 			directory, 
-			includeSubdirs );
+			includeSubdirs,
+			callback);
 }
 
-bool SevenZipCompressor::CompressAllFiles( const TString& directory, bool includeSubdirs )
+bool SevenZipCompressor::CompressAllFiles( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
 {
 	return FindAndCompressFiles( 
 			directory, 
 			SearchPatternAllFiles, 
 			directory, 
-			includeSubdirs );
+			includeSubdirs,
+			callback);
 }
 
-bool SevenZipCompressor::CompressFile( const TString& filePath )
+bool SevenZipCompressor::CompressFile( const TString& filePath, ProgressCallback* callback)
 {
 	std::vector< FilePathInfo > files = FileSys::GetFile( filePath );
 
@@ -124,7 +127,7 @@ bool SevenZipCompressor::CompressFile( const TString& filePath )
 		//throw SevenZipException( StrFmt( _T( "File \"%s\" does not exist" ), filePath.c_str() ) );
 	}
 
-	return CompressFilesToArchive( TString(), files );
+	return CompressFilesToArchive( TString(), files, callback );
 }
 
 CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
@@ -138,7 +141,7 @@ CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
 	return fileStream;
 }
 
-bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion )
+bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion, ProgressCallback* callback )
 {
 	if ( !FileSys::DirectoryExists( directory ) )
 	{
@@ -153,19 +156,26 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 	}
 
 	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
-	return CompressFilesToArchive( pathPrefix, files );
+	return CompressFilesToArchive( pathPrefix, files, callback );
 }
 
-bool SevenZipCompressor::CompressFilesToArchive( const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths )
+bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths,
+	ProgressCallback* progressCallback)
 {
    CComPtr< IOutArchive > archiver = GetArchiveWriter(m_library, m_compressionFormat);
 
 	SetCompressionProperties( archiver );
 
 	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper( OpenArchiveStream() );
-	CComPtr< ArchiveUpdateCallback > callback = new ArchiveUpdateCallback( pathPrefix, filePaths );
+	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback( pathPrefix, filePaths, progressCallback );
 
-	HRESULT hr = archiver->UpdateItems( outFile, (UInt32) filePaths.size(), callback );
+	HRESULT hr = archiver->UpdateItems( outFile, (UInt32) filePaths.size(), updateCallback );
+
+	if (progressCallback)
+	{
+		progressCallback->OnDone();
+	}
+
 	if ( hr != S_OK ) // returning S_FALSE also indicates error
 	{
 		return false;
