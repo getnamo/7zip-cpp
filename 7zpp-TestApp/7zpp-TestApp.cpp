@@ -49,6 +49,11 @@ int main()
 		// Try to detect compression format, num of items, and names
 		//
 		SevenZip::CompressionFormatEnum myCompressionFormat;
+
+		// Read in all the metadata
+		extractor.ReadInArchiveMetadata();
+
+		// Pull the metadata locally
 		myCompressionFormat = extractor.GetCompressionFormat();
 		size_t numberofitems = extractor.GetNumberOfItems();
 		std::vector<std::wstring> itemnames = extractor.GetItemsNames();
