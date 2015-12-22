@@ -10,8 +10,6 @@ namespace SevenZip
 		m_archivePath(archivePath),
 		m_compressionFormat(CompressionFormat::SevenZip)
 	{
-		pri_DetectCompressionFormat();
-		pri_GetItemsNames();
 	}
 
 	SevenZipArchive::~SevenZipArchive()
@@ -36,21 +34,25 @@ namespace SevenZip
 
 	CompressionFormatEnum SevenZipArchive::GetCompressionFormat()
 	{
+		pri_DetectCompressionFormat();
 		return m_compressionFormat;
 	}
 
 	size_t SevenZipArchive::GetNumberOfItems()
 	{
+		pri_GetItemsNames();
 		return m_numberofitems;
 	}
 
 	std::vector<TString> SevenZipArchive::GetItemsNames()
 	{
+		pri_GetItemsNames();
 		return m_itemnames;
 	}
 
 	std::vector<size_t> SevenZipArchive::GetOrigSizes()
 	{
+		pri_GetItemsNames();
 		return m_origsizes;
 	}
 
