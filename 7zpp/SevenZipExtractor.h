@@ -2,29 +2,19 @@
 
 
 #include "SevenZipLibrary.h"
+#include "SevenZipArchive.h"
 #include "CompressionFormat.h"
 #include "ProgressCallback.h"
 
 
 namespace SevenZip
 {
-	class SevenZipExtractor
+	class SevenZipExtractor : public SevenZipArchive
 	{
-	private:
-
-		const SevenZipLibrary& m_library;
-		TString m_archivePath;
-		CompressionFormatEnum m_format;
-
 	public:
 
 		SevenZipExtractor( const SevenZipLibrary& library, const TString& archivePath );
 		virtual ~SevenZipExtractor();
-
-		void SetCompressionFormat( const CompressionFormatEnum& format );
-
-		bool DetectCompressionFormat(CompressionFormatEnum & format);
-		bool DetectCompressionFormat();
 
 		virtual bool ExtractArchive( const TString& directory, ProgressCallback* callback);
 
