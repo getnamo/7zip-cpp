@@ -102,8 +102,8 @@ catch (SevenZip::SevenZipException& ex)
 
 In order to compile the tests, the following requirements must be available:
 
-- Install Boost v1.59.0 binaries into $(SolutionDir}\..\boost_1_59_0\ from http://www.boost.org
-- Install GoogleTest into $(SolutionDir)\..\googletest\ from https://github.com/keithjjones/googletest.git
+- Install Boost v1.59.0 binaries into $(SolutionDir)\\..\boost_1_59_0\ from http://www.boost.org
+- Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/keithjjones/googletest.git
   - Go into the googletest directory
   - Make directory ```build```
   - Change directory into ```build```
