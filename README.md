@@ -110,3 +110,5 @@ In order to compile the tests, the following requirements must be available:
   - Run ```cmake .. -G "Visual Studio 14 2015 Win64"```
   - Open the solution and compile GoogleTest.
 - Now you can compile 7zip-cpp
+
+The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
