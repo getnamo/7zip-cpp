@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <gtest/gtest.h>
+#include <boost\filesystem.hpp>
 
 //  Wrapper
 #include "../7zpp/7zpp.h"
@@ -115,6 +116,22 @@ TEST(Extract, ExtractFiles_Test1)
 	result = extractor.ExtractArchive(myDest, nullptr);
 
 	EXPECT_EQ(true, result);
+
+	//
+	// Look for the actual files
+	//
+	int i = 0;
+	boost::filesystem::recursive_directory_iterator itr(TEMPDIR);
+	while (itr != boost::filesystem::recursive_directory_iterator())
+	{
+		boost::filesystem::path myPath = itr->path().leaf();
+		EXPECT_EQ(expecteditemnames[i], myPath.wstring());
+		i++;
+		++itr;
+	}
+
+	// Get rid of our temp directory
+	boost::filesystem::remove_all(TEMPDIR);
 }
 
 // 
