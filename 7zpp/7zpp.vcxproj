@@ -181,6 +181,9 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Lib />
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|x64'">
     <Midl>
@@ -199,6 +202,9 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Lib />
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|Win32'">
     <ClCompile>
@@ -215,6 +221,9 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Lib />
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|x64'">
     <Midl>
@@ -234,6 +243,9 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Lib />
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <ClCompile>
@@ -251,6 +263,9 @@
     <Lib>
       <OutputFile>$(OutDir)7zpp_ud.lib</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|x64'">
     <Midl>
@@ -271,6 +286,9 @@
     <Lib>
       <OutputFile>$(OutDir)7zpp_ud.lib</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">
     <ClCompile>
@@ -289,6 +307,9 @@
     <Lib>
       <OutputFile>$(OutDir)7zpp_u.lib</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|x64'">
     <Midl>
@@ -310,6 +331,9 @@
     <Lib>
       <OutputFile>$(OutDir)7zpp_u.lib</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>copy "C:\Program Files\7-Zip\7z.dll" $(SolutionDir)\Lib\$(Platform)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ArchiveExtractCallback.cpp" />
