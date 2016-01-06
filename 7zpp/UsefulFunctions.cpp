@@ -230,6 +230,22 @@ namespace SevenZip
 			archive->Close();
 		}
 
+		//
+		//  There is a problem that GZip files will not be detected using the above method.
+		//  This is a fix.
+		//
+		if (true)
+		{
+			size_t myNumOfItems;
+			archiveCompressionFormat = CompressionFormat::GZip;
+			bool result = GetNumberOfItems(library, archivePath, archiveCompressionFormat, myNumOfItems);
+			if (myNumOfItems > 0)
+			{
+				// We know this file is a GZip file, so return
+				return true;
+			}
+		}
+
 		// If you get here, the format is unknown
 		archiveCompressionFormat = CompressionFormat::Unknown;
 		return true;

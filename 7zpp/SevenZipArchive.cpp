@@ -23,6 +23,7 @@ namespace SevenZip
 	void SevenZipArchive::SetCompressionFormat(const CompressionFormatEnum& format)
 	{
 		m_OverrideCompressionFormat = true;
+		m_ReadMetadata = false;
 		m_compressionFormat = format;
 	}
 
@@ -75,25 +76,31 @@ namespace SevenZip
 	// Sets up all the metadata for an archive file
 	bool SevenZipArchive::ReadInArchiveMetadata()
 	{
-		bool DetectedCompressionFormat = pri_DetectCompressionFormat();
+		bool DetectedCompressionFormat = true;
+		if (!m_OverrideCompressionFormat)
+		{
+			DetectedCompressionFormat = pri_DetectCompressionFormat();
+		}
 		bool GotItemNumberNamesAndOrigSizes = pri_GetItemsNames();
-		m_OverrideCompressionFormat = false;
 
 		return (DetectedCompressionFormat && GotItemNumberNamesAndOrigSizes);
 	}
 
 	bool SevenZipArchive::DetectCompressionFormat()
 	{
+		m_OverrideCompressionFormat = false;
 		return pri_DetectCompressionFormat();
 	}
 
 	bool SevenZipArchive::pri_DetectCompressionFormat()
 	{
+		m_OverrideCompressionFormat = false;
 		return pri_DetectCompressionFormat(m_compressionFormat);
 	}
 
 	bool SevenZipArchive::pri_DetectCompressionFormat(CompressionFormatEnum & format)
 	{
+		m_OverrideCompressionFormat = false;
 		return UsefulFunctions::DetectCompressionFormat(m_library, m_archivePath, format);
 	}
 

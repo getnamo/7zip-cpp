@@ -9,9 +9,12 @@
 //  Wrapper
 #include "../7zpp/7zpp.h"
 
-#define DLL_PATH L"\\source\\7zip-cpp\\Exe\\x64\\7z.dll"
-#define TEMPDIR L"\\source\\7zip-cpp\\exe\\x64\\temp"
-#define TESTZIPTESTFILE1 L"\\source\\7zip-cpp\\7zpp-TestApp\\TestFiles\\files.zip"
+#define DLL_PATH L"7z.dll"
+#define TEMPDIR L"tmp"
+#define TESTZIPTESTFILE1 L"..\\..\\7zpp-TestApp\\TestFiles\\files.zip"
+#define TESTZIPTESTFILE2 L"..\\..\\7zpp-TestApp\\TestFiles\\Readme.txt.gz"
+
+//#define BUILDSTRING(A,B) std::wstring(std::wstring((std::string(A)).c_str()) + std::wstring(B))
 
 //
 // Test loading DLL
@@ -35,8 +38,10 @@ TEST(Extract, ExtractFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(TESTZIPTESTFILE1);
+	SevenZip::TString myArchive(std::wstring(TESTZIPTESTFILE1));
 	SevenZip::TString myDest(TEMPDIR);
+
+	boost::filesystem::create_directory(TEMPDIR);
 
 	// 
 	// Extract
@@ -113,6 +118,88 @@ TEST(Extract, ExtractFiles_Test1)
 	//  Using callbacks
 	//
 	extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+	result = extractor.ExtractArchive(myDest, nullptr);
+
+	EXPECT_EQ(true, result);
+
+	//
+	// Look for the actual files
+	//
+	int i = 0;
+	boost::filesystem::recursive_directory_iterator itr(TEMPDIR);
+	while (itr != boost::filesystem::recursive_directory_iterator())
+	{
+		boost::filesystem::path myPath = itr->path().leaf();
+		EXPECT_EQ(expecteditemnames[i], myPath.wstring());
+		i++;
+		++itr;
+	}
+
+	// Get rid of our temp directory
+	boost::filesystem::remove_all(TEMPDIR);
+}
+
+//
+// Test extraction - Test 2
+//
+TEST(Extract, ExtractFiles_Test2)
+{
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
+
+	SevenZip::TString myArchive(TESTZIPTESTFILE2);
+	SevenZip::TString myDest(TEMPDIR);
+
+	boost::filesystem::create_directory(TEMPDIR);
+
+	// 
+	// Extract
+	//
+	SevenZip::SevenZipExtractor extractor(lib, myArchive);
+
+	//
+	// Try to detect compression format, num of items, and names
+	//
+	SevenZip::CompressionFormatEnum myCompressionFormat;
+
+	// Read in all the metadata
+	extractor.ReadInArchiveMetadata();
+
+	// Pull the metadata locally
+	myCompressionFormat = extractor.GetCompressionFormat();
+
+	// Should have detected a GZip file
+	EXPECT_EQ(SevenZip::CompressionFormat::GZip, myCompressionFormat);
+
+	size_t numberofitems = extractor.GetNumberOfItems();
+
+	// Should have found 1 file
+	EXPECT_EQ(1, numberofitems);
+
+	std::vector<std::wstring> itemnames = extractor.GetItemsNames();
+	std::vector<size_t> origsizes = extractor.GetOrigSizes();
+
+	// Set up expected names and sizes
+	std::vector<std::wstring> expecteditemnames;
+	std::vector<size_t> expectedorigsizes;
+
+	expecteditemnames.push_back(std::wstring(L"ReadMe.txt"));
+	expectedorigsizes.push_back(119);
+
+	// Check expected sizes
+	for (int i = 0; i < itemnames.size(); i++)
+	{
+		EXPECT_EQ(expecteditemnames[i], itemnames[i]);
+		EXPECT_EQ(expectedorigsizes[i], origsizes[i]);
+	}
+
+	//
+	//  Using callbacks
+	//
+	extractor.SetCompressionFormat(SevenZip::CompressionFormat::GZip);
 	result = extractor.ExtractArchive(myDest, nullptr);
 
 	EXPECT_EQ(true, result);
