@@ -122,7 +122,7 @@ TEST(Extract, ExtractFiles_Test1)
 //
 TEST(Compress, CompressFiles)
 {
-
+	// Place tests here as needed
 }
 
 //
