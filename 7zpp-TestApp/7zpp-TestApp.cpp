@@ -3,135 +3,174 @@
 
 #include "stdafx.h"
 #include <iostream>
+#include <gtest/gtest.h>
 
 //  Wrapper
 #include "../7zpp/7zpp.h"
 
+#define DLL_PATH L"\\source\\7zip-cpp\\Exe\\x64\\7z.dll"
+#define TEMPDIR L"\\source\\7zip-cpp\\exe\\x64\\temp"
+#define TESTZIPTESTFILE1 L"\\source\\7zip-cpp\\7zpp-TestApp\\TestFiles\\files.zip"
+
 //
-// For wrappers...
+// Test loading DLL
+//
+TEST(Init, LoadDLL)
+{
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	ASSERT_EQ(true, result);
+}
+
+//
+// Test extraction - Test 1
+//
+TEST(Extract, ExtractFiles_Test1)
+{
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
+
+	SevenZip::TString myArchive(TESTZIPTESTFILE1);
+	SevenZip::TString myDest(TEMPDIR);
+
+	// 
+	// Extract
+	//
+	SevenZip::SevenZipExtractor extractor(lib, myArchive);
+
+	//
+	// Try to detect compression format, num of items, and names
+	//
+	SevenZip::CompressionFormatEnum myCompressionFormat;
+
+	// Read in all the metadata
+	extractor.ReadInArchiveMetadata();
+
+	// Pull the metadata locally
+	myCompressionFormat = extractor.GetCompressionFormat();
+
+	// Should have detected a Zip file
+	EXPECT_EQ(SevenZip::CompressionFormat::Zip, myCompressionFormat);
+
+	size_t numberofitems = extractor.GetNumberOfItems();
+
+	// Should have found 11 files
+	EXPECT_EQ(11, numberofitems);
+
+	std::vector<std::wstring> itemnames = extractor.GetItemsNames();
+	std::vector<size_t> origsizes = extractor.GetOrigSizes();
+
+	// Set up expected names and sizes
+	std::vector<std::wstring> expecteditemnames;
+	std::vector<size_t> expectedorigsizes;
+
+	expecteditemnames.push_back(std::wstring(L"DLL.cpp"));
+	expectedorigsizes.push_back(1840);
+
+	expecteditemnames.push_back(std::wstring(L"DLL.h"));
+	expectedorigsizes.push_back(1310);
+
+	expecteditemnames.push_back(std::wstring(L"ErrorMsg.cpp"));
+	expectedorigsizes.push_back(1463);
+
+	expecteditemnames.push_back(std::wstring(L"ErrorMsg.h"));
+	expectedorigsizes.push_back(227);
+
+	expecteditemnames.push_back(std::wstring(L"FileDir.cpp"));
+	expectedorigsizes.push_back(15605);
+
+	expecteditemnames.push_back(std::wstring(L"FileDir.h"));
+	expectedorigsizes.push_back(2572);
+
+	expecteditemnames.push_back(std::wstring(L"FileFind.cpp"));
+	expectedorigsizes.push_back(18771);
+
+	expecteditemnames.push_back(std::wstring(L"FileFind.h"));
+	expectedorigsizes.push_back(4561);
+
+	expecteditemnames.push_back(std::wstring(L"FileIO.cpp"));
+	expectedorigsizes.push_back(12076);
+
+	expecteditemnames.push_back(std::wstring(L"FileIO.h"));
+	expectedorigsizes.push_back(6367);
+
+	expecteditemnames.push_back(std::wstring(L"FileLink.cpp"));
+	expectedorigsizes.push_back(10029);
+
+	// Check expected sizes
+	for (int i = 0; i < itemnames.size(); i++)
+	{
+		EXPECT_EQ(expecteditemnames[i], itemnames[i]);
+		EXPECT_EQ(expectedorigsizes[i], origsizes[i]);
+	}
+
+	//
+	//  Using callbacks
+	//
+	extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+	result = extractor.ExtractArchive(myDest, nullptr);
+
+	EXPECT_EQ(true, result);
+}
+
+// 
+// Test compression
+//
+TEST(Compress, CompressFiles)
+{
+
+}
+
+//
+// Test listing - Test 1
+//
+//
+// Lister callback
 //
 class ListCallBackOutput : SevenZip::ListCallback
 {
 	virtual void OnFileFound(WCHAR* path, int size)
 	{
-		std::wcout
-			<< path
-			<< L" "
-			<< size
-			<< std::endl;
+		//std::wcout
+		//	<< path
+		//	<< L" "
+		//	<< size
+		//	<< std::endl;
 	}
 };
 
-
-int main()
+TEST(List, ListFiles_Test1)
 {
-	//
-	// Using the wrappers...
-	//
-
 	SevenZip::SevenZipLibrary lib;
-	bool result = lib.Load(SevenZip::TString(L"\\source\\7zip-cpp\\Exe\\x64\\7z_dist.dll"));
-	if (result)
-	{
-		SevenZip::TString myArchive(L"\\source\\7zip-cpp\\exe\\x64\\files.zip");
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
 
-		wchar_t currdir[2000];
-		GetCurrentDirectory(2000, currdir);
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
 
-		SevenZip::TString myDest(L"\\source\\7zip-cpp\\exe\\x64\\temp");
+	SevenZip::TString myArchive(TESTZIPTESTFILE1);
 
-		// 
-		// Extract
-		//
-		SevenZip::SevenZipExtractor extractor(lib, myArchive);
+	//
+	// Lister
+	//
+	ListCallBackOutput myListCallBack;
 
-		//
-		// Try to detect compression format, num of items, and names
-		//
-		SevenZip::CompressionFormatEnum myCompressionFormat;
+	SevenZip::SevenZipLister lister(lib, myArchive);
+	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+	result = lister.ListArchive((SevenZip::ListCallback *)&myListCallBack);
 
-		// Read in all the metadata
-		extractor.ReadInArchiveMetadata();
+	EXPECT_EQ(true, result);
+}
 
-		// Pull the metadata locally
-		myCompressionFormat = extractor.GetCompressionFormat();
-		size_t numberofitems = extractor.GetNumberOfItems();
-		std::vector<std::wstring> itemnames = extractor.GetItemsNames();
-		std::vector<size_t> origsizes = extractor.GetOrigSizes();
-
-		std::wcout
-			<< L"Detected compression: "
-			<< myCompressionFormat.GetValue()
-			<< std::endl
-			<< std::endl;
-
-		std::wcout
-			<< L"Number of Items: "
-			<< numberofitems
-			<< std::endl
-			<< std::endl;
-
-		std::wcout
-			<< L"Names of Items: "
-			<< std::endl
-			<< std::endl;
-
-		for (int i = 0; i < itemnames.size(); i++)
-		{
-			std::wcout
-				<< i+1
-				<< L": "
-				<< itemnames[i]
-				<< L" "
-				<< origsizes[i]
-				<< std::endl;
-		}
-
-		std::wcout
-			<< std::endl
-			<< std::endl;
-
-		//
-		//  Using callbacks
-		//
-		extractor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-		result = extractor.ExtractArchive(myDest, nullptr);
-
-		if (!result)
-		{
-			std::wcerr
-				<< L"Could not extract the files!"
-				<< std::endl;
-		}
-
-		//
-		// Lister
-		//
-		ListCallBackOutput myListCallBack;
-
-		std::wcout
-			<< L"List using callbacks: "
-			<< std::endl
-			<< std::endl;
-
-		SevenZip::SevenZipLister lister(lib, myArchive);
-		lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-		result = lister.ListArchive((SevenZip::ListCallback *)&myListCallBack);
-
-		if (!result)
-		{
-			std::wcerr
-				<< L"Could not list the files!"
-				<< std::endl;
-		}
-	}
-	else
-	{
-		std::wcerr
-			<< L"Could not load the 7Zip DLL!"
-			<< std::endl;
-	}
-
-	return 0;
+//
+// Main
+//
+int main(int argc, char **argv)
+{
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
 
