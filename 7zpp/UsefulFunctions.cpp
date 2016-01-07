@@ -236,10 +236,10 @@ namespace SevenZip
 		//
 		if (true)
 		{
-			size_t myNumOfItems;
+			size_t myNumOfItems = 0;
 			archiveCompressionFormat = CompressionFormat::GZip;
 			bool result = GetNumberOfItems(library, archivePath, archiveCompressionFormat, myNumOfItems);
-			if (myNumOfItems > 0)
+			if (result == true && myNumOfItems > 0)
 			{
 				// We know this file is a GZip file, so return
 				return true;

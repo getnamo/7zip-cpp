@@ -11,10 +11,9 @@
 
 #define DLL_PATH L"7z.dll"
 #define TEMPDIR L"tmp"
-#define TESTZIPTESTFILE1 L"..\\..\\7zpp-TestApp\\TestFiles\\files.zip"
-#define TESTZIPTESTFILE2 L"..\\..\\7zpp-TestApp\\TestFiles\\Readme.txt.gz"
-
-//#define BUILDSTRING(A,B) std::wstring(std::wstring((std::string(A)).c_str()) + std::wstring(B))
+#define TESTEXTRACTTESTFILE1 L"..\\..\\7zpp-TestApp\\TestFiles\\files.zip"
+#define TESTEXTRACTTESTFILE2 L"..\\..\\7zpp-TestApp\\TestFiles\\Readme.txt.gz"
+#define TESTEXTRACTTESTFILE3 L"..\\..\\7zpp-TestApp\\TestFiles\\Readme.txt"
 
 //
 // Test loading DLL
@@ -38,7 +37,7 @@ TEST(Extract, ExtractFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTZIPTESTFILE1));
+	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE1));
 	SevenZip::TString myDest(TEMPDIR);
 
 	boost::filesystem::create_directory(TEMPDIR);
@@ -150,7 +149,7 @@ TEST(Extract, ExtractFiles_Test2)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(TESTZIPTESTFILE2);
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE2);
 	SevenZip::TString myDest(TEMPDIR);
 
 	boost::filesystem::create_directory(TEMPDIR);
@@ -221,6 +220,39 @@ TEST(Extract, ExtractFiles_Test2)
 	boost::filesystem::remove_all(TEMPDIR);
 }
 
+//
+// Test extraction - Test 3
+//
+TEST(Extract, ExtractFiles_Test3)
+{
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
+
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE3);
+
+	// 
+	// Extract
+	//
+	SevenZip::SevenZipExtractor extractor(lib, myArchive);
+
+	//
+	// Try to detect compression format, num of items, and names
+	//
+	SevenZip::CompressionFormatEnum myCompressionFormat;
+
+	// Read in all the metadata
+	extractor.ReadInArchiveMetadata();
+
+	// Pull the metadata locally
+	myCompressionFormat = extractor.GetCompressionFormat();
+
+	// Should have detected an Unknown file
+	EXPECT_EQ(SevenZip::CompressionFormat::Unknown, myCompressionFormat);
+}
+
 // 
 // Test compression
 //
@@ -255,7 +287,7 @@ TEST(List, ListFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(TESTZIPTESTFILE1);
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1);
 
 	//
 	// Lister
