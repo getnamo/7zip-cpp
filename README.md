@@ -112,3 +112,8 @@ In order to compile the tests, the following requirements must be available:
 - Now you can compile 7zip-cpp
 
 The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
+
+## Known Issues
+
+The extractor can have issues with relative paths.  To be sure it works correctly, feed it
+a full path.
