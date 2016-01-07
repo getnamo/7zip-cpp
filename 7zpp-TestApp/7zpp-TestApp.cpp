@@ -347,7 +347,7 @@ TEST(Extract, ExtractFiles_Test4)
 	}
 
 	// Get rid of our temp directory
-	//boost::filesystem::remove_all(TEMPDIR);
+	boost::filesystem::remove_all(TEMPDIR);
 }
 
 // 
