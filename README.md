@@ -117,3 +117,13 @@ The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
 
 The extractor can have issues with relative paths.  To be sure it works correctly, feed it
 a full path.
+
+## Contributing
+
+Read Contributing.md
+
+### Branches
+
+- Devel branch is the bleeding edge, but it should still work.
+- Devel-XXX branches are current topics.
+- Master branch is the latest stable version.
