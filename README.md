@@ -127,4 +127,4 @@ Read Contributing.md
 - Devel branch is the bleeding edge, but it should still work.
 - Devel-XXX branches are current topics.
 - Master branch is the latest stable version.
-- More branch information in is Contributing.md.
+- More branch information is in Contributing.md.
