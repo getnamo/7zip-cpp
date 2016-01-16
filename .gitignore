@@ -7,10 +7,14 @@
 *.obj
 *.pdb
 *.DS_Store
+*.pch
+*.idb
+*.opensdf
 
 # Visual Studio Files
 *.opendb
 *.suo
+*.lastbuildstate
 .vs/
 ipch/
 
@@ -20,3 +24,7 @@ Exe/
 Intermediate/
 dll/
 **/x64/
+
+# Misc
+*.log
+*.tlog

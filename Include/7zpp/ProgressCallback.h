@@ -21,7 +21,6 @@ namespace SevenZip
 		*/
 		virtual void OnProgress(TString filePath, unsigned __int64 bytesCompleted) {}
 
-
 		/*
 		Called When progress has reached 100%
 		*/

@@ -33,7 +33,7 @@ namespace SevenZip
 		virtual bool CompressFile( const TString& filePath, ProgressCallback* callback);
 
 	private:
-		TString m_outputPath;					//the final compression result compression path. Used for tracking in callbacks
+
 		CComPtr< IStream > OpenArchiveStream();
 		bool FindAndCompressFiles(	const TString& directory, const TString& searchPattern, 
 									const TString& pathPrefix, bool recursion, ProgressCallback* callback);

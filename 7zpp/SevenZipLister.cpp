@@ -45,7 +45,6 @@ namespace SevenZip
 		if (hr != S_OK)
 		{
 			return false;
-			//throw SevenZipException( GetCOMErrMsg( _T( "Open archive" ), hr ) );
 		}
 
 		// List command
@@ -72,7 +71,16 @@ namespace SevenZip
 				}
 			}
 		}
+		CPropVariant prop;
+		archive->GetArchiveProperty(kpidPath,&prop);
 		archive->Close();
+
+		if (prop.vt == VT_BSTR) {
+			WCHAR* path = prop.bstrVal;
+			if (callback) {
+				callback->OnListingDone(path);
+			}
+		}
 		return true;
 	}
 }
