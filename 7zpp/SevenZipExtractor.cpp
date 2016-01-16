@@ -5,6 +5,7 @@
 #include "ArchiveOpenCallback.h"
 #include "ArchiveExtractCallback.h"
 #include "InStreamWrapper.h"
+#include "PropVariant.h"
 #include "UsefulFunctions.h"
 
 
@@ -56,10 +57,17 @@ namespace SevenZip
 			return false;
 			//throw SevenZipException( GetCOMErrMsg( _T( "Extract archive" ), hr ) );
 		}
+
+		CPropVariant prop;
+		archive->GetArchiveProperty(kpidPath, &prop);
 		archive->Close();
-		if (callback)
-		{
-			callback->OnDone();		
+
+		if (prop.vt == VT_BSTR) {
+			WCHAR* path = prop.bstrVal;
+			if (callback)
+			{
+				callback->OnDone(path);
+			}
 		}
 		return true;
 	}

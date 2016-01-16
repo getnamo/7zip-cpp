@@ -39,10 +39,5 @@ namespace SevenZip
 									const TString& pathPrefix, bool recursion, ProgressCallback* callback);
 		bool CompressFilesToArchive(const TString& pathPrefix, const std::vector< intl::FilePathInfo >& filePaths, ProgressCallback* callback);
 		bool SetCompressionProperties( IUnknown* outArchive );
-
-		const SevenZipLibrary& m_library;
-		TString m_archivePath;
-		CompressionFormatEnum m_compressionFormat;
-		CompressionLevelEnum m_compressionLevel;
 	};
 }

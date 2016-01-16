@@ -76,7 +76,7 @@ STDMETHODIMP ArchiveUpdateCallback::SetTotal( UInt64 size )
 {
 	if (m_callback != nullptr)
 	{
-		m_callback->OnStartWithTotal(size);
+		m_callback->OnStartWithTotal(m_dirPrefix, size);
 	}
 	return S_OK;
 }
@@ -85,7 +85,7 @@ STDMETHODIMP ArchiveUpdateCallback::SetCompleted( const UInt64* completeValue )
 {
 	if (m_callback!=nullptr)
 	{
-		m_callback->OnProgress(*completeValue);
+		m_callback->OnProgress(m_dirPrefix, *completeValue);
 	}
 	return S_OK;
 }

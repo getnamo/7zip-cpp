@@ -25,17 +25,6 @@ SevenZipCompressor::~SevenZipCompressor()
 {
 }
 
-<<<<<<< HEAD
-void SevenZipCompressor::SetCompressionFormat(const CompressionFormatEnum& format)
-{
-   m_compressionFormat = format;
-}
-
-void SevenZipCompressor::SetCompressionLevel( const CompressionLevelEnum& level )
-{
-	m_compressionLevel = level;
-}
-
 bool SevenZipCompressor::CompressDirectory( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
 {	
 	return FindAndCompressFiles( 
@@ -94,14 +83,12 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 {
 	if ( !FileSys::DirectoryExists( directory ) )
 	{
-		return false;
-		//throw SevenZipException( StrFmt( _T( "Directory \"%s\" does not exist" ), directory.c_str() ) );
+		return false;	//Directory does not exist
 	}
 	
 	if ( FileSys::IsDirectoryEmptyRecursive( directory ) )
 	{
-		return false;
-		//throw SevenZipException( StrFmt( _T( "Directory \"%s\" is empty" ), directory.c_str() ) );
+		return false;	//Directory \"%s\" is empty" ), directory.c_str()
 	}
 
 	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
@@ -122,13 +109,12 @@ bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const
 
 	if (progressCallback)
 	{
-		progressCallback->OnDone();
+		progressCallback->OnDone(pathPrefix);	//Todo: give full path support
 	}
 
 	if ( hr != S_OK ) // returning S_FALSE also indicates error
 	{
 		return false;
-		//throw SevenZipException( GetCOMErrMsg( _T( "Create archive" ), hr ) );
 	}
 	return true;
 }
@@ -143,15 +129,13 @@ bool SevenZipCompressor::SetCompressionProperties( IUnknown* outArchive )
 	outArchive->QueryInterface( IID_ISetProperties, reinterpret_cast< void** >( &setter ) );
 	if ( setter == NULL )
 	{
-		return false;
-		//throw SevenZipException( _T( "Archive does not support setting compression properties" ) );
+		return false;	//Archive does not support setting compression properties
 	}
 
 	HRESULT hr = setter->SetProperties( names, values, numProps );
 	if ( hr != S_OK )
 	{
-		return false;
-		//throw SevenZipException( GetCOMErrMsg( _T( "Setting compression properties" ), hr ) );
+		return false;	//Setting compression properties
 	}
 	return true;
 }

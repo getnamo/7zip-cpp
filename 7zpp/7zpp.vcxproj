@@ -123,12 +123,14 @@
     <TargetExt>.lib</TargetExt>
     <TargetName>7zpp_ud</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|x64'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>7zpp_ud</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|Win32'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
@@ -136,36 +138,42 @@
     <TargetExt>.lib</TargetExt>
     <TargetName>$(ProjectName)_u</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Release|x64'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_u</TargetName>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|Win32'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>7zpp_ud</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Debug|x64'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>7zpp_ud</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|Win32'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>7zpp_u</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Unicode Release|x64'">
     <OutDir>$(SolutionDir)\Lib\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>7zpp_u</TargetName>
     <IncludePath>./7zip;$(IncludePath)</IncludePath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MBCS Debug|Win32'">
     <ClCompile>
