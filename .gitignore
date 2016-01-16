@@ -9,6 +9,7 @@
 *.DS_Store
 *.pch
 *.idb
+*.opensdf
 
 # Visual Studio Files
 *.opendb
