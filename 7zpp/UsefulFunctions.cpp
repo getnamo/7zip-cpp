@@ -251,5 +251,43 @@ namespace SevenZip
 		return true;
 	}
 
+	const TString UsefulFunctions::EndingFromCompressionFormat(const CompressionFormatEnum& format)
+	{
+		switch (format)
+		{
+		case CompressionFormat::Zip:
+			return L".zip";
+			break;
+		case CompressionFormat::SevenZip:
+			return L".7z";
+			break;
+		case CompressionFormat::Rar:
+			return L".rar";
+			break;
+		case CompressionFormat::GZip:
+			return L".gz";
+			break;
+		case CompressionFormat::BZip2:
+			return L".bz";
+			break;
+		case CompressionFormat::Tar:
+			return L".tar";
+			break;
+		case CompressionFormat::Lzma:
+			return L".lzma";
+			break;
+		case CompressionFormat::Lzma86:
+			return L".lzma86";
+			break;
+		case CompressionFormat::Cab:
+			return L".cab";
+			break;
+		case CompressionFormat::Iso:
+			return L".iso";
+			break;
+		}
+		return L".zip";
+	}
+
 }
 

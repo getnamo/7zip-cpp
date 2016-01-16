@@ -59,6 +59,9 @@ bool SevenZipCompressor::CompressFile( const TString& filePath, ProgressCallback
 {
 	std::vector< FilePathInfo > files = FileSys::GetFile( filePath );
 
+	//single file, grab file name, append ending
+	outputFilePath = filePath;
+
 	if ( files.empty() )
 	{
 		return false;
@@ -91,6 +94,12 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 		return false;	//Directory \"%s\" is empty" ), directory.c_str()
 	}
 
+	/*size_t sep = directory.find_last_of(L"\\");
+	if (sep != std::string::npos)
+		outputFilePath = directory.substr(sep + 1, directory.size() - sep - 1);*/
+
+	outputFilePath = directory;
+
 	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
 	return CompressFilesToArchive( pathPrefix, files, callback );
 }
@@ -98,8 +107,7 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths,
 	ProgressCallback* progressCallback)
 {
-   CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
-
+	CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
 	SetCompressionProperties( archiver );
 
 	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper( OpenArchiveStream() );
@@ -109,7 +117,7 @@ bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const
 
 	if (progressCallback)
 	{
-		progressCallback->OnDone(pathPrefix);	//Todo: give full path support
+		progressCallback->OnDone(outputFilePath + UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat));	//Todo: give full path support
 	}
 
 	if ( hr != S_OK ) // returning S_FALSE also indicates error

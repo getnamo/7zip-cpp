@@ -29,8 +29,7 @@ namespace SevenZip
 
 		if ( fileStream == NULL )
 		{
-			return false;
-			//throw SevenZipException( StrFmt( _T( "Could not open archive \"%s\"" ), m_archivePath.c_str() ) );
+			return false;	//Could not open archive
 		}
 
 		return ExtractArchive( fileStream, destDirectory, callback);
@@ -45,8 +44,7 @@ namespace SevenZip
 		HRESULT hr = archive->Open( inFile, 0, openCallback );
 		if ( hr != S_OK )
 		{
-			return false;
-			//throw SevenZipException( GetCOMErrMsg( _T( "Open archive" ), hr ) );
+			return false;	//Open archive error
 		}
 
 		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, callback );
@@ -54,21 +52,14 @@ namespace SevenZip
 		hr = archive->Extract( NULL, -1, false, extractCallback );
 		if ( hr != S_OK ) // returning S_FALSE also indicates error
 		{
-			return false;
-			//throw SevenZipException( GetCOMErrMsg( _T( "Extract archive" ), hr ) );
+			return false;	//Extract archive error
 		}
 
-		CPropVariant prop;
-		archive->GetArchiveProperty(kpidPath, &prop);
-		archive->Close();
-
-		if (prop.vt == VT_BSTR) {
-			WCHAR* path = prop.bstrVal;
-			if (callback)
-			{
-				callback->OnDone(path);
-			}
+		if (callback)
+		{
+			callback->OnDone(m_archivePath);
 		}
+		archive->Close();		
 		return true;
 	}
 

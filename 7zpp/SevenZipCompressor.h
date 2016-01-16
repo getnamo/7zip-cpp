@@ -34,6 +34,7 @@ namespace SevenZip
 
 	private:
 
+		TString outputFilePath;
 		CComPtr< IStream > OpenArchiveStream();
 		bool FindAndCompressFiles(	const TString& directory, const TString& searchPattern, 
 									const TString& pathPrefix, bool recursion, ProgressCallback* callback);

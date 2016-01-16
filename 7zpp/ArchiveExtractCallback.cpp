@@ -89,7 +89,9 @@ STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 	*/
 	if (m_callback != nullptr) 
 	{
-		m_callback->OnProgress(m_absPath, *completeValue);
+		//Don't call this directly, it will be called per file which is more consistent across archive types
+		//TODO: incorporate better progress tracking
+		//m_callback->OnProgress(m_absPath, *completeValue);
 	}
 	return S_OK;
 }
