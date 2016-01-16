@@ -59,14 +59,13 @@ bool SevenZipCompressor::CompressFile( const TString& filePath, ProgressCallback
 {
 	std::vector< FilePathInfo > files = FileSys::GetFile( filePath );
 
-	//single file, grab file name, append ending
-	outputFilePath = filePath;
-
 	if ( files.empty() )
 	{
 		return false;
 		//throw SevenZipException( StrFmt( _T( "File \"%s\" does not exist" ), filePath.c_str() ) );
 	}
+
+	m_outputPath = filePath;
 
 	return CompressFilesToArchive( TString(), files, callback );
 }
@@ -94,11 +93,7 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 		return false;	//Directory \"%s\" is empty" ), directory.c_str()
 	}
 
-	/*size_t sep = directory.find_last_of(L"\\");
-	if (sep != std::string::npos)
-		outputFilePath = directory.substr(sep + 1, directory.size() - sep - 1);*/
-
-	outputFilePath = directory;
+	m_outputPath = directory;
 
 	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
 	return CompressFilesToArchive( pathPrefix, files, callback );
@@ -110,14 +105,17 @@ bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const
 	CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
 	SetCompressionProperties( archiver );
 
+	//Set full outputFilePath including ending
+	m_outputPath += UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat);
+
 	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper( OpenArchiveStream() );
-	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback( pathPrefix, filePaths, progressCallback );
+	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback( pathPrefix, filePaths, m_outputPath, progressCallback );
 
 	HRESULT hr = archiver->UpdateItems( outFile, (UInt32) filePaths.size(), updateCallback );
 
 	if (progressCallback)
 	{
-		progressCallback->OnDone(outputFilePath + UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat));	//Todo: give full path support
+		progressCallback->OnDone(m_outputPath);	//Todo: give full path support
 	}
 
 	if ( hr != S_OK ) // returning S_FALSE also indicates error
