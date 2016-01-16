@@ -4,6 +4,7 @@
 #include <vector>
 #include <atlbase.h>
 #include "SevenZipLibrary.h"
+#include "SevenZipArchive.h"
 #include "FileInfo.h"
 #include "CompressionFormat.h"
 #include "CompressionLevel.h"
@@ -12,22 +13,12 @@
 
 namespace SevenZip
 {
-	class SevenZipCompressor
+	class SevenZipCompressor : public SevenZipArchive
 	{
-	private:
-
-		const SevenZipLibrary& m_library;
-		TString m_archivePath;
-		CompressionFormatEnum m_compressionFormat;
-		CompressionLevelEnum m_compressionLevel;
-
 	public:
 
 		SevenZipCompressor( const SevenZipLibrary& library, const TString& archivePath );
 		virtual ~SevenZipCompressor();
-
-		void SetCompressionFormat( const CompressionFormatEnum& format );
-		void SetCompressionLevel( const CompressionLevelEnum& level );
 
 		// Includes the last directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
 		// makes "MyFolder" the single root item in archive with the files within it included.
@@ -48,5 +39,10 @@ namespace SevenZip
 									const TString& pathPrefix, bool recursion, ProgressCallback* callback);
 		bool CompressFilesToArchive(const TString& pathPrefix, const std::vector< intl::FilePathInfo >& filePaths, ProgressCallback* callback);
 		bool SetCompressionProperties( IUnknown* outArchive );
+
+		const SevenZipLibrary& m_library;
+		TString m_archivePath;
+		CompressionFormatEnum m_compressionFormat;
+		CompressionLevelEnum m_compressionLevel;
 	};
 }

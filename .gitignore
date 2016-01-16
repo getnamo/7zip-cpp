@@ -19,3 +19,4 @@ Lib/
 Exe/
 Intermediate/
 dll/
+**/x64/

@@ -98,3 +98,33 @@ catch (SevenZip::SevenZipException& ex)
 ...
 ```
 
+## Requirements
+
+In order to compile the tests, the following requirements must be available:
+
+- Install Boost v1.59.0 binaries into $(SolutionDir)\\..\boost_1_59_0\ from http://www.boost.org
+- Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/keithjjones/googletest.git
+  - Go into the googletest directory
+  - Make directory ```build```
+  - Change directory into ```build```
+  - Run ```cmake .. -G "Visual Studio 14 2015 Win64"```
+  - Open the solution and compile GoogleTest.
+- Now you can compile 7zip-cpp
+
+The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
+
+## Known Issues
+
+The extractor can have issues with relative paths.  To be sure it works correctly, feed it
+a full path.
+
+## Contributing
+
+Read Contributing.md
+
+### Branches
+
+- Devel branch is the bleeding edge, but it should still work.
+- Devel-XXX branches are current topics.
+- Master branch is the latest stable version.
+- More branch information is in Contributing.md.

@@ -5,6 +5,7 @@
 #include "ArchiveUpdateCallback.h"
 #include "OutStreamWrapper.h"
 #include "PropVariant.h"
+#include "UsefulFunctions.h"
 
 
 namespace SevenZip
@@ -15,61 +16,8 @@ using namespace intl;
 
 const TString SearchPatternAllFiles = _T( "*" );
 
-CComPtr< IOutArchive > GetArchiveWriter(const SevenZipLibrary& library, const CompressionFormatEnum& format)
-{
-   const GUID* guid = NULL;
-
-   switch (format)
-   {
-   case CompressionFormat::Zip:
-      guid = &CLSID_CFormatZip;
-      break;
-
-   case CompressionFormat::GZip:
-      guid = &CLSID_CFormatGZip;
-      break;
-
-   case CompressionFormat::BZip2:
-      guid = &CLSID_CFormatBZip2;
-      break;
-
-   case CompressionFormat::Rar:
-      guid = &CLSID_CFormatRar;
-      break;
-
-   case CompressionFormat::Tar:
-      guid = &CLSID_CFormatTar;
-      break;
-
-   case CompressionFormat::Iso:
-      guid = &CLSID_CFormatIso;
-      break;
-
-   case CompressionFormat::Cab:
-      guid = &CLSID_CFormatCab;
-      break;
-
-   case CompressionFormat::Lzma:
-      guid = &CLSID_CFormatLzma;
-      break;
-
-   case CompressionFormat::Lzma86:
-      guid = &CLSID_CFormatLzma86;
-      break;
-
-   default:
-      guid = &CLSID_CFormat7z;
-      break;
-   }
-
-   CComPtr< IOutArchive > archive;
-   library.CreateObject(*guid, IID_IOutArchive, reinterpret_cast< void** >(&archive));
-   return archive;
-}
-
-SevenZipCompressor::SevenZipCompressor( const SevenZipLibrary& library, const TString& archivePath )
-	: m_library( library )
-	, m_archivePath( archivePath )
+SevenZipCompressor::SevenZipCompressor(const SevenZipLibrary& library, const TString& archivePath)
+	: SevenZipArchive(library, archivePath)
 {
 }
 
@@ -77,6 +25,7 @@ SevenZipCompressor::~SevenZipCompressor()
 {
 }
 
+<<<<<<< HEAD
 void SevenZipCompressor::SetCompressionFormat(const CompressionFormatEnum& format)
 {
    m_compressionFormat = format;
@@ -162,7 +111,7 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths,
 	ProgressCallback* progressCallback)
 {
-   CComPtr< IOutArchive > archiver = GetArchiveWriter(m_library, m_compressionFormat);
+   CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
 
 	SetCompressionProperties( archiver );
 
