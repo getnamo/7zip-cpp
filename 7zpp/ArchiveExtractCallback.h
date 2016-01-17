@@ -30,6 +30,8 @@ namespace intl
 		TString m_absPath;
 		bool m_isDir;
 
+		TString m_archivePath;
+
 		bool m_hasAttrib;
 		UInt32 m_attrib;
 
@@ -43,7 +45,7 @@ namespace intl
 
 	public:
 
-		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback, const TString& password);
+		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, ProgressCallback* callback, const TString& password);
 		virtual ~ArchiveExtractCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );

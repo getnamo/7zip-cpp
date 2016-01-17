@@ -18,6 +18,6 @@ namespace SevenZip
 		/*
 		Called when all the files have been listed
 		*/
-		virtual void OnListingDone(WCHAR* path) {}
+		virtual void OnListingDone(const TString& path) {}
 	};
 }

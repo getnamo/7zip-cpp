@@ -15,7 +15,8 @@ namespace SevenZip
 	using namespace intl;
 
 	SevenZipLister::SevenZipLister(const SevenZipLibrary& library, const TString& archivePath)
-		: SevenZipArchive(library, archivePath)
+		: SevenZipArchive(library, archivePath),
+		m_archivePath(archivePath)
 	{
 	}
 
@@ -66,20 +67,16 @@ namespace SevenZip
 				if (prop.vt == VT_BSTR) {
 					WCHAR* path = prop.bstrVal;
 					if (callback) {
-						callback->OnFileFound(path, size);
+						callback->OnFileFound(TString(path), size);
 					}
 				}
 			}
 		}
 		CPropVariant prop;
-		archive->GetArchiveProperty(kpidPath,&prop);
 		archive->Close();
 
-		if (prop.vt == VT_BSTR) {
-			WCHAR* path = prop.bstrVal;
-			if (callback) {
-				callback->OnListingDone(path);
-			}
+		if (callback) {
+			callback->OnListingDone(m_archivePath);
 		}
 		return true;
 	}
