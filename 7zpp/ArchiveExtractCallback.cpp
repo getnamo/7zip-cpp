@@ -16,10 +16,11 @@ namespace intl
 const TString EmptyFileAlias = _T( "[Content]" );
 
 
-ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback)
+ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, ProgressCallback* callback)
 	: m_refCount(0)
 	, m_archiveHandler( archiveHandler )
 	, m_directory( directory )
+	, m_archivePath( archivePath )
 	, m_callback( callback )
 {
 }
@@ -329,8 +330,8 @@ void ArchiveExtractCallback::EmitFileDoneCallback(const TString& path)
 {
 	if (m_callback != nullptr)
 	{
-		m_callback->OnProgress(path, m_newFileSize);
-		m_callback->OnFileDone(path, m_newFileSize);
+		m_callback->OnProgress(m_archivePath, m_newFileSize);
+		m_callback->OnFileDone(m_archivePath, path, m_newFileSize);
 	}
 }
 

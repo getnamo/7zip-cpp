@@ -210,7 +210,7 @@ namespace SevenZip
 		myAvailableFormats.push_back(CompressionFormat::Iso);
 
 		// Check each format for one that works
-		for (int i = 0; i < myAvailableFormats.size(); i++)
+		for (size_t i = 0; i < myAvailableFormats.size(); i++)
 		{
 			archiveCompressionFormat = myAvailableFormats[i];
 
