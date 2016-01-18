@@ -75,7 +75,7 @@ STDMETHODIMP ArchiveExtractCallback::SetTotal( UInt64 size )
 	//	- SetTotal is never called for ZIP and 7z formats
 	if (m_callback != nullptr)
 	{
-		m_callback->OnStartWithTotal(m_absPath, size);
+		m_callback->OnStartWithTotal(m_archivePath, size);
 	}
 	return S_OK;
 }
