@@ -31,5 +31,6 @@ namespace SevenZip
 			CompressionFormatEnum & format, size_t & numberofitems, 
 			std::vector<TString> & itemnames, std::vector<size_t> & origsizes);
 
+		static const TString EndingFromCompressionFormat(const CompressionFormatEnum& format);
 	};
 }
