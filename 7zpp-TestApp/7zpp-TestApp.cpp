@@ -346,6 +346,18 @@ TEST(Extract, ExtractFiles_Test4)
 		++itr;
 	}
 
+	//
+	//  The line below causes an error with Boost 1.60.  
+	//  The directories seem to be read only and all the files are deleted,
+	//  but the directory is not deleted for some reason.
+	//
+	//  It works fine in Test1 and Test2 for some reason...
+	//
+	//  The temporary workaround is to delete the directory by hand if needed.
+	//
+	//  I noticed that del /S /Q tmp does not work in Windows 10 either, and that may be the problem.
+	//
+
 	// Get rid of our temp directory
 	boost::filesystem::remove_all(TEMPDIR);
 }
