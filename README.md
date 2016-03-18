@@ -102,7 +102,7 @@ catch (SevenZip::SevenZipException& ex)
 
 In order to compile the tests, the following requirements must be available:
 
-- Install Boost v1.59.0 binaries into $(SolutionDir)\\..\boost_1_59_0\ from http://www.boost.org
+- Install Boost v1.60.0 binaries into $(SolutionDir)\\..\boost_1_60_0\ from http://www.boost.org
 - Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/keithjjones/googletest.git
   - Go into the googletest directory
   - Make directory ```build```
@@ -117,6 +117,8 @@ The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
 
 The extractor can have issues with relative paths.  To be sure it works correctly, feed it
 a full path.
+
+There is a bug in the testing program.  The issue has been logged on @keithjjones repository.
 
 ## Contributing
 
