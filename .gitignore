@@ -10,6 +10,7 @@
 *.pch
 *.idb
 *.opensdf
+*.db
 
 # Visual Studio Files
 *.opendb
