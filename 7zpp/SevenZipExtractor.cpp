@@ -23,34 +23,47 @@ namespace SevenZip
 	{
 	}
 
-	bool SevenZipExtractor::ExtractArchive( const TString& destDirectory, ProgressCallback* callback )
-	{
-		CComPtr< IStream > fileStream = FileSys::OpenFileToRead( m_archivePath );
 
-		if ( fileStream == NULL )
+	bool SevenZipExtractor::ExtractArchive(const TString& destDirectory, ProgressCallback* callback)
+	{
+		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
+
+		if (fileStream == NULL)
 		{
 			return false;	//Could not open archive
 		}
 
-		return ExtractArchive( fileStream, destDirectory, callback);
+		return ExtractFilesFromArchive(fileStream, NULL, -1, destDirectory, callback);
 	}
 
-	bool SevenZipExtractor::ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& destDirectory, ProgressCallback* callback)
+	bool SevenZipExtractor::ExtractFilesFromArchive(const UInt32* fileIndices, const UInt32 numberFiles, const TString & destDirectory, ProgressCallback * callback)
 	{
-		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader( m_library, m_compressionFormat );
-		CComPtr< InStreamWrapper > inFile = new InStreamWrapper( archiveStream );
+		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
+
+		if (fileStream == NULL)
+		{
+			return false;	//Could not open archive
+		}
+
+		return ExtractFilesFromArchive(fileStream, fileIndices, numberFiles, destDirectory, callback);
+	}
+
+	bool SevenZipExtractor::ExtractFilesFromArchive(const CComPtr<IStream>& archiveStream, const UInt32* filesIndices, const UInt32 numberFiles, const TString& destDirectory, ProgressCallback* callback)
+	{
+		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_compressionFormat);
+		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(archiveStream);
 		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
 
-		HRESULT hr = archive->Open( inFile, 0, openCallback );
-		if ( hr != S_OK )
+		HRESULT hr = archive->Open(inFile, 0, openCallback);
+		if (hr != S_OK)
 		{
 			return false;	//Open archive error
 		}
 
-		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, m_archivePath, callback );
+		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback(archive, destDirectory, m_archivePath, callback);
 
-		hr = archive->Extract( NULL, -1, false, extractCallback );
-		if ( hr != S_OK ) // returning S_FALSE also indicates error
+		hr = archive->Extract(filesIndices, numberFiles, false, extractCallback);
+		if (hr != S_OK) // returning S_FALSE also indicates error
 		{
 			return false;	//Extract archive error
 		}
@@ -59,8 +72,7 @@ namespace SevenZip
 		{
 			callback->OnDone(m_archivePath);
 		}
-		archive->Close();		
+		archive->Close();
 		return true;
 	}
-
 }
