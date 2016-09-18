@@ -17,8 +17,9 @@ namespace SevenZip
 		virtual ~SevenZipExtractor();
 
 		virtual bool ExtractArchive( const TString& directory, ProgressCallback* callback);
+		virtual bool ExtractFilesFromArchive(const unsigned int* fileIndices, const unsigned int numberFiles, const TString& directory, ProgressCallback* callback);
 
 	private:
-		bool ExtractArchive( const CComPtr< IStream >& archiveStream, const TString& directory, ProgressCallback* callback);
+		bool ExtractFilesFromArchive(const CComPtr<IStream>& archiveStream, const unsigned int* fileIndices, const unsigned int numberFiles, const TString& directory, ProgressCallback* callback);
 	};
 }
