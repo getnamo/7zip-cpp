@@ -114,6 +114,19 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 		return ex.Error();
 	}
 
+	// Replace invalid characters
+	for (unsigned iLetter = 0; iLetter < m_relPath.length(); iLetter++)
+	{
+		wchar_t c = m_relPath[iLetter];
+		if (
+			c == ':' || c == '*' || c == '?' || c < 0x20 || c == '<' || c == '>' || c == '|' || c == '"'
+			|| c == '/'
+			|| c == WCHAR_PATH_SEPARATOR)
+		{
+			m_relPath.replace(iLetter, 1, L"_");
+		}
+	}
+
 	// TODO: m_directory could be a relative path
 	m_absPath = FileSys::AppendPath( m_directory, m_relPath );
 
