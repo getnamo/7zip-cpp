@@ -5,6 +5,7 @@
 
 #include <7zip/Archive/IArchive.h>
 #include <7zip/IPassword.h>
+#include <7zip/UI/Common/UpdateCallback.h>
 
 #include "ProgressCallback.h"
 
@@ -52,6 +53,9 @@ namespace intl
 		// IProgress
 		STDMETHOD(SetTotal)( UInt64 size );
 		STDMETHOD(SetCompleted)( const UInt64* completeValue );
+		
+		// Early exit, this is not part of any interface
+		STDMETHOD(CheckBreak)();
 
 		// IArchiveExtractCallback
 		STDMETHOD(GetStream)( UInt32 index, ISequentialOutStream** outStream, Int32 askExtractMode );
