@@ -37,6 +37,9 @@ namespace intl
 		STDMETHOD(SetTotal)( UInt64 size );
 		STDMETHOD(SetCompleted)( const UInt64* completeValue );
 
+		// Early exit, this is not part of any interface
+		STDMETHOD(CheckBreak)();
+
 		// IArchiveUpdateCallback
 		STDMETHOD(GetUpdateItemInfo)( UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive );
 		STDMETHOD(GetProperty)( UInt32 index, PROPID propID, PROPVARIANT* value );

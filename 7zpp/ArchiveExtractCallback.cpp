@@ -77,7 +77,7 @@ STDMETHODIMP ArchiveExtractCallback::SetTotal( UInt64 size )
 	{
 		m_callback->OnStartWithTotal(m_archivePath, size);
 	}
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
@@ -93,6 +93,16 @@ STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 		//Don't call this directly, it will be called per file which is more consistent across archive types
 		//TODO: incorporate better progress tracking
 		//m_callback->OnProgress(m_absPath, *completeValue);
+	}
+	return CheckBreak();
+}
+
+STDMETHODIMP ArchiveExtractCallback::CheckBreak()
+{
+	if (m_callback != nullptr)
+	{
+		// Abort if OnCheckBreak returns true;
+		return m_callback->OnCheckBreak() ? E_ABORT : S_OK;
 	}
 	return S_OK;
 }
@@ -155,7 +165,7 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 	CComPtr< OutStreamWrapper > wrapperStream = new OutStreamWrapper( fileStream );
 	*outStream = wrapperStream.Detach();
 
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveExtractCallback::PrepareOperation( Int32 askExtractMode )
@@ -168,7 +178,7 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 	if ( m_absPath.empty() )
 	{
 		EmitDoneCallback();
-		return S_OK;
+		return CheckBreak();
 	}
 
 	if ( m_hasModifiedTime )
@@ -187,7 +197,7 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 	}
 
 	EmitFileDoneCallback(m_absPath);
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveExtractCallback::CryptoGetTextPassword( BSTR* password )
