@@ -130,9 +130,15 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 	{
 		wchar_t c = m_relPath[iLetter];
 		if (
-			c == ':' || c == '*' || c == '?' || c < 0x20 || c == '<' || c == '>' || c == '|' || c == '"'
-			|| c == '/'
-			|| c == WCHAR_PATH_SEPARATOR)
+			c == ':' 
+			|| c == '*' 
+			|| c == '?' 
+			|| c < 0x20 // printable character range starts at 20
+			|| c == '<' 
+			|| c == '>' 
+			|| c == '|' 
+			|| c == '"'
+			|| c == '/')
 		{
 			m_relPath.replace(iLetter, 1, L"_");
 		}
