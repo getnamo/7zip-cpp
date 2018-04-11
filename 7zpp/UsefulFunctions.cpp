@@ -248,7 +248,7 @@ namespace SevenZip
 
 		// If you get here, the format is unknown
 		archiveCompressionFormat = CompressionFormat::Unknown;
-		return true;
+		return false;
 	}
 
 	const TString UsefulFunctions::EndingFromCompressionFormat(const CompressionFormatEnum& format)
