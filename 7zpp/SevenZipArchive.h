@@ -27,6 +27,7 @@ namespace SevenZip
 		virtual size_t GetNumberOfItems();
 		virtual std::vector<std::wstring> GetItemsNames();
 		virtual std::vector<size_t>  GetOrigSizes();
+		virtual void SetPassword(const TString& password) { m_password = password; }
 
 	protected:
 		bool m_ReadMetadata = false;
@@ -38,6 +39,7 @@ namespace SevenZip
 		size_t m_numberofitems = 0;
 		std::vector<std::wstring> m_itemnames;
 		std::vector<size_t> m_origsizes;
+		TString m_password;
 
 	private:
 		bool pri_GetNumberOfItems();

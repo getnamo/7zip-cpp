@@ -16,15 +16,12 @@ namespace intl
 const TString EmptyFileAlias = _T( "[Content]" );
 
 
-ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback)
+ArchiveExtractCallback::ArchiveExtractCallback(const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback, const TString& password)
 	: m_refCount(0)
-	, m_archiveHandler( archiveHandler )
-	, m_directory( directory )
-	, m_callback( callback )
-{
-}
-
-ArchiveExtractCallback::~ArchiveExtractCallback()
+	, m_archiveHandler(archiveHandler)
+	, m_directory(directory)
+	, m_callback(callback)
+	, m_password(password)
 {
 }
 
@@ -87,7 +84,7 @@ STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 	- For ZIP format SetCompleted only called once per 1000 files in central directory and once per 100 in local ones.
 	- For 7Z format SetCompleted is never called.
 	*/
-	if (m_callback != nullptr) 
+	if (m_callback != nullptr)
 	{
 		//Don't call this directly, it will be called per file which is more consistent across archive types
 		//TODO: incorporate better progress tracking
@@ -130,7 +127,7 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 
 	TString absDir = FileSys::GetPath( m_absPath );
 	FileSys::CreateDirectoryTree( absDir );
-	
+
 	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite( m_absPath );
 	if ( fileStream == NULL )
 	{
@@ -178,8 +175,10 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 
 STDMETHODIMP ArchiveExtractCallback::CryptoGetTextPassword( BSTR* password )
 {
-	// TODO: support passwords
-	return E_ABORT;
+	if (!m_password.empty())
+		*password = SysAllocString(m_password.c_str());
+
+	return S_OK;
 }
 
 void ArchiveExtractCallback::GetPropertyFilePath( UInt32 index )
@@ -298,7 +297,7 @@ void ArchiveExtractCallback::GetPropertySize( UInt32 index )
 	case VT_EMPTY:
 		m_hasNewFileSize = false;
 		return;
-	case VT_UI1: 
+	case VT_UI1:
 		m_newFileSize = prop.bVal;
 		break;
 	case VT_UI2:

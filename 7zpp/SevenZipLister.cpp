@@ -23,7 +23,7 @@ namespace SevenZip
 	{
 	}
 
-	bool SevenZipLister::ListArchive(ListCallback* callback)
+	bool SevenZipLister::ListArchive(ListCallback* callback, const TString& password)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
 		if (fileStream == NULL)
@@ -32,14 +32,14 @@ namespace SevenZip
 			//throw SevenZipException( StrFmt( _T( "Could not open archive \"%s\"" ), m_archivePath.c_str() ) );
 		}
 
-		return ListArchive(fileStream, callback);
+		return ListArchive(fileStream, callback, password);
 	}
 
-	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback)
+	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback, const TString& password)
 	{
 		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_compressionFormat);
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(archiveStream);
-		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(password);
 
 		HRESULT hr = archive->Open(inFile, 0, openCallback);
 		if (hr != S_OK)

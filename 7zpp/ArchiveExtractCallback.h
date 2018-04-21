@@ -23,6 +23,8 @@ namespace intl
 		CComPtr< IInArchive > m_archiveHandler;
 		TString m_directory;
 
+		TString m_password;
+
 		TString m_relPath;
 		TString m_absPath;
 		bool m_isDir;
@@ -40,8 +42,8 @@ namespace intl
 
 	public:
 
-		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback );
-		virtual ~ArchiveExtractCallback();
+		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback, const TString& password);
+		virtual ~ArchiveExtractCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );
 		STDMETHOD_(ULONG, AddRef)();

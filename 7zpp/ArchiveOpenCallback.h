@@ -16,11 +16,12 @@ namespace intl
 	private:
 
 		long m_refCount;
+		TString m_password;
 
 	public:
 
-		ArchiveOpenCallback();
-		virtual ~ArchiveOpenCallback();
+		ArchiveOpenCallback(const TString& password);
+		virtual ~ArchiveOpenCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );
 		STDMETHOD_(ULONG, AddRef)();

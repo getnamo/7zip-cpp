@@ -37,13 +37,13 @@ namespace SevenZip
 
 		void ClearList() { m_fileList.clear(); }
 		void UseAbsolutePaths(bool absolute) { m_absolutePath = absolute; }
-		bool CheckValidFormat();
+		bool CheckValidFormat() const;
 
 	private:
 		std::vector< intl::FilePathInfo > m_fileList; // list of files to compress
 		bool m_absolutePath;
-		CComPtr< IStream > OpenArchiveStream();
+		CComPtr< IStream > OpenArchiveStream() const;
 		bool AddFilesToList(const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion);
-		bool SetCompressionProperties( IUnknown* outArchive );
+		bool SetCompressionProperties(IUnknown* outArchive) const;
 	};
 }

@@ -76,7 +76,7 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 	m_archivePath += UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat);
 
 	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper(OpenArchiveStream());
-	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_fileList, m_archivePath, callback);
+	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_fileList, m_archivePath, callback, m_password);
 
 	HRESULT hr = archiver->UpdateItems(outFile, (UInt32)m_fileList.size(), updateCallback);
 
@@ -89,7 +89,7 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 	return (hr == S_OK) ? true : false;
 }
 
-bool SevenZipCompressor::CheckValidFormat()
+bool SevenZipCompressor::CheckValidFormat() const
 {
 	if (m_fileList.size() > 1 &&
 		(   m_compressionFormat == SevenZip::CompressionFormat::BZip2
@@ -103,7 +103,7 @@ bool SevenZipCompressor::CheckValidFormat()
 	return true;
 }
 
-CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
+CComPtr< IStream > SevenZipCompressor::OpenArchiveStream() const
 {
 	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite(m_archivePath);
 	if ( fileStream == NULL )
@@ -136,7 +136,7 @@ bool SevenZipCompressor::AddFilesToList( const TString& directory, const TString
 	return true;
 }
 
-bool SevenZipCompressor::SetCompressionProperties( IUnknown* outArchive )
+bool SevenZipCompressor::SetCompressionProperties(IUnknown* outArchive) const
 {
 	if (!outArchive)
 	{

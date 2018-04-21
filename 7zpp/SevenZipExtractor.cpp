@@ -39,7 +39,7 @@ namespace SevenZip
 	{
 		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader( m_library, m_compressionFormat );
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper( archiveStream );
-		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(m_password);
 
 		HRESULT hr = archive->Open( inFile, 0, openCallback );
 		if ( hr != S_OK )
@@ -47,7 +47,7 @@ namespace SevenZip
 			return false;	//Open archive error
 		}
 
-		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, callback );
+		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback(archive, destDirectory, callback, m_password);
 
 		hr = archive->Extract( NULL, -1, false, extractCallback );
 		if ( hr != S_OK ) // returning S_FALSE also indicates error
@@ -59,7 +59,7 @@ namespace SevenZip
 		{
 			callback->OnDone(m_archivePath);
 		}
-		archive->Close();		
+		archive->Close();
 		return true;
 	}
 

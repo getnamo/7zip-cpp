@@ -28,6 +28,8 @@ TEST(Init, LoadDLL)
 	bool result = lib.Load(SevenZip::TString(DLL_PATH));
 
 	ASSERT_EQ(true, result);
+
+	boost::filesystem::remove_all(TEMPDIR);
 }
 
 //
@@ -129,8 +131,8 @@ TEST(Extract, ExtractFiles_Test1)
 	// Look for the actual files
 	//
 	int i = 0;
-	boost::filesystem::recursive_directory_iterator itr(TEMPDIR);
-	while (itr != boost::filesystem::recursive_directory_iterator())
+	boost::filesystem::recursive_directory_iterator itr(TEMPDIR), end;
+	while (itr != end && i < expecteditemnames.size())
 	{
 		boost::filesystem::path myPath = itr->path().leaf();
 		EXPECT_EQ(expecteditemnames[i], myPath.wstring());
@@ -362,7 +364,7 @@ TEST(Extract, ExtractFiles_Test4)
 	//
 
 	// Get rid of our temp directory
-	boost::filesystem::remove_all(TEMPDIR);
+	//boost::filesystem::remove_all(TEMPDIR);
 }
 
 //
@@ -382,8 +384,12 @@ TEST(Compress, CompressFiles_Test1)
 	SevenZip::TString myArchive(ARCHIVE_NAME);
 	SevenZip::TString myDest(TEMPDIR);
 
+	boost::filesystem::remove_all(TEMPDIR);
+	boost::filesystem::create_directory(TEMPDIR);
+
 	SevenZip::SevenZipCompressor compressor(lib, myArchive);
 	compressor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+	compressor.SetPassword(_T("test"));
 	bool addResult = compressor.AddFile(TESTCOMPRESSTESTFILE1);
 	EXPECT_EQ(addResult, true);
 	addResult = compressor.AddFiles(TESTCOMPRESSTESTFILE2, _T("*.cpp"), false);
@@ -462,7 +468,7 @@ TEST(List, ListFiles_Test1)
 
 	SevenZip::SevenZipLister lister(lib, myArchive);
 	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-	result = lister.ListArchive((SevenZip::ListCallback *)&myListCallBack);
+	result = lister.ListArchive((SevenZip::ListCallback *)&myListCallBack, _T(""));
 
 	EXPECT_EQ(true, result);
 }

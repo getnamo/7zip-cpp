@@ -12,15 +12,12 @@ namespace SevenZip
 namespace intl
 {
 
-ArchiveUpdateCallback::ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback)
-	: m_refCount( 0 )
-	, m_filePaths( filePaths )
+ArchiveUpdateCallback::ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback, const TString& password)
+	: m_refCount(0)
+	, m_filePaths(filePaths)
 	, m_callback(callback)
 	, m_outputPath(outputFilePath)
-{
-}
-
-ArchiveUpdateCallback::~ArchiveUpdateCallback()
+	, m_password(password)
 {
 }
 
@@ -176,10 +173,12 @@ STDMETHODIMP ArchiveUpdateCallback::SetOperationResult( Int32 operationResult )
 
 STDMETHODIMP ArchiveUpdateCallback::CryptoGetTextPassword2( Int32* passwordIsDefined, BSTR* password )
 {
-	// TODO: support passwords
-	*passwordIsDefined = 0;
-	*password = SysAllocString( L"" );
-	return *password != 0 ? S_OK : E_OUTOFMEMORY;
+	if (!m_password.empty())
+		*password = SysAllocString(m_password.c_str());
+
+	*passwordIsDefined = m_password.empty() ? 0 : 1;
+
+	return S_OK;
 }
 
 STDMETHODIMP ArchiveUpdateCallback::SetRatioInfo( const UInt64* inSize, const UInt64* outSize )
