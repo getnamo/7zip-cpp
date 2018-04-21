@@ -25,49 +25,45 @@ SevenZipCompressor::~SevenZipCompressor()
 {
 }
 
-bool SevenZipCompressor::CompressDirectory( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
-{	
-	return FindAndCompressFiles( 
-			directory, 
-			SearchPatternAllFiles, 
-			FileSys::GetPath( directory ), 
-		includeSubdirs,
-		callback);
-}
-
-bool SevenZipCompressor::CompressFiles( const TString& directory, const TString& searchFilter, ProgressCallback* callback, bool includeSubdirs )
+bool SevenZipCompressor::CompressDirectory( const TString& directory, bool includeSubdirs /*= true*/)
 {
-	return FindAndCompressFiles( 
-			directory, 
-			searchFilter, 
-			directory, 
-			includeSubdirs,
-			callback);
+	return AddFilesToList(directory, SearchPatternAllFiles, FileSys::GetPath( directory ), includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressAllFiles( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
+bool SevenZipCompressor::CompressFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs /*= true*/)
 {
-	return FindAndCompressFiles( 
-			directory, 
-			SearchPatternAllFiles, 
-			directory, 
-			includeSubdirs,
-			callback);
+	return AddFilesToList(directory, searchFilter, directory, includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressFile( const TString& filePath, ProgressCallback* callback)
+bool SevenZipCompressor::CompressAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
+{
+	return AddFilesToList(directory, SearchPatternAllFiles, directory, includeSubdirs);
+}
+
+bool SevenZipCompressor::CompressFile( const TString& filePath)
 {
 	std::vector< FilePathInfo > files = FileSys::GetFile( filePath );
 
 	if ( files.empty() )
 	{
 		return false;
-		//throw SevenZipException( StrFmt( _T( "File \"%s\" does not exist" ), filePath.c_str() ) );
 	}
 
 	m_outputPath = filePath;
 
-	return CompressFilesToArchive( TString(), files, callback );
+	m_fileList.insert(m_fileList.end(), files.begin(), files.end());
+
+	return true;
+}
+
+bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
+{
+	if (m_fileList.empty())
+	{
+		return false;
+	}
+
+	return CompressFilesToArchive(TString(), m_fileList, callback);
 }
 
 CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
@@ -75,19 +71,18 @@ CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
 	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite( m_archivePath );
 	if ( fileStream == NULL )
 	{
-		return NULL;
-		//throw SevenZipException( StrFmt( _T( "Could not create archive \"%s\"" ), m_archivePath.c_str() ) );
+		return nullptr;
 	}
 	return fileStream;
 }
 
-bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion, ProgressCallback* callback )
+bool SevenZipCompressor::AddFilesToList( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion)
 {
 	if ( !FileSys::DirectoryExists( directory ) )
 	{
 		return false;	//Directory does not exist
 	}
-	
+
 	if ( FileSys::IsDirectoryEmptyRecursive( directory ) )
 	{
 		return false;	//Directory \"%s\" is empty" ), directory.c_str()
@@ -96,13 +91,25 @@ bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const T
 	m_outputPath = directory;
 
 	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
-	return CompressFilesToArchive( pathPrefix, files, callback );
+	if (files.empty())
+	{
+		return false;
+	}
+
+	m_fileList.insert(m_fileList.end(), files.begin(), files.end());
+
+	return true;
 }
 
-bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths,
-	ProgressCallback* progressCallback)
+bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths, ProgressCallback* progressCallback /*= nullptr*/)
 {
 	CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
+	if (!archiver)
+	{
+		// compression not supported
+		return false;
+	}
+
 	SetCompressionProperties( archiver );
 
 	//Set full outputFilePath including ending
@@ -118,32 +125,32 @@ bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const
 		progressCallback->OnDone(m_outputPath);	//Todo: give full path support
 	}
 
-	if ( hr != S_OK ) // returning S_FALSE also indicates error
-	{
-		return false;
-	}
-	return true;
+	// returning S_FALSE also indicates error
+	return (hr == S_OK) ? true : false;
 }
 
 bool SevenZipCompressor::SetCompressionProperties( IUnknown* outArchive )
 {
+	if (!outArchive)
+	{
+		return false;
+	}
+
 	const size_t numProps = 1;
 	const wchar_t* names[numProps] = { L"x" };
 	CPropVariant values[numProps] = { static_cast< UInt32 >( m_compressionLevel.GetValue() ) };
 
 	CComPtr< ISetProperties > setter;
 	outArchive->QueryInterface( IID_ISetProperties, reinterpret_cast< void** >( &setter ) );
-	if ( setter == NULL )
+	if ( setter == nullptr )
 	{
 		return false;	//Archive does not support setting compression properties
 	}
 
 	HRESULT hr = setter->SetProperties( names, values, numProps );
-	if ( hr != S_OK )
-	{
-		return false;	//Setting compression properties
-	}
-	return true;
+
+	// returning S_FALSE also indicates error
+	return (hr == S_OK) ? true : false;
 }
 
 }
