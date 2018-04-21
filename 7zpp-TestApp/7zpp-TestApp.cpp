@@ -11,8 +11,7 @@
 
 #define DLL_PATH SOLUTIONDIR L"Exe\\x64\\7z.dll"
 #define TEMPDIR SOLUTIONDIR L"Exe\\x64\\tmp"
-#define ARCHIVE_NAME1 SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive.zip"
-#define ARCHIVE_NAME2 SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive.7z"
+#define ARCHIVE_NAME SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive"
 #define TESTEXTRACTTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\files.zip"
 #define TESTEXTRACTTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt.gz"
 #define TESTEXTRACTTESTFILE3 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt"
@@ -380,17 +379,17 @@ TEST(Compress, CompressFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(ARCHIVE_NAME1);
+	SevenZip::TString myArchive(ARCHIVE_NAME);
 	SevenZip::TString myDest(TEMPDIR);
 
 	SevenZip::SevenZipCompressor compressor(lib, myArchive);
 	compressor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-	bool addResult = compressor.CompressFile(TESTCOMPRESSTESTFILE1);
+	bool addResult = compressor.AddFile(TESTCOMPRESSTESTFILE1);
 	EXPECT_EQ(addResult, true);
-	addResult = compressor.CompressFiles(TESTCOMPRESSTESTFILE2, _T("*.cpp"), false);
+	addResult = compressor.AddFiles(TESTCOMPRESSTESTFILE2, _T("*.cpp"), false);
 	EXPECT_EQ(addResult, false);
 
-	addResult = compressor.CompressFiles(TESTCOMPRESSTESTFILE2, _T("*.cpp"), true);
+	addResult = compressor.AddFiles(TESTCOMPRESSTESTFILE2, _T("*.cpp"), true);
 	EXPECT_EQ(addResult, true);
 
 	bool compressResult = compressor.DoCompress();
@@ -411,14 +410,14 @@ TEST(Compress, CompressFiles_Test2)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(ARCHIVE_NAME2);
+	SevenZip::TString myArchive(ARCHIVE_NAME);
 	SevenZip::TString myDest(TEMPDIR);
 
 	SevenZip::SevenZipCompressor compressor(lib, myArchive);
 	compressor.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
-	bool addResult = compressor.CompressFile(TESTCOMPRESSTESTFILE1);
+	bool addResult = compressor.AddFile(TESTCOMPRESSTESTFILE1);
 	EXPECT_EQ(addResult, true);
-	bool addDirResult = compressor.CompressDirectory(TESTCOMPRESSTESTFILE2, true);
+	bool addDirResult = compressor.AddDirectory(TESTCOMPRESSTESTFILE2, true);
 	EXPECT_EQ(addDirResult, true);
 
 	bool compressResult = compressor.DoCompress();
