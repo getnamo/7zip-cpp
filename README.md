@@ -1,6 +1,7 @@
 # 7zip-cpp
 Fork of SevenZip++ for VS2017
 Support compress file list
+Uses lates lzma1801 SDK
 
 From:
 [http://bitbucket.org/cmcnab/sevenzip/wiki/Home](http://bitbucket.org/cmcnab/sevenzip/wiki/Home)
@@ -30,7 +31,9 @@ Then create and use a compressor:
 ```cpp
 SevenZip::SevenZipCompressor compressor(lib, archiveName);
 compressor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-compressor.CompressDirectory(targetDir);
+compressor.UseAbsolutePaths(false);
+compressor.AddFile(targetFile);
+compressor.AddDirectory(targetDir);
 compressor.DoCompress(callbackfunc);
 ```
 
