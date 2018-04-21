@@ -217,6 +217,8 @@ namespace SevenZip
 		myAvailableFormats.push_back(CompressionFormat::Lzma86);
 		myAvailableFormats.push_back(CompressionFormat::Cab);
 		myAvailableFormats.push_back(CompressionFormat::Iso);
+		myAvailableFormats.push_back(CompressionFormat::Arj);
+		myAvailableFormats.push_back(CompressionFormat::XZ);
 
 		// Check each format for one that works
 		for (size_t i = 0; i < myAvailableFormats.size(); i++)
