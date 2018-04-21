@@ -22,33 +22,19 @@ SevenZipCompressor::SevenZipCompressor(const SevenZipLibrary& library, const TSt
 {
 }
 
-SevenZipCompressor::~SevenZipCompressor()
-{
-}
-
-
 bool SevenZipCompressor::AddDirectory( const TString& directory, bool includeSubdirs /*= true*/)
 {
-	if(m_absolutePath)
-		return AddFilesToList(directory, SearchPatternAllFiles, _T(""), includeSubdirs);
-	else
-		return AddFilesToList(directory, SearchPatternAllFiles, FileSys::GetPath(directory), includeSubdirs);
+	return AddFilesToList(directory, SearchPatternAllFiles, m_absolutePath ? _T("") : FileSys::GetPath(directory), includeSubdirs);
 }
 
 bool SevenZipCompressor::AddFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs /*= true*/)
 {
-	if(m_absolutePath)
-		return AddFilesToList(directory, searchFilter, _T(""), includeSubdirs);
-	else
-		return AddFilesToList(directory, searchFilter, directory, includeSubdirs);
+	return AddFilesToList(directory, searchFilter, m_absolutePath ? _T("") : directory, includeSubdirs);
 }
 
 bool SevenZipCompressor::AddAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
 {
-	if(m_absolutePath)
-		return AddFilesToList(directory, SearchPatternAllFiles, _T(""), includeSubdirs);
-	else
-		return AddFilesToList(directory, SearchPatternAllFiles, directory, includeSubdirs);
+	return AddFilesToList(directory, SearchPatternAllFiles, m_absolutePath ? _T("") : directory, includeSubdirs);
 }
 
 bool SevenZipCompressor::AddFile(const TString& filePath)
