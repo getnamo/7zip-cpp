@@ -20,12 +20,15 @@ namespace SevenZip
 			Iso,
 			Cab,
 			Lzma,
-			Lzma86
+			Lzma86,
+			Arj,
+			XZ,
+
 		};
-	
+
 		typedef intl::EnumerationDefinitionNoStrings _Definition;
 		typedef intl::EnumerationValue< _Enum, _Definition, Unknown > _Value;
 	};
-	
+
 	typedef CompressionFormat::_Value CompressionFormatEnum;
 }

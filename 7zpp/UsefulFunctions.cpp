@@ -87,6 +87,11 @@ namespace SevenZip
 		}
 
 		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(library, format);
+		if (!archive)
+		{
+			return false;
+		}
+
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
 		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
 
@@ -111,7 +116,7 @@ namespace SevenZip
 	}
 
 	bool UsefulFunctions::GetItemsNames(const SevenZipLibrary & library, const TString & archivePath,
-		CompressionFormatEnum &format, size_t & numberofitems, 
+		CompressionFormatEnum &format, size_t & numberofitems,
 		std::vector<std::wstring> & itemnames, std::vector<size_t> & origsizes)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
@@ -123,6 +128,11 @@ namespace SevenZip
 		}
 
 		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(library, format);
+		if (!archive)
+		{
+			return false;
+		}
+
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
 		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
 
@@ -183,7 +193,7 @@ namespace SevenZip
 		return true;
 	}
 
-	bool UsefulFunctions::DetectCompressionFormat(const SevenZipLibrary & library, const TString & archivePath, 
+	bool UsefulFunctions::DetectCompressionFormat(const SevenZipLibrary & library, const TString & archivePath,
 		CompressionFormatEnum & archiveCompressionFormat)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
@@ -214,6 +224,8 @@ namespace SevenZip
 			archiveCompressionFormat = myAvailableFormats[i];
 
 			CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(library, archiveCompressionFormat);
+			if (!archive) continue;
+
 			CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
 			CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
 
@@ -283,6 +295,12 @@ namespace SevenZip
 			break;
 		case CompressionFormat::Iso:
 			return _T(".iso");
+			break;
+		case CompressionFormat::Arj:
+			return _T(".arj");
+			break;
+		case CompressionFormat::XZ:
+			return _T(".xz");
 			break;
 		}
 		return _T(".zip");
