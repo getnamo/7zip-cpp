@@ -112,7 +112,7 @@ namespace SevenZip
 
 	bool UsefulFunctions::GetItemsNames(const SevenZipLibrary & library, const TString & archivePath,
 		CompressionFormatEnum &format, size_t & numberofitems, 
-		std::vector<TString> & itemnames, std::vector<size_t> & origsizes)
+		std::vector<std::wstring> & itemnames, std::vector<size_t> & origsizes)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
 
@@ -173,8 +173,7 @@ namespace SevenZip
 
 				//valid string? pass back the found value and call the callback function if set
 				if (prop.vt == VT_BSTR) {
-					WCHAR* path = prop.bstrVal;
-					std::wstring mypath(path);
+					std::wstring mypath(prop.bstrVal);
 					itemnames[i] = mypath;
 				}
 			}
@@ -210,7 +209,7 @@ namespace SevenZip
 		myAvailableFormats.push_back(CompressionFormat::Iso);
 
 		// Check each format for one that works
-		for (int i = 0; i < myAvailableFormats.size(); i++)
+		for (size_t i = 0; i < myAvailableFormats.size(); i++)
 		{
 			archiveCompressionFormat = myAvailableFormats[i];
 
@@ -256,37 +255,37 @@ namespace SevenZip
 		switch (format)
 		{
 		case CompressionFormat::Zip:
-			return L".zip";
+			return _T(".zip");
 			break;
 		case CompressionFormat::SevenZip:
-			return L".7z";
+			return _T(".7z");
 			break;
 		case CompressionFormat::Rar:
-			return L".rar";
+			return _T(".rar");
 			break;
 		case CompressionFormat::GZip:
-			return L".gz";
+			return _T(".gz");
 			break;
 		case CompressionFormat::BZip2:
-			return L".bz";
+			return _T(".bz");
 			break;
 		case CompressionFormat::Tar:
-			return L".tar";
+			return _T(".tar");
 			break;
 		case CompressionFormat::Lzma:
-			return L".lzma";
+			return _T(".lzma");
 			break;
 		case CompressionFormat::Lzma86:
-			return L".lzma86";
+			return _T(".lzma86");
 			break;
 		case CompressionFormat::Cab:
-			return L".cab";
+			return _T(".cab");
 			break;
 		case CompressionFormat::Iso:
-			return L".iso";
+			return _T(".iso");
 			break;
 		}
-		return L".zip";
+		return _T(".zip");
 	}
 
 }

@@ -25,7 +25,7 @@ namespace SevenZip
 		virtual bool DetectCompressionFormat();
 
 		virtual size_t GetNumberOfItems();
-		virtual std::vector<TString> GetItemsNames();
+		virtual std::vector<std::wstring> GetItemsNames();
 		virtual std::vector<size_t>  GetOrigSizes();
 
 	protected:
@@ -36,7 +36,7 @@ namespace SevenZip
 		CompressionFormatEnum m_compressionFormat;
 		CompressionLevelEnum m_compressionLevel;
 		size_t m_numberofitems = 0;
-		std::vector<TString> m_itemnames;
+		std::vector<std::wstring> m_itemnames;
 		std::vector<size_t> m_origsizes;
 
 	private:
