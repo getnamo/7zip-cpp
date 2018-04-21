@@ -23,8 +23,8 @@ namespace intl
 
 		static bool CreateDirectoryTree( const TString& path );
 
-		static std::vector< FilePathInfo > GetFile( const TString& filePathOrName );
-		static std::vector< FilePathInfo > GetFilesInDirectory( const TString& directory, const TString& searchPattern, bool recursive );
+		static std::vector< FilePathInfo > GetFile(const TString& filePathOrName, bool absolutePath = false);
+		static std::vector< FilePathInfo > GetFilesInDirectory( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursive );
 
 		static CComPtr< IStream > OpenFileToRead( const TString& filePath );
 		static CComPtr< IStream > OpenFileToWrite( const TString& filePath );

@@ -16,34 +16,44 @@ using namespace intl;
 
 const TString SearchPatternAllFiles = _T( "*" );
 
-SevenZipCompressor::SevenZipCompressor(const SevenZipLibrary& library, const TString& archivePath, const TString& basePath)
+SevenZipCompressor::SevenZipCompressor(const SevenZipLibrary& library, const TString& archivePath)
 	: SevenZipArchive(library, archivePath)
+	, m_absolutePath(false)
 {
-	m_basePath = basePath;
 }
 
 SevenZipCompressor::~SevenZipCompressor()
 {
 }
 
-bool SevenZipCompressor::CompressDirectory( const TString& directory, bool includeSubdirs /*= true*/)
+
+bool SevenZipCompressor::AddDirectory( const TString& directory, bool includeSubdirs /*= true*/)
 {
-	return AddFilesToList(directory, SearchPatternAllFiles, FileSys::GetPath( directory ), includeSubdirs);
+	if(m_absolutePath)
+		return AddFilesToList(directory, SearchPatternAllFiles, _T(""), includeSubdirs);
+	else
+		return AddFilesToList(directory, SearchPatternAllFiles, FileSys::GetPath(directory), includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs /*= true*/)
+bool SevenZipCompressor::AddFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs /*= true*/)
 {
-	return AddFilesToList(directory, searchFilter, directory, includeSubdirs);
+	if(m_absolutePath)
+		return AddFilesToList(directory, searchFilter, _T(""), includeSubdirs);
+	else
+		return AddFilesToList(directory, searchFilter, directory, includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
+bool SevenZipCompressor::AddAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
 {
-	return AddFilesToList(directory, SearchPatternAllFiles, directory, includeSubdirs);
+	if(m_absolutePath)
+		return AddFilesToList(directory, SearchPatternAllFiles, _T(""), includeSubdirs);
+	else
+		return AddFilesToList(directory, SearchPatternAllFiles, directory, includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressFile( const TString& filePath)
+bool SevenZipCompressor::AddFile(const TString& filePath)
 {
-	std::vector< FilePathInfo > files = FileSys::GetFile( filePath );
+	std::vector< FilePathInfo > files = FileSys::GetFile(filePath, m_absolutePath);
 
 	if ( files.empty() )
 	{
@@ -62,6 +72,11 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 		return false;
 	}
 
+	if (!CheckValidFormat())
+	{
+		return false;
+	}
+
 	CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
 	if (!archiver)
 	{
@@ -75,7 +90,7 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 	m_archivePath += UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat);
 
 	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper(OpenArchiveStream());
-	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_basePath, m_fileList, m_archivePath, callback);
+	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_fileList, m_archivePath, callback);
 
 	HRESULT hr = archiver->UpdateItems(outFile, (UInt32)m_fileList.size(), updateCallback);
 
@@ -86,6 +101,20 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 
 	// returning S_FALSE also indicates error
 	return (hr == S_OK) ? true : false;
+}
+
+bool SevenZipCompressor::CheckValidFormat()
+{
+	if (m_fileList.size() > 1 &&
+		(   m_compressionFormat == SevenZip::CompressionFormat::BZip2
+		 || m_compressionFormat == SevenZip::CompressionFormat::GZip)
+		)
+	{
+		// Not supported by compressing format
+		return false;
+	}
+
+	return true;
 }
 
 CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
@@ -110,7 +139,7 @@ bool SevenZipCompressor::AddFilesToList( const TString& directory, const TString
 		return false;	//Directory \"%s\" is empty" ), directory.c_str()
 	}
 
-	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
+	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, pathPrefix, recursion );
 	if (files.empty())
 	{
 		return false;

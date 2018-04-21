@@ -12,9 +12,8 @@ namespace SevenZip
 namespace intl
 {
 
-ArchiveUpdateCallback::ArchiveUpdateCallback( const TString& dirPrefix, const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback)
+ArchiveUpdateCallback::ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback)
 	: m_refCount( 0 )
-	, m_dirPrefix( dirPrefix )
 	, m_filePaths( filePaths )
 	, m_callback(callback)
 	, m_outputPath(outputFilePath)
@@ -132,7 +131,7 @@ STDMETHODIMP ArchiveUpdateCallback::GetProperty( UInt32 index, PROPID propID, PR
 	const FilePathInfo& fileInfo = m_filePaths.at( index );
 	switch ( propID )
 	{
-		case kpidPath:		prop = FileSys::ExtractRelativePath( m_dirPrefix, fileInfo.FilePath ).c_str(); break;
+		case kpidPath:		prop = FileSys::ExtractRelativePath(fileInfo.rootPath, fileInfo.FilePath).c_str(); break;
 		case kpidIsDir:		prop = fileInfo.IsDirectory; break;
 		case kpidSize:		prop = fileInfo.Size; break;
 		case kpidAttrib:	prop = fileInfo.Attributes; break;
