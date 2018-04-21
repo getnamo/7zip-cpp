@@ -153,11 +153,18 @@ STDMETHODIMP ArchiveUpdateCallback::GetStream( UInt32 index, ISequentialInStream
 	{
 		return S_OK;
 	}
-
-	CComPtr< IStream > fileStream = FileSys::OpenFileToRead( fileInfo.FilePath );
-	if ( fileStream == NULL )
+	CComPtr< IStream > fileStream;
+	if (fileInfo.memFile)
 	{
-		return HRESULT_FROM_WIN32( GetLastError() );
+
+	}
+	else
+	{
+		fileStream = FileSys::OpenFileToRead(fileInfo.FilePath);
+		if (fileStream == NULL)
+		{
+			return HRESULT_FROM_WIN32(GetLastError());
+		}
 	}
 
 	CComPtr< InStreamWrapper > wrapperStream = new InStreamWrapper( fileStream );

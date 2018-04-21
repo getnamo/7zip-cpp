@@ -107,6 +107,7 @@ bool PathScanner::IsDirectory( const WIN32_FIND_DATA& fdata )
 FilePathInfo PathScanner::ConvertFindInfo( const TString& directory, const TString& pathPrefix, const WIN32_FIND_DATA& fdata )
 {
 	FilePathInfo file;
+	file.memFile		= false;
 	file.rootPath		= pathPrefix;
 	file.FileName		= fdata.cFileName;
 	file.FilePath		= FileSys::AppendPath( directory, file.FileName );

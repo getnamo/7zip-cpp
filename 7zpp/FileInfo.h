@@ -20,6 +20,7 @@ namespace intl
 	{
 		TString		rootPath;
 		TString		FilePath;
+		bool		memFile;
 	};
 }
 }
