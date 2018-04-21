@@ -18,6 +18,7 @@ namespace intl
 
 	struct FilePathInfo : public FileInfo
 	{
+		TString		rootPath;
 		TString		FilePath;
 	};
 }
