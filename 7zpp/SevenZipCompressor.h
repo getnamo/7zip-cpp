@@ -17,7 +17,7 @@ namespace SevenZip
 	{
 	public:
 
-		SevenZipCompressor( const SevenZipLibrary& library, const TString& archivePath );
+		SevenZipCompressor( const SevenZipLibrary& library, const TString& archivePath, const TString& basePath);
 		virtual ~SevenZipCompressor();
 
 		// Includes the directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
@@ -38,12 +38,11 @@ namespace SevenZip
 		void ClearList() { m_fileList.clear(); }
 
 	private:
-		TString m_outputPath;	//the final compression result compression path. Used for tracking in callbacks
+		TString m_basePath;	//the final compression result compression path. Used for tracking in callbacks
 		std::vector< intl::FilePathInfo > m_fileList; // list of files to compress
 
 		CComPtr< IStream > OpenArchiveStream();
 		bool AddFilesToList(const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion);
-		bool CompressFilesToArchive(const TString& pathPrefix, const std::vector< intl::FilePathInfo >& filePaths, ProgressCallback* callback = nullptr);
 		bool SetCompressionProperties( IUnknown* outArchive );
 	};
 }
