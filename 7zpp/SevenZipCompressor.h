@@ -32,6 +32,9 @@ namespace SevenZip
 		virtual bool AddFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs = true);
 		virtual bool AddAllFiles( const TString& directory, bool includeSubdirs = true);
 
+		// Compress just this memory area as the root item in the archive.
+		virtual bool AddMemory(const TString& filePath, void* memPointer, size_t size);
+
 		// Compress list of files
 		virtual bool DoCompress(ProgressCallback* callback = nullptr);
 

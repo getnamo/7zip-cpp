@@ -6,6 +6,7 @@
 #include "OutStreamWrapper.h"
 #include "PropVariant.h"
 #include "UsefulFunctions.h"
+#include <atltime.h>
 
 
 namespace SevenZip
@@ -35,6 +36,23 @@ bool SevenZipCompressor::AddFiles( const TString& directory, const TString& sear
 bool SevenZipCompressor::AddAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
 {
 	return AddFilesToList(directory, SearchPatternAllFiles, m_absolutePath ? _T("") : directory, includeSubdirs);
+}
+
+bool SevenZipCompressor::AddMemory(const TString& filePath, void* memPointer, size_t size)
+{
+	FilePathInfo memFile;
+	memFile.rootPath = FileSys::GetPath(filePath);
+	memFile.FileName = FileSys::GetFileName(filePath);
+	memFile.memFile = true;
+	memFile.memPointer = memPointer;
+	memFile.Size = size;
+	memFile.CreationTime = memFile.LastAccessTime = memFile.LastWriteTime = CFileTime::GetCurrentTime();
+	memFile.IsDirectory = false;
+	memFile.Attributes = FILE_ATTRIBUTE_NORMAL;
+
+	m_fileList.push_back(memFile);
+
+	return true;
 }
 
 bool SevenZipCompressor::AddFile(const TString& filePath)

@@ -14,13 +14,14 @@ namespace intl
 		ULONGLONG	Size;
 		UINT		Attributes;
 		bool		IsDirectory;
+		bool		memFile;
+		void*		memPointer;
 	};
 
 	struct FilePathInfo : public FileInfo
 	{
 		TString		rootPath;
 		TString		FilePath;
-		bool		memFile;
 	};
 }
 }

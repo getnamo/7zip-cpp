@@ -153,24 +153,35 @@ STDMETHODIMP ArchiveUpdateCallback::GetStream( UInt32 index, ISequentialInStream
 	{
 		return S_OK;
 	}
-	CComPtr< IStream > fileStream;
+
+	HRESULT hr = S_OK;
+	CComPtr< IStream > outStream;
 	if (fileInfo.memFile)
 	{
+		HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, fileInfo.Size);
+		if (!hGlobal)
+		{
+			return E_OUTOFMEMORY;
+		}
 
+		void* lpData = GlobalLock(hGlobal);
+		memcpy(lpData, fileInfo.memPointer, fileInfo.Size);
+		GlobalUnlock(hGlobal);
+		hr = CreateStreamOnHGlobal(hGlobal, TRUE, &outStream);
 	}
 	else
 	{
-		fileStream = FileSys::OpenFileToRead(fileInfo.FilePath);
-		if (fileStream == NULL)
-		{
-			return HRESULT_FROM_WIN32(GetLastError());
-		}
+		outStream = FileSys::OpenFileToRead(fileInfo.FilePath);
+		hr = HRESULT_FROM_WIN32(GetLastError());
 	}
 
-	CComPtr< InStreamWrapper > wrapperStream = new InStreamWrapper( fileStream );
-	*inStream = wrapperStream.Detach();
+	if (outStream)
+	{
+		CComPtr< InStreamWrapper > wrapperStream = new InStreamWrapper(outStream);
+		*inStream = wrapperStream.Detach();
+	}
 
-	return S_OK;
+	return hr;
 }
 
 STDMETHODIMP ArchiveUpdateCallback::SetOperationResult( Int32 operationResult )

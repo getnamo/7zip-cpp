@@ -11,13 +11,16 @@
 
 #define DLL_PATH SOLUTIONDIR L"Exe\\x64\\7z.dll"
 #define TEMPDIR SOLUTIONDIR L"Exe\\x64\\tmp"
-#define ARCHIVE_NAME SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive"
+#define ARCHIVE_NAME1 SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive"
+#define ARCHIVE_NAME2 SOLUTIONDIR L"Exe\\x64\\tmp\\MemArchive"
 #define TESTEXTRACTTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\files.zip"
 #define TESTEXTRACTTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt.gz"
 #define TESTEXTRACTTESTFILE3 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt"
 #define TESTEXTRACTTESTFILE4 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\7z.zip"
 #define TESTCOMPRESSTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.md"
 #define TESTCOMPRESSTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\dir"
+#define TESTCOMPRESSTESTFILE3 SOLUTIONDIR L"MemoryFile"
+#define TESTCOMPRESSTESTFILE4 SOLUTIONDIR L"Dir\\MemoryFile"
 
 //
 // Test loading DLL
@@ -381,7 +384,7 @@ TEST(Compress, CompressFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(ARCHIVE_NAME);
+	SevenZip::TString myArchive(ARCHIVE_NAME1);
 	SevenZip::TString myDest(TEMPDIR);
 
 	boost::filesystem::remove_all(TEMPDIR);
@@ -416,7 +419,7 @@ TEST(Compress, CompressFiles_Test2)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(ARCHIVE_NAME);
+	SevenZip::TString myArchive(ARCHIVE_NAME1);
 	SevenZip::TString myDest(TEMPDIR);
 
 	SevenZip::SevenZipCompressor compressor(lib, myArchive);
@@ -433,6 +436,37 @@ TEST(Compress, CompressFiles_Test2)
 	//	boost::filesystem::remove_all(TEMPDIR);
 }
 
+
+TEST(Compress, CompressFiles_Test3)
+{
+	//
+	// Add subdir, recursive, to 7z
+	//
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
+
+	SevenZip::TString myArchive(ARCHIVE_NAME2);
+	SevenZip::TString myDest(TEMPDIR);
+
+	SevenZip::SevenZipCompressor compressor(lib, myArchive);
+	compressor.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
+
+	std::string str = "Just a string in a memory";
+	bool addResult = compressor.AddMemory(TESTCOMPRESSTESTFILE3, (void*)str.c_str(), str.size());
+	EXPECT_EQ(addResult, true);
+
+	addResult = compressor.AddMemory(TESTCOMPRESSTESTFILE4, (void*)str.c_str(), str.size());
+	EXPECT_EQ(addResult, true);
+
+	bool compressResult = compressor.DoCompress();
+	EXPECT_EQ(compressResult, true);
+
+	// Get rid of our temp directory
+	//	boost::filesystem::remove_all(TEMPDIR);
+}
 //
 // Test listing - Test 1
 //
@@ -441,7 +475,7 @@ TEST(Compress, CompressFiles_Test2)
 //
 class ListCallBackOutput : SevenZip::ListCallback
 {
-	virtual void OnFileFound(WCHAR* path, int size)
+	virtual void OnFileFound(WCHAR* path, uintmax_t size)
 	{
 		//std::wcout
 		//	<< path
