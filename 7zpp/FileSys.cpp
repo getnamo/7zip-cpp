@@ -209,13 +209,9 @@ CComPtr< IStream > FileSys::OpenFileToWrite( const TString& filePath )
 	WCHAR filePathStr[MAX_PATH];
 	MultiByteToWideChar( CP_UTF8, 0, filePath.c_str(), filePath.length() + 1, filePathStr, MAX_PATH );
 #endif
-	fileStream = OpenFileToRead(filePath);
-	if(!fileStream)
+	if (FAILED(SHCreateStreamOnFileEx(filePathStr, STGM_CREATE | STGM_WRITE, FILE_ATTRIBUTE_NORMAL, TRUE, NULL, &fileStream)))
 	{
-		if (FAILED(SHCreateStreamOnFileEx(filePathStr, STGM_CREATE | STGM_WRITE, FILE_ATTRIBUTE_NORMAL, TRUE, NULL, &fileStream)))
-		{
-			return NULL;
-		}
+		return NULL;
 	}
 
 	return fileStream;
