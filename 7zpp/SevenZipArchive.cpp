@@ -8,9 +8,9 @@ namespace SevenZip
 	SevenZipArchive::SevenZipArchive(const SevenZipLibrary& library, const TString& archivePath)
 		: m_library(library),
 		m_archivePath(archivePath),
-		// The default compression type will be unknown
-		m_compressionFormat(CompressionFormat::Unknown),
-		m_compressionLevel(CompressionLevel::None)
+		// The default compression type will be 7z
+		m_compressionFormat(CompressionFormat::SevenZip),
+		m_compressionLevel(CompressionLevel::Normal)
 	{
 	}
 
@@ -106,13 +106,13 @@ namespace SevenZip
 
 	bool SevenZipArchive::pri_GetNumberOfItems()
 	{
-		return UsefulFunctions::GetNumberOfItems(m_library, m_archivePath, 
+		return UsefulFunctions::GetNumberOfItems(m_library, m_archivePath,
 			m_compressionFormat, m_numberofitems);
 	}
 
 	bool SevenZipArchive::pri_GetItemsNames()
 	{
-		return UsefulFunctions::GetItemsNames(m_library, m_archivePath, m_compressionFormat, 
+		return UsefulFunctions::GetItemsNames(m_library, m_archivePath, m_compressionFormat,
 			m_numberofitems, m_itemnames, m_origsizes);
 	}
 }
