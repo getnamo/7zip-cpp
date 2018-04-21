@@ -1,7 +1,7 @@
 # 7zip-cpp
 Fork of SevenZip++ for VS2015, VS2017 (https://github.com/getnamo/7zip-cpp)
 
-Support compress file list paradigm
+Implement compress file list paradigm
 
 Uses latest lzma1801 SDK
 
@@ -109,7 +109,8 @@ catch (SevenZip::SevenZipException& ex)
 
 In order to compile the tests, the following requirements must be available:
 
-- Install Boost v1.66 binaries into $(SolutionDir)\\..\boost-1_66\ from http://www.boost.org
+- Download and build Boost v1.66
+- Install binaries into $(SolutionDir)\\..\boost-1_66\ from http://www.boost.org
 - Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/google/googletest.git
   - Go into the googletest directory
   - Make directory ```build```
@@ -122,9 +123,6 @@ In order to compile the tests, the following requirements must be available:
 The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
 
 ## Known Issues
-
-The extractor can have issues with relative paths.  To be sure it works correctly, feed it
-a full path.
 
 There is a bug in the testing program.  The issue has been logged on @keithjjones repository.
 
