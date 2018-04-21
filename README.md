@@ -1,7 +1,9 @@
 # 7zip-cpp
-Fork of SevenZip++ for VS2017
-Support compress file list
-Uses lates lzma1801 SDK
+Fork of SevenZip++ for VS2015, VS2017 (https://github.com/getnamo/7zip-cpp)
+
+Support compress file list paradigm
+
+Uses latest lzma1801 SDK
 
 From:
 [http://bitbucket.org/cmcnab/sevenzip/wiki/Home](http://bitbucket.org/cmcnab/sevenzip/wiki/Home)
