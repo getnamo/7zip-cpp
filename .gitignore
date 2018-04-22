@@ -15,6 +15,7 @@
 *.opendb
 *.suo
 *.lastbuildstate
+*.user
 .vs/
 ipch/
 
