@@ -20,13 +20,14 @@ namespace intl
 
 		long m_refCount;
 		TString m_outputPath;
+		TString m_password;
 		const std::vector< FilePathInfo >& m_filePaths;
 		ProgressCallback* m_callback;
 
 	public:
 
-		ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback);
-		virtual ~ArchiveUpdateCallback();
+		ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, const TString& password, ProgressCallback* callback);
+		virtual ~ArchiveUpdateCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );
 		STDMETHOD_(ULONG, AddRef)();
@@ -35,6 +36,9 @@ namespace intl
 		// IProgress
 		STDMETHOD(SetTotal)( UInt64 size );
 		STDMETHOD(SetCompleted)( const UInt64* completeValue );
+
+		// Early exit, this is not part of any interface
+		STDMETHOD(CheckBreak)();
 
 		// IArchiveUpdateCallback
 		STDMETHOD(GetUpdateItemInfo)( UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive );

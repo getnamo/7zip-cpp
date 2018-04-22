@@ -12,15 +12,12 @@ namespace SevenZip
 namespace intl
 {
 
-ArchiveUpdateCallback::ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback)
-	: m_refCount( 0 )
-	, m_filePaths( filePaths )
+ArchiveUpdateCallback::ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, const TString& password, ProgressCallback* callback)
+	: m_refCount(0)
+	, m_filePaths(filePaths)
 	, m_callback(callback)
 	, m_outputPath(outputFilePath)
-{
-}
-
-ArchiveUpdateCallback::~ArchiveUpdateCallback()
+	, m_password(password)
 {
 }
 
@@ -78,7 +75,7 @@ STDMETHODIMP ArchiveUpdateCallback::SetTotal( UInt64 size )
 	{
 		m_callback->OnStartWithTotal(m_outputPath, size);
 	}
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveUpdateCallback::SetCompleted( const UInt64* completeValue )
@@ -86,6 +83,16 @@ STDMETHODIMP ArchiveUpdateCallback::SetCompleted( const UInt64* completeValue )
 	if (m_callback!=nullptr)
 	{
 		m_callback->OnProgress(m_outputPath, *completeValue);
+	}
+	return CheckBreak();
+}
+
+STDMETHODIMP ArchiveUpdateCallback::CheckBreak()
+{
+	if (m_callback != nullptr)
+	{
+		// Abort if OnCheckBreak returns true;
+		return m_callback->OnCheckBreak() ? E_ABORT : S_OK;
 	}
 	return S_OK;
 }
@@ -109,7 +116,7 @@ STDMETHODIMP ArchiveUpdateCallback::GetUpdateItemInfo( UInt32 index, Int32* newD
 		*indexInArchive = static_cast< UInt32 >( -1 ); // TODO: UInt32.Max
 	}
 
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveUpdateCallback::GetProperty( UInt32 index, PROPID propID, PROPVARIANT* value )
@@ -157,34 +164,56 @@ STDMETHODIMP ArchiveUpdateCallback::GetStream( UInt32 index, ISequentialInStream
 		return S_OK;
 	}
 
-	CComPtr< IStream > fileStream = FileSys::OpenFileToRead( fileInfo.FilePath );
-	if ( fileStream == NULL )
+	HRESULT hr = S_OK;
+	CComPtr< IStream > outStream;
+	if (fileInfo.memFile)
 	{
-		return HRESULT_FROM_WIN32( GetLastError() );
+		HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, fileInfo.Size);
+		if (!hGlobal)
+		{
+			return E_OUTOFMEMORY;
+		}
+
+		void* lpData = GlobalLock(hGlobal);
+		memcpy(lpData, fileInfo.memPointer, fileInfo.Size);
+		GlobalUnlock(hGlobal);
+		hr = CreateStreamOnHGlobal(hGlobal, TRUE, &outStream);
+	}
+	else
+	{
+		outStream = FileSys::OpenFileToRead(fileInfo.FilePath);
+		hr = HRESULT_FROM_WIN32(GetLastError());
 	}
 
-	CComPtr< InStreamWrapper > wrapperStream = new InStreamWrapper( fileStream );
+	if (!outStream)
+	{
+		return hr;
+	}
+
+	CComPtr< InStreamWrapper > wrapperStream = new InStreamWrapper(outStream);
 	*inStream = wrapperStream.Detach();
 
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveUpdateCallback::SetOperationResult( Int32 operationResult )
 {
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveUpdateCallback::CryptoGetTextPassword2( Int32* passwordIsDefined, BSTR* password )
 {
-	// TODO: support passwords
-	*passwordIsDefined = 0;
-	*password = SysAllocString( L"" );
-	return *password != 0 ? S_OK : E_OUTOFMEMORY;
+	if (!m_password.empty())
+		*password = SysAllocString(m_password.c_str());
+
+	*passwordIsDefined = m_password.empty() ? 0 : 1;
+
+	return S_OK;
 }
 
 STDMETHODIMP ArchiveUpdateCallback::SetRatioInfo( const UInt64* inSize, const UInt64* outSize )
 {
-	return S_OK;
+	return CheckBreak();
 }
 
 }

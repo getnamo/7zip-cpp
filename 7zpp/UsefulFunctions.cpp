@@ -76,7 +76,7 @@ namespace SevenZip
 	}
 
 	bool UsefulFunctions::GetNumberOfItems(const SevenZipLibrary & library, const TString & archivePath,
-		CompressionFormatEnum &format, size_t & numberofitems)
+		CompressionFormatEnum &format, size_t & numberofitems, const TString& password)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
 
@@ -93,7 +93,7 @@ namespace SevenZip
 		}
 
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
-		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(password);
 
 		HRESULT hr = archive->Open(inFile, 0, openCallback);
 		if (hr != S_OK)
@@ -117,7 +117,7 @@ namespace SevenZip
 
 	bool UsefulFunctions::GetItemsNames(const SevenZipLibrary & library, const TString & archivePath,
 		CompressionFormatEnum &format, size_t & numberofitems,
-		std::vector<std::wstring> & itemnames, std::vector<size_t> & origsizes)
+		std::vector<std::wstring> & itemnames, std::vector<size_t> & origsizes, const TString& password)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
 
@@ -134,7 +134,7 @@ namespace SevenZip
 		}
 
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
-		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(password);
 
 		HRESULT hr = archive->Open(inFile, 0, openCallback);
 		if (hr != S_OK)
@@ -194,7 +194,7 @@ namespace SevenZip
 	}
 
 	bool UsefulFunctions::DetectCompressionFormat(const SevenZipLibrary & library, const TString & archivePath,
-		CompressionFormatEnum & archiveCompressionFormat)
+												  CompressionFormatEnum & archiveCompressionFormat, const TString& password)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(archivePath);
 
@@ -229,7 +229,7 @@ namespace SevenZip
 			if (!archive) continue;
 
 			CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
-			CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+			CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(password);
 
 			HRESULT hr = archive->Open(inFile, 0, openCallback);
 			if (hr == S_OK)
@@ -251,7 +251,7 @@ namespace SevenZip
 		{
 			size_t myNumOfItems = 0;
 			archiveCompressionFormat = CompressionFormat::GZip;
-			bool result = GetNumberOfItems(library, archivePath, archiveCompressionFormat, myNumOfItems);
+			bool result = GetNumberOfItems(library, archivePath, archiveCompressionFormat, myNumOfItems, password);
 			if (result == true && myNumOfItems > 0)
 			{
 				// We know this file is a GZip file, so return
@@ -261,7 +261,7 @@ namespace SevenZip
 
 		// If you get here, the format is unknown
 		archiveCompressionFormat = CompressionFormat::Unknown;
-		return true;
+		return false;
 	}
 
 	const TString UsefulFunctions::EndingFromCompressionFormat(const CompressionFormatEnum& format)

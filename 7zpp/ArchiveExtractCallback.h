@@ -5,6 +5,7 @@
 
 #include <7zip/Archive/IArchive.h>
 #include <7zip/IPassword.h>
+#include <7zip/UI/Common/UpdateCallback.h>
 
 #include "ProgressCallback.h"
 
@@ -23,9 +24,13 @@ namespace intl
 		CComPtr< IInArchive > m_archiveHandler;
 		TString m_directory;
 
+		TString m_password;
+
 		TString m_relPath;
 		TString m_absPath;
 		bool m_isDir;
+
+		TString m_archivePath;
 
 		bool m_hasAttrib;
 		UInt32 m_attrib;
@@ -40,8 +45,8 @@ namespace intl
 
 	public:
 
-		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback );
-		virtual ~ArchiveExtractCallback();
+		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, const TString& password, ProgressCallback* callback);
+		virtual ~ArchiveExtractCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );
 		STDMETHOD_(ULONG, AddRef)();
@@ -50,6 +55,9 @@ namespace intl
 		// IProgress
 		STDMETHOD(SetTotal)( UInt64 size );
 		STDMETHOD(SetCompleted)( const UInt64* completeValue );
+		
+		// Early exit, this is not part of any interface
+		STDMETHOD(CheckBreak)();
 
 		// IArchiveExtractCallback
 		STDMETHOD(GetStream)( UInt32 index, ISequentialOutStream** outStream, Int32 askExtractMode );

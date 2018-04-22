@@ -6,6 +6,7 @@
 #include "OutStreamWrapper.h"
 #include "PropVariant.h"
 #include "UsefulFunctions.h"
+#include <atltime.h>
 
 
 namespace SevenZip
@@ -35,6 +36,23 @@ bool SevenZipCompressor::AddFiles( const TString& directory, const TString& sear
 bool SevenZipCompressor::AddAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
 {
 	return AddFilesToList(directory, SearchPatternAllFiles, m_absolutePath ? _T("") : directory, includeSubdirs);
+}
+
+bool SevenZipCompressor::AddMemory(const TString& filePath, void* memPointer, size_t size)
+{
+	FilePathInfo memFile;
+	memFile.rootPath = FileSys::GetPath(filePath);
+	memFile.FileName = FileSys::GetFileName(filePath);
+	memFile.memFile = true;
+	memFile.memPointer = memPointer;
+	memFile.Size = size;
+	memFile.CreationTime = memFile.LastAccessTime = memFile.LastWriteTime = CFileTime::GetCurrentTime();
+	memFile.IsDirectory = false;
+	memFile.Attributes = FILE_ATTRIBUTE_NORMAL;
+
+	m_fileList.push_back(memFile);
+
+	return true;
 }
 
 bool SevenZipCompressor::AddFile(const TString& filePath)
@@ -76,7 +94,7 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 	m_archivePath += UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat);
 
 	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper(OpenArchiveStream());
-	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_fileList, m_archivePath, callback);
+	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_fileList, m_archivePath, m_password, callback);
 
 	HRESULT hr = archiver->UpdateItems(outFile, (UInt32)m_fileList.size(), updateCallback);
 
@@ -89,7 +107,7 @@ bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 	return (hr == S_OK) ? true : false;
 }
 
-bool SevenZipCompressor::CheckValidFormat()
+bool SevenZipCompressor::CheckValidFormat() const
 {
 	if (m_fileList.size() > 1 &&
 		(   m_compressionFormat == SevenZip::CompressionFormat::BZip2
@@ -103,7 +121,7 @@ bool SevenZipCompressor::CheckValidFormat()
 	return true;
 }
 
-CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
+CComPtr< IStream > SevenZipCompressor::OpenArchiveStream() const
 {
 	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite(m_archivePath);
 	if ( fileStream == NULL )
@@ -136,7 +154,7 @@ bool SevenZipCompressor::AddFilesToList( const TString& directory, const TString
 	return true;
 }
 
-bool SevenZipCompressor::SetCompressionProperties( IUnknown* outArchive )
+bool SevenZipCompressor::SetCompressionProperties(IUnknown* outArchive) const
 {
 	if (!outArchive)
 	{
