@@ -13,7 +13,7 @@ namespace SevenZip
 		/*
 		Called for each file found in the archive. Size in bytes.
 		*/
-		virtual void OnFileFound(const TString &path, int size) {}
+		virtual void OnFileFound(WCHAR* path, ULONGLONG size) {}
 
 		/*
 		Called when all the files have been listed

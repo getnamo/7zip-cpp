@@ -16,9 +16,9 @@ namespace SevenZip
 		SevenZipLister( const SevenZipLibrary& library, const TString& archivePath );
 		virtual ~SevenZipLister();
 
-		virtual bool ListArchive(ListCallback* callback);
+		virtual bool ListArchive(const TString& password, ListCallback* callback);
 
 	private:
-		bool ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback);
+		bool ListArchive(const CComPtr< IStream >& archiveStream, const TString& password, ListCallback* callback);
 	};
 }

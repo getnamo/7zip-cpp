@@ -32,18 +32,21 @@ namespace SevenZip
 		virtual bool AddFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs = true);
 		virtual bool AddAllFiles( const TString& directory, bool includeSubdirs = true);
 
+		// Compress just this memory area as the root item in the archive.
+		virtual bool AddMemory(const TString& filePath, void* memPointer, size_t size);
+
 		// Compress list of files
 		virtual bool DoCompress(ProgressCallback* callback = nullptr);
 
 		void ClearList() { m_fileList.clear(); }
 		void UseAbsolutePaths(bool absolute) { m_absolutePath = absolute; }
-		bool CheckValidFormat();
+		bool CheckValidFormat() const;
 
 	private:
 		std::vector< intl::FilePathInfo > m_fileList; // list of files to compress
 		bool m_absolutePath;
-		CComPtr< IStream > OpenArchiveStream();
+		CComPtr< IStream > OpenArchiveStream() const;
 		bool AddFilesToList(const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion);
-		bool SetCompressionProperties( IUnknown* outArchive );
+		bool SetCompressionProperties(IUnknown* outArchive) const;
 	};
 }
