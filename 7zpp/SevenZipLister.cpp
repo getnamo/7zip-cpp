@@ -57,7 +57,7 @@ namespace SevenZip
 				CPropVariant prop;
 				archive->GetProperty(i, kpidSize, &prop);
 
-				int size = prop.intVal;
+				ULONGLONG size = prop.uhVal.QuadPart;
 
 				// Get name of file
 				archive->GetProperty(i, kpidPath, &prop);

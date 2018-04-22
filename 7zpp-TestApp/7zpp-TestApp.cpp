@@ -475,7 +475,7 @@ TEST(Compress, CompressFiles_Test3)
 //
 class ListCallBackOutput : SevenZip::ListCallback
 {
-	virtual void OnFileFound(WCHAR* path, uintmax_t size)
+	virtual void OnFileFound(WCHAR* path, ULONGLONG size)
 	{
 		//std::wcout
 		//	<< path

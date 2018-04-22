@@ -65,7 +65,7 @@ Or a lister:
 ```cpp
 class ListCallBackOutput : SevenZip::ListCallback
 {
-	virtual void OnFileFound(WCHAR* path, int size)
+	virtual void OnFileFound(WCHAR* path, ULONGLONG size)
 	{
 		std::wcout
 			<< path
