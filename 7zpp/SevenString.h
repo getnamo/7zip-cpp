@@ -16,4 +16,5 @@ namespace SevenZip
 namespace SevenZip
 {
 	BSTR TStringAllocSysString(const TString& string);
+	TString BstrToTString(BSTR string);
 }

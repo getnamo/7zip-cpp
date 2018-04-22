@@ -5,6 +5,7 @@
 #include <iostream>
 #include <gtest/gtest.h>
 #include <boost\filesystem.hpp>
+#include <atltime.h>
 
 //  Wrapper
 #include "../7zpp/7zpp.h"
@@ -36,6 +37,75 @@ TEST(Init, LoadDLL)
 }
 
 //
+// Test listing - Test 1
+//
+//
+// Lister callback
+//
+class ListCallBackOutput : SevenZip::ArchiveListCallback
+{
+public:
+	~ListCallBackOutput() = default;
+
+	virtual void OnFileFound(const SevenZip::intl::FileInfo& info)
+	{
+		m_files.push_back(info);
+	}
+
+	virtual void OnListingDone(const SevenZip::TString& path)
+	{
+	}
+
+	const std::vector<SevenZip::FileInfo>& GetList() const { return m_files; }
+
+protected:
+	std::vector<SevenZip::FileInfo> m_files;
+};
+
+TEST(List, ListFiles_Test1)
+{
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
+
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1);
+
+	//
+	// Lister
+	//
+	ListCallBackOutput myListCallBack;
+
+	SevenZip::SevenZipLister lister(lib, myArchive);
+	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
+	result = lister.ListArchive(_T(""), (SevenZip::ArchiveListCallback *)&myListCallBack);
+
+	EXPECT_EQ(true, result);
+
+	std::wcout << L"Archive contents:\n" << std::endl;
+
+	for (const auto& info : myListCallBack.GetList())
+	{
+		std::wcout
+			<< info.FileName
+			<< L"\n Size: "
+			<< info.Size
+			<< L" Packed Size: "
+			<< info.PackedSize
+			<< L" Attributes: "
+			<< info.Attributes
+			<< L"\n Create Time: "
+			<< CTime(info.CreationTime).Format(_T("%F %T")).GetString()
+			<< L" Access Time: "
+			<< CTime(info.LastAccessTime).Format(_T("%F %T")).GetString()
+			<< L" Modify Time: "
+			<< CTime(info.LastWriteTime).Format(_T("%F %T")).GetString()
+			<< std::endl;
+	}
+}
+
+//
 // Test extraction - Test 1
 //
 TEST(Extract, ExtractFiles_Test1)
@@ -49,6 +119,8 @@ TEST(Extract, ExtractFiles_Test1)
 	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE1));
 	SevenZip::TString myDest(TEMPDIR);
 
+	// Get rid of our temp directory
+	boost::filesystem::remove_all(TEMPDIR);
 	boost::filesystem::create_directory(TEMPDIR);
 
 	//
@@ -142,9 +214,6 @@ TEST(Extract, ExtractFiles_Test1)
 		i++;
 		++itr;
 	}
-
-	// Get rid of our temp directory
-	boost::filesystem::remove_all(TEMPDIR);
 }
 
 //
@@ -161,6 +230,8 @@ TEST(Extract, ExtractFiles_Test2)
 	SevenZip::TString myArchive(TESTEXTRACTTESTFILE2);
 	SevenZip::TString myDest(TEMPDIR);
 
+	// Get rid of our temp directory
+	boost::filesystem::remove_all(TEMPDIR);
 	boost::filesystem::create_directory(TEMPDIR);
 
 	//
@@ -276,6 +347,8 @@ TEST(Extract, ExtractFiles_Test4)
 	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE4));
 	SevenZip::TString myDest(TEMPDIR);
 
+	// Get rid of our temp directory
+	boost::filesystem::remove_all(TEMPDIR);
 	boost::filesystem::create_directory(TEMPDIR);
 
 	//
@@ -371,6 +444,75 @@ TEST(Extract, ExtractFiles_Test4)
 }
 
 //
+// Test extraction - Test 5
+//
+TEST(Extract, ExtractFiles_Test5)
+{
+	SevenZip::SevenZipLibrary lib;
+	bool result = lib.Load(SevenZip::TString(DLL_PATH));
+
+	// Make sure DLL loads
+	ASSERT_EQ(true, result);
+
+	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE4));
+	SevenZip::TString myDest(TEMPDIR);
+
+	// Get rid of our temp directory
+	boost::filesystem::remove_all(TEMPDIR);
+	boost::filesystem::create_directory(TEMPDIR);
+
+	//
+	// Lister
+	//
+	ListCallBackOutput myListCallBack;
+
+	SevenZip::SevenZipLister lister(lib, myArchive);
+	SevenZip::CompressionFormatEnum myCompressionFormat = lister.GetCompressionFormat();
+	EXPECT_EQ(SevenZip::CompressionFormat::Zip, myCompressionFormat);
+
+	lister.SetCompressionFormat(myCompressionFormat);
+	result = lister.ListArchive(_T(""), (SevenZip::ArchiveListCallback *)&myListCallBack);
+	EXPECT_EQ(true, result);
+	EXPECT_EQ(false, myListCallBack.GetList().empty());
+
+	//
+	// Extract
+	//
+	SevenZip::SevenZipExtractor extractor(lib, myArchive);
+	extractor.SetCompressionFormat(myCompressionFormat);
+	UINT indces[2] = { 1, 4 };
+	result = extractor.ExtractFilesFromArchive(indces, 2, myDest, nullptr);
+	ASSERT_EQ(true, result);
+
+	//
+	// Look for the first few actual files
+	//
+	std::vector<std::wstring> expecteditemnames;
+	std::vector<size_t> expectedorigsizes;
+
+	expecteditemnames.push_back(std::wstring(L"7z\\.gitignore"));
+	expectedorigsizes.push_back(145);
+
+	expecteditemnames.push_back(std::wstring(L"7z\\Asm\\arm\\7zCrcOpt.asm"));
+	expectedorigsizes.push_back(1466);
+
+	int i = 0;
+	boost::filesystem::recursive_directory_iterator itr(TEMPDIR);
+	itr++; // Get rid of the parent directory
+	while (itr != boost::filesystem::recursive_directory_iterator())
+	{
+		if(itr->status().type() != boost::filesystem::directory_file)
+		{
+			boost::filesystem::path myPath = itr->path();
+			std::wstring myActualPath = std::wstring(TEMPDIR) + std::wstring(L"\\") + expecteditemnames[i];
+			EXPECT_EQ(myActualPath, myPath.wstring());
+			i++;
+		}
+		++itr;
+	}
+}
+
+//
 // Test compression
 //
 TEST(Compress, CompressFiles_Test1)
@@ -405,9 +547,6 @@ TEST(Compress, CompressFiles_Test1)
 
 	bool compressResult = compressor.DoCompress();
 	EXPECT_EQ(compressResult, true);
-
-	// Get rid of our temp directory
-	//boost::filesystem::remove_all(TEMPDIR);
 }
 
 TEST(Compress, CompressFiles_Test2)
@@ -421,6 +560,9 @@ TEST(Compress, CompressFiles_Test2)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
+	boost::filesystem::remove_all(TEMPDIR);
+	boost::filesystem::create_directory(TEMPDIR);
+
 	SevenZip::TString myArchive(ARCHIVE_NAME1);
 	SevenZip::TString myDest(TEMPDIR);
 
@@ -433,9 +575,6 @@ TEST(Compress, CompressFiles_Test2)
 
 	bool compressResult = compressor.DoCompress();
 	EXPECT_EQ(compressResult, true);
-
-	// Get rid of our temp directory
-	//	boost::filesystem::remove_all(TEMPDIR);
 }
 
 
@@ -453,6 +592,9 @@ TEST(Compress, CompressFiles_Test3)
 	SevenZip::TString myArchive(ARCHIVE_NAME2);
 	SevenZip::TString myDest(TEMPDIR);
 
+	boost::filesystem::remove_all(TEMPDIR);
+	boost::filesystem::create_directory(TEMPDIR);
+
 	SevenZip::SevenZipCompressor compressor(lib, myArchive);
 	compressor.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
 
@@ -462,58 +604,21 @@ TEST(Compress, CompressFiles_Test3)
 
 	bool compressResult = compressor.DoCompress();
 	EXPECT_EQ(compressResult, true);
-
-	// Get rid of our temp directory
-	//	boost::filesystem::remove_all(TEMPDIR);
 }
-//
-// Test listing - Test 1
-//
-//
-// Lister callback
-//
-class ListCallBackOutput : SevenZip::ListCallback
-{
-	virtual void OnFileFound(WCHAR* path, ULONGLONG size)
-	{
-		//std::wcout
-		//	<< path
-		//	<< L" "
-		//	<< size
-		//	<< std::endl;
-	}
-};
-
-TEST(List, ListFiles_Test1)
-{
-	SevenZip::SevenZipLibrary lib;
-	bool result = lib.Load(SevenZip::TString(DLL_PATH));
-
-	// Make sure DLL loads
-	ASSERT_EQ(true, result);
-
-	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1);
-
-	//
-	// Lister
-	//
-	ListCallBackOutput myListCallBack;
-
-	SevenZip::SevenZipLister lister(lib, myArchive);
-	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-	result = lister.ListArchive(_T(""), (SevenZip::ListCallback *)&myListCallBack);
-
-	EXPECT_EQ(true, result);
-
-	boost::filesystem::remove_all(TEMPDIR);
-}
-
 //
 // Main
 //
 int main(int argc, char **argv)
 {
+	boost::filesystem::remove_all(TEMPDIR);
+
 	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int result = RUN_ALL_TESTS();
+
+	boost::filesystem::remove_all(TEMPDIR);
+	char in;
+	std::cin >> in;
+
+	return result;
 }
 

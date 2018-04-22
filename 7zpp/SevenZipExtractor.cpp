@@ -5,7 +5,6 @@
 #include "ArchiveOpenCallback.h"
 #include "ArchiveExtractCallback.h"
 #include "InStreamWrapper.h"
-#include "PropVariant.h"
 #include "UsefulFunctions.h"
 
 
@@ -14,7 +13,7 @@ namespace SevenZip
 
 	using namespace intl;
 
-	SevenZipExtractor::SevenZipExtractor( const SevenZipLibrary& library, const TString& archivePath )
+	SevenZipExtractor::SevenZipExtractor(const SevenZipLibrary& library, const TString& archivePath)
 		: SevenZipArchive(library, archivePath)
 	{
 	}
@@ -23,12 +22,11 @@ namespace SevenZip
 	{
 	}
 
-
-	bool SevenZipExtractor::ExtractArchive( const TString& destDirectory, ProgressCallback* callback )
+	bool SevenZipExtractor::ExtractArchive(const TString& destDirectory, ProgressCallback* callback /*= nullptr*/)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead( m_archivePath );
 
-		if ( fileStream == NULL )
+		if (fileStream == nullptr)
 		{
 			return false;	//Could not open archive
 		}
@@ -39,11 +37,11 @@ namespace SevenZip
 	bool SevenZipExtractor::ExtractFilesFromArchive(const unsigned int* fileIndices,
 													const unsigned int numberFiles,
 													const TString& destDirectory,
-													ProgressCallback* callback)
+													ProgressCallback* callback /*= nullptr*/)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
 
-		if (fileStream == NULL)
+		if (fileStream == nullptr)
 		{
 			return false;	//Could not open archive
 		}
@@ -61,8 +59,8 @@ namespace SevenZip
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper( archiveStream );
 		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(m_password);
 
-		HRESULT hr = archive->Open( inFile, 0, openCallback );
-		if ( hr != S_OK )
+		HRESULT hr = archive->Open(inFile, 0, openCallback);
+		if (hr != S_OK)
 		{
 			return false;	//Open archive error
 		}
@@ -70,8 +68,9 @@ namespace SevenZip
 		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, m_archivePath, m_password, callback);
 
 		hr = archive->Extract(filesIndices, numberFiles, false, extractCallback);
-		if ( hr != S_OK ) // returning S_FALSE also indicates error
+		if (hr != S_OK)
 		{
+			// returning S_FALSE also indicates error
 			return false;	//Extract archive error
 		}
 
@@ -79,7 +78,9 @@ namespace SevenZip
 		{
 			callback->OnDone(m_archivePath);
 		}
+
 		archive->Close();
+
 		return true;
 	}
 }
