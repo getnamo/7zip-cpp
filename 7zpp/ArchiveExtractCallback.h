@@ -45,7 +45,7 @@ namespace intl
 
 	public:
 
-		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, ProgressCallback* callback, const TString& password);
+		ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, const TString& password, ProgressCallback* callback);
 		virtual ~ArchiveExtractCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );

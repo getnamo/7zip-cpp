@@ -395,6 +395,8 @@ TEST(Compress, CompressFiles_Test1)
 	compressor.SetPassword(_T("test"));
 	bool addResult = compressor.AddFile(TESTCOMPRESSTESTFILE1);
 	EXPECT_EQ(addResult, true);
+
+	// add files by mask non recursive in folder where no files with this mask
 	addResult = compressor.AddFiles(TESTCOMPRESSTESTFILE2, _T("*.cpp"), false);
 	EXPECT_EQ(addResult, false);
 
@@ -440,7 +442,7 @@ TEST(Compress, CompressFiles_Test2)
 TEST(Compress, CompressFiles_Test3)
 {
 	//
-	// Add subdir, recursive, to 7z
+	// Add memory to 7z
 	//
 	SevenZip::SevenZipLibrary lib;
 	bool result = lib.Load(SevenZip::TString(DLL_PATH));
@@ -456,9 +458,6 @@ TEST(Compress, CompressFiles_Test3)
 
 	std::string str = "Just a string in a memory";
 	bool addResult = compressor.AddMemory(TESTCOMPRESSTESTFILE3, (void*)str.c_str(), str.size());
-	EXPECT_EQ(addResult, true);
-
-	addResult = compressor.AddMemory(TESTCOMPRESSTESTFILE4, (void*)str.c_str(), str.size());
 	EXPECT_EQ(addResult, true);
 
 	bool compressResult = compressor.DoCompress();
@@ -502,9 +501,11 @@ TEST(List, ListFiles_Test1)
 
 	SevenZip::SevenZipLister lister(lib, myArchive);
 	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-	result = lister.ListArchive((SevenZip::ListCallback *)&myListCallBack, _T(""));
+	result = lister.ListArchive(_T(""), (SevenZip::ListCallback *)&myListCallBack);
 
 	EXPECT_EQ(true, result);
+
+	boost::filesystem::remove_all(TEMPDIR);
 }
 
 //

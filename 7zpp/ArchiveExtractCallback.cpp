@@ -16,7 +16,7 @@ namespace intl
 const TString EmptyFileAlias = _T( "[Content]" );
 
 
-ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, ProgressCallback* callback, const TString& password)
+ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, const TString& password, ProgressCallback* callback)
 	: m_refCount(0)
 	, m_archiveHandler(archiveHandler)
 	, m_directory(directory)
@@ -130,13 +130,13 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 	{
 		wchar_t c = m_relPath[iLetter];
 		if (
-			c == ':' 
-			|| c == '*' 
-			|| c == '?' 
+			c == ':'
+			|| c == '*'
+			|| c == '?'
 			|| c < 0x20 // printable character range starts at 20
-			|| c == '<' 
-			|| c == '>' 
-			|| c == '|' 
+			|| c == '<'
+			|| c == '>'
+			|| c == '|'
 			|| c == '"'
 			|| c == '/')
 		{

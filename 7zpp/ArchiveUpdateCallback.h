@@ -26,7 +26,7 @@ namespace intl
 
 	public:
 
-		ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, ProgressCallback* callback, const TString& password);
+		ArchiveUpdateCallback(const std::vector< FilePathInfo >& filePaths, const TString& outputFilePath, const TString& password, ProgressCallback* callback);
 		virtual ~ArchiveUpdateCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );

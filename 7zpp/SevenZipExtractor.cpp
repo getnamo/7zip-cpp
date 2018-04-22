@@ -67,7 +67,7 @@ namespace SevenZip
 			return false;	//Open archive error
 		}
 
-		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, m_archivePath, callback, m_password));
+		CComPtr< ArchiveExtractCallback > extractCallback = new ArchiveExtractCallback( archive, destDirectory, m_archivePath, m_password, callback);
 
 		hr = archive->Extract(filesIndices, numberFiles, false, extractCallback);
 		if ( hr != S_OK ) // returning S_FALSE also indicates error

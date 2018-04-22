@@ -24,7 +24,7 @@ namespace SevenZip
 	{
 	}
 
-	bool SevenZipLister::ListArchive(ListCallback* callback, const TString& password)
+	bool SevenZipLister::ListArchive(const TString& password, ListCallback* callback)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
 		if (fileStream == NULL)
@@ -33,10 +33,10 @@ namespace SevenZip
 			//throw SevenZipException( StrFmt( _T( "Could not open archive \"%s\"" ), m_archivePath.c_str() ) );
 		}
 
-		return ListArchive(fileStream, callback, password);
+		return ListArchive(fileStream, password, callback);
 	}
 
-	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback, const TString& password)
+	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, const TString& password, ListCallback* callback)
 	{
 		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_compressionFormat);
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(archiveStream);
@@ -67,7 +67,7 @@ namespace SevenZip
 				if (prop.vt == VT_BSTR) {
 					WCHAR* path = prop.bstrVal;
 					if (callback) {
-						callback->OnFileFound(TString(path), size);
+						callback->OnFileFound(path, size);
 					}
 				}
 			}
