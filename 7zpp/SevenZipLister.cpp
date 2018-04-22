@@ -64,6 +64,10 @@ namespace SevenZip
 			archive->GetProperty(i, kpidPackSize, &prop);
 			info.PackedSize = prop.uhVal.QuadPart;
 
+			// Get is directory property
+			archive->GetProperty(i, kpidIsDir, &prop);
+			info.IsDirectory = prop.boolVal != VARIANT_FALSE;
+
 			// Get name of file
 			archive->GetProperty(i, kpidPath, &prop);
 

@@ -55,7 +55,7 @@ namespace intl
 		// IProgress
 		STDMETHOD(SetTotal)( UInt64 size );
 		STDMETHOD(SetCompleted)( const UInt64* completeValue );
-		
+
 		// Early exit, this is not part of any interface
 		STDMETHOD(CheckBreak)();
 
