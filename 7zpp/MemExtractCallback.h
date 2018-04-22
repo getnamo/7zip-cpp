@@ -16,37 +16,30 @@ namespace SevenZip
 {
 namespace intl
 {
-	class ArchiveExtractCallback : public IArchiveExtractCallback, public ICryptoGetTextPassword
+	class MemExtractCallback : public IArchiveExtractCallback, public ICryptoGetTextPassword
 	{
 	private:
 
 		long m_refCount;
+
 		CComPtr< IInArchive > m_archiveHandler;
-		TString m_directory;
-
-		TString m_password;
-
-		TString m_relPath;
-		TString m_absPath;
-		bool m_isDir;
+		CComPtr< ISequentialOutStream > m_outMemStream;
+		std::vector<BYTE>& m_buffer;
 
 		TString m_archivePath;
+		TString m_password;
 
-		bool m_hasAttrib;
-		UInt32 m_attrib;
-
-		bool m_hasModifiedTime;
-		FILETIME m_modifiedTime;
-
+		bool m_isDir;
 		bool m_hasNewFileSize;
 		UInt64 m_newFileSize;
+		TString m_filePath;
 
 		ProgressCallback* m_callback;
 
 	public:
 
-		ArchiveExtractCallback(const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, const TString& password, ProgressCallback* callback);
-		virtual ~ArchiveExtractCallback() = default;
+		MemExtractCallback(const CComPtr< IInArchive >& archiveHandler, std::vector<BYTE>& buffer, const TString& archivePath, const TString& password, ProgressCallback* callback);
+		virtual ~MemExtractCallback() = default;
 
 		STDMETHOD(QueryInterface)( REFIID iid, void** ppvObject );
 		STDMETHOD_(ULONG, AddRef)();
@@ -59,7 +52,7 @@ namespace intl
 		// Early exit, this is not part of any interface
 		STDMETHOD(CheckBreak)();
 
-		// IArchiveExtractCallback
+		// IMemExtractCallback
 		STDMETHOD(GetStream)( UInt32 index, ISequentialOutStream** outStream, Int32 askExtractMode );
 		STDMETHOD(PrepareOperation)( Int32 askExtractMode );
 		STDMETHOD(SetOperationResult)( Int32 resultEOperationResult );
@@ -70,9 +63,7 @@ namespace intl
 	private:
 
 		void GetPropertyFilePath( UInt32 index );
-		void GetPropertyAttributes( UInt32 index );
 		void GetPropertyIsDir( UInt32 index );
-		void GetPropertyModifiedTime( UInt32 index );
 		void GetPropertySize( UInt32 index );
 
 		void EmitDoneCallback();

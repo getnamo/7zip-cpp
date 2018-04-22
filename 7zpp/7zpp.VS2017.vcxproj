@@ -332,6 +332,8 @@
     <ClCompile Include="FileSys.cpp" />
     <ClCompile Include="GUIDs.cpp" />
     <ClCompile Include="InStreamWrapper.cpp" />
+    <ClCompile Include="MemExtractCallback.cpp" />
+    <ClCompile Include="OutMemStream.cpp" />
     <ClCompile Include="OutStreamWrapper.cpp" />
     <ClCompile Include="PathScanner.cpp" />
     <ClCompile Include="PropVariant.cpp" />
@@ -367,6 +369,8 @@
     <ClInclude Include="GUIDs.h" />
     <ClInclude Include="InStreamWrapper.h" />
     <ClInclude Include="ArchiveListCallback.h" />
+    <ClInclude Include="MemExtractCallback.h" />
+    <ClInclude Include="OutMemStream.h" />
     <ClInclude Include="SevenString.h" />
     <ClInclude Include="OutStreamWrapper.h" />
     <ClInclude Include="PathScanner.h" />

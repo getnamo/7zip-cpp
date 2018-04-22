@@ -481,7 +481,7 @@ TEST(Extract, ExtractFiles_Test5)
 	SevenZip::SevenZipExtractor extractor(lib, myArchive);
 	extractor.SetCompressionFormat(myCompressionFormat);
 	UINT indces[2] = { 1, 4 };
-	result = extractor.ExtractFilesFromArchive(indces, 2, myDest, nullptr);
+	result = extractor.ExtractFilesFromArchive(indces, 2, myDest);
 	ASSERT_EQ(true, result);
 
 	//
@@ -510,6 +510,12 @@ TEST(Extract, ExtractFiles_Test5)
 		}
 		++itr;
 	}
+
+	std::vector<BYTE> memBuffer;
+	result = extractor.ExtractFileToMemory(4, memBuffer);
+	ASSERT_EQ(true, result);
+
+	EXPECT_EQ(1466, memBuffer.size());
 }
 
 //
