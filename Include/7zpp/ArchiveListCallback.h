@@ -7,13 +7,15 @@
 
 namespace SevenZip
 {
-	class ListCallback
+	using namespace intl;
+
+	class ArchiveListCallback
 	{
 	public:
 		/*
 		Called for each file found in the archive. Size in bytes.
 		*/
-		virtual void OnFileFound(WCHAR* path, ULONGLONG size) {}
+		virtual void OnFileFound(const FileInfo& fileInfo) {}
 
 		/*
 		Called when all the files have been listed
