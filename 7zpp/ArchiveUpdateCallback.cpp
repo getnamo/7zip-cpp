@@ -168,14 +168,14 @@ STDMETHODIMP ArchiveUpdateCallback::GetStream( UInt32 index, ISequentialInStream
 	CComPtr< IStream > outStream;
 	if (fileInfo.memFile)
 	{
-		HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, fileInfo.Size);
+		HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, (SIZE_T)fileInfo.Size);
 		if (!hGlobal)
 		{
 			return E_OUTOFMEMORY;
 		}
 
 		void* lpData = GlobalLock(hGlobal);
-		memcpy(lpData, fileInfo.memPointer, fileInfo.Size);
+		memcpy(lpData, fileInfo.memPointer, (SIZE_T)fileInfo.Size);
 		GlobalUnlock(hGlobal);
 		hr = CreateStreamOnHGlobal(hGlobal, TRUE, &outStream);
 	}
@@ -204,7 +204,7 @@ STDMETHODIMP ArchiveUpdateCallback::SetOperationResult( Int32 operationResult )
 STDMETHODIMP ArchiveUpdateCallback::CryptoGetTextPassword2( Int32* passwordIsDefined, BSTR* password )
 {
 	if (!m_password.empty())
-		*password = SysAllocString(m_password.c_str());
+		*password = TStringAllocSysString(m_password);
 
 	*passwordIsDefined = m_password.empty() ? 0 : 1;
 

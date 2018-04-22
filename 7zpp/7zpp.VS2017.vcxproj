@@ -343,6 +343,7 @@
     <ClCompile Include="OutStreamWrapper.cpp" />
     <ClCompile Include="PathScanner.cpp" />
     <ClCompile Include="PropVariant.cpp" />
+    <ClCompile Include="SevenString.cpp" />
     <ClCompile Include="SevenZipArchive.cpp" />
     <ClCompile Include="SevenZipCompressor.cpp" />
     <ClCompile Include="SevenZipException.cpp" />

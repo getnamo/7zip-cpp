@@ -128,7 +128,7 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 	// Replace invalid characters
 	for (unsigned iLetter = 0; iLetter < m_relPath.length(); iLetter++)
 	{
-		wchar_t c = m_relPath[iLetter];
+		TCHAR c = m_relPath[iLetter];
 		if (
 			c == ':'
 			|| c == '*'
@@ -140,7 +140,7 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 			|| c == '"'
 			|| c == '/')
 		{
-			m_relPath.replace(iLetter, 1, L"_");
+			m_relPath.replace(iLetter, 1, _T("_"));
 		}
 	}
 
@@ -206,7 +206,7 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 STDMETHODIMP ArchiveExtractCallback::CryptoGetTextPassword( BSTR* password )
 {
 	if (!m_password.empty())
-		*password = SysAllocString(m_password.c_str());
+		*password = TStringAllocSysString(m_password);
 
 	return S_OK;
 }

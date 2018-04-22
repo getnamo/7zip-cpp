@@ -69,7 +69,7 @@ STDMETHODIMP ArchiveOpenCallback::SetCompleted( const UInt64* files, const UInt6
 STDMETHODIMP ArchiveOpenCallback::CryptoGetTextPassword( BSTR* password )
 {
 	if(!m_password.empty())
-		*password = SysAllocString(m_password.c_str());
+		*password = TStringAllocSysString(m_password);
 
 	return S_OK;
 }
