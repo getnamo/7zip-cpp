@@ -42,7 +42,7 @@ TEST(Init, LoadDLL)
 //
 // Lister callback
 //
-class ListCallBackOutput : SevenZip::ArchiveListCallback
+class ListCallBackOutput : SevenZip::ListCallback
 {
 public:
 	~ListCallBackOutput() = default;
