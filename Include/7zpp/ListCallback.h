@@ -9,7 +9,7 @@ namespace SevenZip
 {
 	using namespace intl;
 
-	class ArchiveListCallback
+	class ListCallback
 	{
 	public:
 		/*

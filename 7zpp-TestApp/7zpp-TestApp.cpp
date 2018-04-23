@@ -79,7 +79,7 @@ TEST(List, ListFiles_Test1)
 
 	SevenZip::SevenZipLister lister(lib, myArchive);
 	lister.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-	result = lister.ListArchive(_T(""), (SevenZip::ArchiveListCallback *)&myListCallBack);
+	result = lister.ListArchive(_T(""), (SevenZip::ListCallback *)&myListCallBack);
 
 	EXPECT_EQ(true, result);
 
@@ -471,7 +471,7 @@ TEST(Extract, ExtractFiles_Test5)
 	EXPECT_EQ(SevenZip::CompressionFormat::Zip, myCompressionFormat);
 
 	lister.SetCompressionFormat(myCompressionFormat);
-	result = lister.ListArchive(_T(""), (SevenZip::ArchiveListCallback *)&myListCallBack);
+	result = lister.ListArchive(_T(""), (SevenZip::ListCallback *)&myListCallBack);
 	EXPECT_EQ(true, result);
 	EXPECT_EQ(false, myListCallBack.GetList().empty());
 

@@ -366,7 +366,7 @@
     <ClInclude Include="FileSys.h" />
     <ClInclude Include="GUIDs.h" />
     <ClInclude Include="InStreamWrapper.h" />
-    <ClInclude Include="ArchiveListCallback.h" />
+    <ClInclude Include="ListCallback.h" />
     <ClInclude Include="SevenString.h" />
     <ClInclude Include="OutStreamWrapper.h" />
     <ClInclude Include="PathScanner.h" />
