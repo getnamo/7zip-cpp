@@ -16,15 +16,13 @@ namespace intl
 const TString EmptyFileAlias = _T( "[Content]" );
 
 
-ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, ProgressCallback* callback)
+ArchiveExtractCallback::ArchiveExtractCallback( const CComPtr< IInArchive >& archiveHandler, const TString& directory, const TString& archivePath, const TString& password, ProgressCallback* callback)
 	: m_refCount(0)
-	, m_archiveHandler( archiveHandler )
-	, m_directory( directory )
-	, m_callback( callback )
-{
-}
-
-ArchiveExtractCallback::~ArchiveExtractCallback()
+	, m_archiveHandler(archiveHandler)
+	, m_directory(directory)
+	, m_archivePath( archivePath )
+	, m_callback(callback)
+	, m_password(password)
 {
 }
 
@@ -76,7 +74,7 @@ STDMETHODIMP ArchiveExtractCallback::SetTotal( UInt64 size )
 	{
 		m_callback->OnStartWithTotal(m_absPath, size);
 	}
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
@@ -87,11 +85,21 @@ STDMETHODIMP ArchiveExtractCallback::SetCompleted( const UInt64* completeValue )
 	- For ZIP format SetCompleted only called once per 1000 files in central directory and once per 100 in local ones.
 	- For 7Z format SetCompleted is never called.
 	*/
-	if (m_callback != nullptr) 
+	if (m_callback != nullptr)
 	{
 		//Don't call this directly, it will be called per file which is more consistent across archive types
 		//TODO: incorporate better progress tracking
 		//m_callback->OnProgress(m_absPath, *completeValue);
+	}
+	return CheckBreak();
+}
+
+STDMETHODIMP ArchiveExtractCallback::CheckBreak()
+{
+	if (m_callback != nullptr)
+	{
+		// Abort if OnCheckBreak returns true;
+		return m_callback->OnCheckBreak() ? E_ABORT : S_OK;
 	}
 	return S_OK;
 }
@@ -117,6 +125,25 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 		return ex.Error();
 	}
 
+	// Replace invalid characters
+	for (unsigned iLetter = 0; iLetter < m_relPath.length(); iLetter++)
+	{
+		TCHAR c = m_relPath[iLetter];
+		if (
+			c == ':'
+			|| c == '*'
+			|| c == '?'
+			|| c < 0x20 // printable character range starts at 20
+			|| c == '<'
+			|| c == '>'
+			|| c == '|'
+			|| c == '"'
+			|| c == '/')
+		{
+			m_relPath.replace(iLetter, 1, _T("_"));
+		}
+	}
+
 	// TODO: m_directory could be a relative path
 	m_absPath = FileSys::AppendPath( m_directory, m_relPath );
 
@@ -130,7 +157,7 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 
 	TString absDir = FileSys::GetPath( m_absPath );
 	FileSys::CreateDirectoryTree( absDir );
-	
+
 	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite( m_absPath );
 	if ( fileStream == NULL )
 	{
@@ -141,7 +168,7 @@ STDMETHODIMP ArchiveExtractCallback::GetStream( UInt32 index, ISequentialOutStre
 	CComPtr< OutStreamWrapper > wrapperStream = new OutStreamWrapper( fileStream );
 	*outStream = wrapperStream.Detach();
 
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveExtractCallback::PrepareOperation( Int32 askExtractMode )
@@ -154,7 +181,7 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 	if ( m_absPath.empty() )
 	{
 		EmitDoneCallback();
-		return S_OK;
+		return CheckBreak();
 	}
 
 	if ( m_hasModifiedTime )
@@ -173,13 +200,15 @@ STDMETHODIMP ArchiveExtractCallback::SetOperationResult( Int32 operationResult )
 	}
 
 	EmitFileDoneCallback(m_absPath);
-	return S_OK;
+	return CheckBreak();
 }
 
 STDMETHODIMP ArchiveExtractCallback::CryptoGetTextPassword( BSTR* password )
 {
-	// TODO: support passwords
-	return E_ABORT;
+	if (!m_password.empty())
+		*password = TStringAllocSysString(m_password);
+
+	return S_OK;
 }
 
 void ArchiveExtractCallback::GetPropertyFilePath( UInt32 index )
@@ -201,14 +230,7 @@ void ArchiveExtractCallback::GetPropertyFilePath( UInt32 index )
 	}
 	else
 	{
-		_bstr_t bstr = prop.bstrVal;
-#ifdef _UNICODE
-		m_relPath = bstr;
-#else
-		char relPath[MAX_PATH];
-		int size = WideCharToMultiByte( CP_UTF8, 0, bstr, bstr.length(), relPath, MAX_PATH, NULL, NULL );
-		m_relPath.assign( relPath, size );
-#endif
+		m_relPath = BstrToTString(prop.bstrVal);
 	}
 }
 
@@ -298,7 +320,7 @@ void ArchiveExtractCallback::GetPropertySize( UInt32 index )
 	case VT_EMPTY:
 		m_hasNewFileSize = false;
 		return;
-	case VT_UI1: 
+	case VT_UI1:
 		m_newFileSize = prop.bVal;
 		break;
 	case VT_UI2:
@@ -329,8 +351,8 @@ void ArchiveExtractCallback::EmitFileDoneCallback(const TString& path)
 {
 	if (m_callback != nullptr)
 	{
-		m_callback->OnProgress(path, m_newFileSize);
-		m_callback->OnFileDone(path, m_newFileSize);
+		m_callback->OnProgress(m_archivePath, m_newFileSize);
+		m_callback->OnFileDone(m_archivePath, path, m_newFileSize);
 	}
 }
 

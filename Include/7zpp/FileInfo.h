@@ -12,12 +12,16 @@ namespace intl
 		FILETIME	CreationTime;
 		FILETIME	LastAccessTime;
 		ULONGLONG	Size;
+		ULONGLONG	PackedSize;
 		UINT		Attributes;
 		bool		IsDirectory;
+		bool		memFile;
+		void*		memPointer;
 	};
 
 	struct FilePathInfo : public FileInfo
 	{
+		TString		rootPath;
 		TString		FilePath;
 	};
 }

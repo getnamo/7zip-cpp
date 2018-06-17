@@ -6,7 +6,11 @@
 #include "SevenZipLister.h"
 
 // Version of this library
+<<<<<<< HEAD
 #define SEVENZIP_VERSION L"20160116.1"
+=======
+#define SEVENZIP_VERSION L"0.3.0.20180422"
+>>>>>>> pr/25
 #define SEVENZIP_BRANCH L"master"
 
 #ifdef _DEBUG

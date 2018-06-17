@@ -154,7 +154,7 @@ bool FileSys::DirectoryExists( const TString& path )
 bool FileSys::IsDirectoryEmptyRecursive( const TString& path )
 {
 	IsEmptyCallback cb;
-	PathScanner::Scan( path, cb );
+	PathScanner::Scan( path, _T(""), cb );
 	return cb.IsEmpty();
 }
 
@@ -164,20 +164,20 @@ bool FileSys::CreateDirectoryTree( const TString& path )
 	return ret == ERROR_SUCCESS;
 }
 
-std::vector< FilePathInfo > FileSys::GetFile( const TString& filePathOrName )
+std::vector< FilePathInfo > FileSys::GetFile(const TString& filePathOrName, bool absolutePath /*= false*/)
 {
 	TString path = FileSys::GetPath( filePathOrName );
 	TString name = FileSys::GetFileName( filePathOrName );
 
 	ScannerCallback cb( false, true );
-	PathScanner::Scan( path, name, cb );
+	PathScanner::Scan(path, absolutePath ? _T("") : path, name, cb);
 	return cb.GetFiles();
 }
 
-std::vector< FilePathInfo > FileSys::GetFilesInDirectory( const TString& directory, const TString& searchPattern, bool recursive )
+std::vector< FilePathInfo > FileSys::GetFilesInDirectory( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursive )
 {
 	ScannerCallback cb( recursive );
-	PathScanner::Scan( directory, searchPattern, cb );
+	PathScanner::Scan( directory, pathPrefix, searchPattern, cb );
 	return cb.GetFiles();
 }
 
@@ -189,7 +189,7 @@ CComPtr< IStream > FileSys::OpenFileToRead( const TString& filePath )
 	const WCHAR* filePathStr = filePath.c_str();
 #else
 	WCHAR filePathStr[MAX_PATH];
-	MultiByteToWideChar( CP_UTF8, 0, filePath.c_str(), filePath.length() + 1, filePathStr, MAX_PATH );
+	MultiByteToWideChar( CP_UTF8, 0, filePath.c_str(), (int)filePath.length() + 1, filePathStr, MAX_PATH );
 #endif
 	if ( FAILED( SHCreateStreamOnFileEx( filePathStr, STGM_READ, FILE_ATTRIBUTE_NORMAL, FALSE, NULL, &fileStream ) ) )
 	{
@@ -202,14 +202,14 @@ CComPtr< IStream > FileSys::OpenFileToRead( const TString& filePath )
 CComPtr< IStream > FileSys::OpenFileToWrite( const TString& filePath )
 {
 	CComPtr< IStream > fileStream;
-	
+
 #ifdef _UNICODE
 	const WCHAR* filePathStr = filePath.c_str();
 #else
 	WCHAR filePathStr[MAX_PATH];
-	MultiByteToWideChar( CP_UTF8, 0, filePath.c_str(), filePath.length() + 1, filePathStr, MAX_PATH );
+	MultiByteToWideChar( CP_UTF8, 0, filePath.c_str(), (int)filePath.length() + 1, filePathStr, MAX_PATH );
 #endif
-	if ( FAILED( SHCreateStreamOnFileEx( filePathStr, STGM_CREATE | STGM_WRITE, FILE_ATTRIBUTE_NORMAL, TRUE, NULL, &fileStream ) ) )
+	if (FAILED(SHCreateStreamOnFileEx(filePathStr, STGM_CREATE | STGM_WRITE, FILE_ATTRIBUTE_NORMAL, TRUE, NULL, &fileStream)))
 	{
 		return NULL;
 	}

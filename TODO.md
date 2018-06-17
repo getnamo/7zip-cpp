@@ -1,6 +1,5 @@
 Things that could be improved: 
 - Pushing 0->100% progress callback form the ue wrapper into 7zpp lib. Adjusting code so that it will work with SetCompleted (this function works a bit inconsistently, so I'm doing progress per file for now which is acceptable).
-- Support for password protected files
 
 Wishlist:
 - Is it possible to do threading in the library, or do we need a .dll?

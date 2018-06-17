@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zpp", "7zpp\7zpp.vcxproj", "{87675A89-D1C2-4C3D-ABA6-497E75A89962}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zpp", "7zpp\7zpp.VS2017.vcxproj", "{87675A89-D1C2-4C3D-ABA6-497E75A89962}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zpp-TestApp", "7zpp-TestApp\7zpp-TestApp.vcxproj", "{221858F5-5CED-4142-BD41-5A70972F9926}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7zpp-TestApp", "7zpp-TestApp\7zpp-TestApp.VS2017.vcxproj", "{221858F5-5CED-4142-BD41-5A70972F9926}"
 	ProjectSection(ProjectDependencies) = postProject
 		{87675A89-D1C2-4C3D-ABA6-497E75A89962} = {87675A89-D1C2-4C3D-ABA6-497E75A89962}
 	EndProjectSection

@@ -9,12 +9,9 @@ namespace SevenZip
 namespace intl
 {
 
-ArchiveOpenCallback::ArchiveOpenCallback()
-	: m_refCount( 0 )
-{
-}
-
-ArchiveOpenCallback::~ArchiveOpenCallback()
+ArchiveOpenCallback::ArchiveOpenCallback(const TString& password)
+	: m_refCount(0)
+	, m_password(password)
 {
 }
 
@@ -71,8 +68,10 @@ STDMETHODIMP ArchiveOpenCallback::SetCompleted( const UInt64* files, const UInt6
 
 STDMETHODIMP ArchiveOpenCallback::CryptoGetTextPassword( BSTR* password )
 {
-	// TODO: support passwords
-	return E_ABORT;
+	if(!m_password.empty())
+		*password = TStringAllocSysString(m_password);
+
+	return S_OK;
 }
 
 }

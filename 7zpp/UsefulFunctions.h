@@ -22,14 +22,14 @@ namespace SevenZip
 		static CComPtr< IOutArchive > GetArchiveWriter(const SevenZipLibrary& library, const CompressionFormatEnum& format);
 
 		static bool DetectCompressionFormat(const SevenZipLibrary& library, const TString& archivePath,
-			CompressionFormatEnum & archiveCompressionFormat);
-		
-		static bool UsefulFunctions::GetNumberOfItems(const SevenZipLibrary & library, const TString & archivePath, 
-			CompressionFormatEnum & format, size_t & numberofitems);
+			CompressionFormatEnum & archiveCompressionFormat, const TString& password);
+
+		static bool UsefulFunctions::GetNumberOfItems(const SevenZipLibrary & library, const TString & archivePath,
+			CompressionFormatEnum & format, size_t & numberofitems, const TString& password);
 
 		static bool UsefulFunctions::GetItemsNames(const SevenZipLibrary & library, const TString & archivePath,
-			CompressionFormatEnum & format, size_t & numberofitems, 
-			std::vector<TString> & itemnames, std::vector<size_t> & origsizes);
+			CompressionFormatEnum & format, size_t & numberofitems,
+			std::vector<std::wstring> & itemnames, std::vector<size_t> & origsizes, const TString& password);
 
 		static const TString EndingFromCompressionFormat(const CompressionFormatEnum& format);
 	};

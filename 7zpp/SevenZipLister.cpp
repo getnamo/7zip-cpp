@@ -15,7 +15,8 @@ namespace SevenZip
 	using namespace intl;
 
 	SevenZipLister::SevenZipLister(const SevenZipLibrary& library, const TString& archivePath)
-		: SevenZipArchive(library, archivePath)
+		: SevenZipArchive(library, archivePath),
+		m_archivePath(archivePath)
 	{
 	}
 
@@ -23,7 +24,7 @@ namespace SevenZip
 	{
 	}
 
-	bool SevenZipLister::ListArchive(ListCallback* callback)
+	bool SevenZipLister::ListArchive(const TString& password, ListCallback* callback /*= nullptr*/)
 	{
 		CComPtr< IStream > fileStream = FileSys::OpenFileToRead(m_archivePath);
 		if (fileStream == NULL)
@@ -32,14 +33,14 @@ namespace SevenZip
 			//throw SevenZipException( StrFmt( _T( "Could not open archive \"%s\"" ), m_archivePath.c_str() ) );
 		}
 
-		return ListArchive(fileStream, callback);
+		return ListArchive(fileStream, password, callback);
 	}
 
-	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, ListCallback* callback)
+	bool SevenZipLister::ListArchive(const CComPtr< IStream >& archiveStream, const TString& password, ListCallback* callback)
 	{
 		CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(m_library, m_compressionFormat);
 		CComPtr< InStreamWrapper > inFile = new InStreamWrapper(archiveStream);
-		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback();
+		CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(password);
 
 		HRESULT hr = archive->Open(inFile, 0, openCallback);
 		if (hr != S_OK)
@@ -52,35 +53,60 @@ namespace SevenZip
 		archive->GetNumberOfItems(&numItems);
 		for (UInt32 i = 0; i < numItems; i++)
 		{
+			FileInfo info;
+
+			// Get uncompressed size of file
+			CPropVariant prop;
+			archive->GetProperty(i, kpidSize, &prop);
+			info.Size = prop.uhVal.QuadPart;
+
+			// Get packed size of file
+			archive->GetProperty(i, kpidPackSize, &prop);
+			info.PackedSize = prop.uhVal.QuadPart;
+
+			// Get is directory property
+			archive->GetProperty(i, kpidIsDir, &prop);
+			info.IsDirectory = prop.boolVal != VARIANT_FALSE;
+
+			// Get name of file
+			archive->GetProperty(i, kpidPath, &prop);
+
+			//valid string?
+			if (prop.vt == VT_BSTR)
 			{
-				// Get uncompressed size of file
-				CPropVariant prop;
-				archive->GetProperty(i, kpidSize, &prop);
+				info.FileName = BstrToTString(prop.bstrVal);
+			}
 
-				int size = prop.intVal;
+			// Get create time
+			archive->GetProperty(i, kpidCTime, &prop);
+			info.CreationTime = prop.filetime;
 
-				// Get name of file
-				archive->GetProperty(i, kpidPath, &prop);
+			// Get last access time
+			archive->GetProperty(i, kpidATime, &prop);
+			info.LastAccessTime = prop.filetime;
 
-				//valid string? pass back the found value and call the callback function if set
-				if (prop.vt == VT_BSTR) {
-					WCHAR* path = prop.bstrVal;
-					if (callback) {
-						callback->OnFileFound(path, size);
-					}
-				}
+			// Get modify time
+			archive->GetProperty(i, kpidMTime, &prop);
+			info.LastWriteTime = prop.filetime;
+
+			// Get attributes
+			archive->GetProperty(i, kpidAttrib, &prop);
+			info.Attributes = prop.uintVal;
+
+			// pass back the found value and call the callback function if set
+			if (callback)
+			{
+				callback->OnFileFound(info);
 			}
 		}
-		CPropVariant prop;
-		archive->GetArchiveProperty(kpidPath,&prop);
+
 		archive->Close();
 
-		if (prop.vt == VT_BSTR) {
-			WCHAR* path = prop.bstrVal;
-			if (callback) {
-				callback->OnListingDone(path);
-			}
+		if (callback)
+		{
+			callback->OnListingDone(m_archivePath);
 		}
+
 		return true;
 	}
 }

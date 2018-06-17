@@ -1,5 +1,9 @@
 # 7zip-cpp
-Fork of SevenZip++ for VS2015
+Fork of SevenZip++ for VS2015, VS2017 (https://github.com/getnamo/7zip-cpp)
+
+Implement compress file list paradigm
+
+Uses latest lzma1801 SDK
 
 From:
 [http://bitbucket.org/cmcnab/sevenzip/wiki/Home](http://bitbucket.org/cmcnab/sevenzip/wiki/Home)
@@ -29,7 +33,10 @@ Then create and use a compressor:
 ```cpp
 SevenZip::SevenZipCompressor compressor(lib, archiveName);
 compressor.SetCompressionFormat(SevenZip::CompressionFormat::Zip);
-compressor.CompressDirectory(targetDir, callbackfunc);
+compressor.UseAbsolutePaths(false);
+compressor.AddFile(targetFile);
+compressor.AddDirectory(targetDir);
+compressor.DoCompress(callbackfunc);
 ```
 
 Or an extractor:
@@ -58,7 +65,7 @@ Or a lister:
 ```cpp
 class ListCallBackOutput : SevenZip::ListCallback
 {
-	virtual void OnFileFound(WCHAR* path, int size)
+	virtual void OnFileFound(WCHAR* path, ULONGLONG size)
 	{
 		std::wcout
 			<< path
@@ -102,21 +109,20 @@ catch (SevenZip::SevenZipException& ex)
 
 In order to compile the tests, the following requirements must be available:
 
-- Install Boost v1.60.0 binaries into $(SolutionDir)\\..\boost_1_60_0\ from http://www.boost.org
-- Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/keithjjones/googletest.git
+- Download and build Boost v1.66
+- Install binaries into $(SolutionDir)\\..\boost-1_66\ from http://www.boost.org
+- Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/google/googletest.git
   - Go into the googletest directory
   - Make directory ```build```
   - Change directory into ```build```
   - Run ```cmake .. -G "Visual Studio 14 2015 Win64"```
-  - Open the solution and compile GoogleTest.
+  - OR Run ```cmake .. -G "Visual Studio 15 2017 Win64"```
+  - Open the solution and compile GoogleTest solution.
 - Now you can compile 7zip-cpp
 
 The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
 
 ## Known Issues
-
-The extractor can have issues with relative paths.  To be sure it works correctly, feed it
-a full path.
 
 There is a bug in the testing program.  The issue has been logged on @keithjjones repository.
 

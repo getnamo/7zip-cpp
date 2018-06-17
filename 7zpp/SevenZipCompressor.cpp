@@ -6,6 +6,7 @@
 #include "OutStreamWrapper.h"
 #include "PropVariant.h"
 #include "UsefulFunctions.h"
+#include <atltime.h>
 
 
 namespace SevenZip
@@ -18,132 +19,163 @@ const TString SearchPatternAllFiles = _T( "*" );
 
 SevenZipCompressor::SevenZipCompressor(const SevenZipLibrary& library, const TString& archivePath)
 	: SevenZipArchive(library, archivePath)
+	, m_absolutePath(false)
 {
 }
 
-SevenZipCompressor::~SevenZipCompressor()
+bool SevenZipCompressor::AddDirectory( const TString& directory, bool includeSubdirs /*= true*/)
 {
+	return AddFilesToList(directory, SearchPatternAllFiles, m_absolutePath ? _T("") : FileSys::GetPath(directory), includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressDirectory( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
-{	
-	return FindAndCompressFiles( 
-			directory, 
-			SearchPatternAllFiles, 
-			FileSys::GetPath( directory ), 
-		includeSubdirs,
-		callback);
+bool SevenZipCompressor::AddFiles( const TString& directory, const TString& searchFilter, bool includeSubdirs /*= true*/)
+{
+	return AddFilesToList(directory, searchFilter, m_absolutePath ? _T("") : directory, includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressFiles( const TString& directory, const TString& searchFilter, ProgressCallback* callback, bool includeSubdirs )
+bool SevenZipCompressor::AddAllFiles( const TString& directory, bool includeSubdirs /*= true*/)
 {
-	return FindAndCompressFiles( 
-			directory, 
-			searchFilter, 
-			directory, 
-			includeSubdirs,
-			callback);
+	return AddFilesToList(directory, SearchPatternAllFiles, m_absolutePath ? _T("") : directory, includeSubdirs);
 }
 
-bool SevenZipCompressor::CompressAllFiles( const TString& directory, ProgressCallback* callback, bool includeSubdirs )
+bool SevenZipCompressor::AddMemory(const TString& filePath, void* memPointer, size_t size)
 {
-	return FindAndCompressFiles( 
-			directory, 
-			SearchPatternAllFiles, 
-			directory, 
-			includeSubdirs,
-			callback);
+	FilePathInfo memFile;
+	memFile.rootPath = FileSys::GetPath(filePath);
+	memFile.FileName = FileSys::GetFileName(filePath);
+	memFile.memFile = true;
+	memFile.memPointer = memPointer;
+	memFile.Size = size;
+	memFile.CreationTime = memFile.LastAccessTime = memFile.LastWriteTime = CFileTime::GetCurrentTime();
+	memFile.IsDirectory = false;
+	memFile.Attributes = FILE_ATTRIBUTE_NORMAL;
+
+	m_fileList.push_back(memFile);
+
+	return true;
 }
 
-bool SevenZipCompressor::CompressFile( const TString& filePath, ProgressCallback* callback)
+bool SevenZipCompressor::AddFile(const TString& filePath)
 {
-	std::vector< FilePathInfo > files = FileSys::GetFile( filePath );
+	std::vector< FilePathInfo > files = FileSys::GetFile(filePath, m_absolutePath);
 
 	if ( files.empty() )
 	{
 		return false;
-		//throw SevenZipException( StrFmt( _T( "File \"%s\" does not exist" ), filePath.c_str() ) );
 	}
 
-	m_outputPath = filePath;
+	m_fileList.insert(m_fileList.end(), files.begin(), files.end());
 
-	return CompressFilesToArchive( TString(), files, callback );
+	return true;
 }
 
-CComPtr< IStream > SevenZipCompressor::OpenArchiveStream()
+bool SevenZipCompressor::DoCompress(ProgressCallback* callback /*= nullptr*/)
 {
-	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite( m_archivePath );
+	if (m_fileList.empty())
+	{
+		return false;
+	}
+
+	if (!CheckValidFormat())
+	{
+		return false;
+	}
+
+	CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
+	if (!archiver)
+	{
+		// compression not supported
+		return false;
+	}
+
+	SetCompressionProperties(archiver);
+
+	//Set full outputFilePath including ending
+	m_archivePath += UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat);
+
+	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper(OpenArchiveStream());
+	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback(m_fileList, m_archivePath, m_password, callback);
+
+	HRESULT hr = archiver->UpdateItems(outFile, (UInt32)m_fileList.size(), updateCallback);
+
+	if (callback)
+	{
+		callback->OnDone(m_archivePath);	//Todo: give full path support
+	}
+
+	// returning S_FALSE also indicates error
+	return (hr == S_OK) ? true : false;
+}
+
+bool SevenZipCompressor::CheckValidFormat() const
+{
+	if (m_fileList.size() > 1 &&
+		(   m_compressionFormat == SevenZip::CompressionFormat::BZip2
+		 || m_compressionFormat == SevenZip::CompressionFormat::GZip)
+		)
+	{
+		// Not supported by compressing format
+		return false;
+	}
+
+	return true;
+}
+
+CComPtr< IStream > SevenZipCompressor::OpenArchiveStream() const
+{
+	CComPtr< IStream > fileStream = FileSys::OpenFileToWrite(m_archivePath);
 	if ( fileStream == NULL )
 	{
-		return NULL;
-		//throw SevenZipException( StrFmt( _T( "Could not create archive \"%s\"" ), m_archivePath.c_str() ) );
+		return nullptr;
 	}
 	return fileStream;
 }
 
-bool SevenZipCompressor::FindAndCompressFiles( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion, ProgressCallback* callback )
+bool SevenZipCompressor::AddFilesToList( const TString& directory, const TString& searchPattern, const TString& pathPrefix, bool recursion)
 {
 	if ( !FileSys::DirectoryExists( directory ) )
 	{
 		return false;	//Directory does not exist
 	}
-	
+
 	if ( FileSys::IsDirectoryEmptyRecursive( directory ) )
 	{
 		return false;	//Directory \"%s\" is empty" ), directory.c_str()
 	}
 
-	m_outputPath = directory;
-
-	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, recursion );
-	return CompressFilesToArchive( pathPrefix, files, callback );
-}
-
-bool SevenZipCompressor::CompressFilesToArchive(const TString& pathPrefix, const std::vector< FilePathInfo >& filePaths,
-	ProgressCallback* progressCallback)
-{
-	CComPtr< IOutArchive > archiver = UsefulFunctions::GetArchiveWriter(m_library, m_compressionFormat);
-	SetCompressionProperties( archiver );
-
-	//Set full outputFilePath including ending
-	m_outputPath += UsefulFunctions::EndingFromCompressionFormat(m_compressionFormat);
-
-	CComPtr< OutStreamWrapper > outFile = new OutStreamWrapper( OpenArchiveStream() );
-	CComPtr< ArchiveUpdateCallback > updateCallback = new ArchiveUpdateCallback( pathPrefix, filePaths, m_outputPath, progressCallback );
-
-	HRESULT hr = archiver->UpdateItems( outFile, (UInt32) filePaths.size(), updateCallback );
-
-	if (progressCallback)
-	{
-		progressCallback->OnDone(m_outputPath);	//Todo: give full path support
-	}
-
-	if ( hr != S_OK ) // returning S_FALSE also indicates error
+	std::vector< FilePathInfo > files = FileSys::GetFilesInDirectory( directory, searchPattern, pathPrefix, recursion );
+	if (files.empty())
 	{
 		return false;
 	}
+
+	m_fileList.insert(m_fileList.end(), files.begin(), files.end());
+
 	return true;
 }
 
-bool SevenZipCompressor::SetCompressionProperties( IUnknown* outArchive )
+bool SevenZipCompressor::SetCompressionProperties(IUnknown* outArchive) const
 {
+	if (!outArchive)
+	{
+		return false;
+	}
+
 	const size_t numProps = 1;
 	const wchar_t* names[numProps] = { L"x" };
 	CPropVariant values[numProps] = { static_cast< UInt32 >( m_compressionLevel.GetValue() ) };
 
 	CComPtr< ISetProperties > setter;
 	outArchive->QueryInterface( IID_ISetProperties, reinterpret_cast< void** >( &setter ) );
-	if ( setter == NULL )
+	if ( setter == nullptr )
 	{
 		return false;	//Archive does not support setting compression properties
 	}
 
 	HRESULT hr = setter->SetProperties( names, values, numProps );
-	if ( hr != S_OK )
-	{
-		return false;	//Setting compression properties
-	}
-	return true;
+
+	// returning S_FALSE also indicates error
+	return (hr == S_OK) ? true : false;
 }
 
 }
