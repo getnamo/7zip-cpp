@@ -170,7 +170,7 @@ namespace SevenZip
 					//throw SevenZipException( GetCOMErrMsg( _T( "Open archive" ), hr ) );
 				}
 
-				int size = prop.intVal;
+				auto size = prop.uhVal.QuadPart;
 				origsizes[i] = size_t(size);
 
 				// Get name of file
