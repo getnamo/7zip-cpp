@@ -10,7 +10,7 @@ set(Boost_USE_MULTITHREADED ON)
 find_package(Boost COMPONENTS filesystem ) 
 # Setup testing
 IF( NOT CMAKE_BUILD_TYPE )
-   SET( CMAKE_BUILD_TYPE Debug ... FORCE )
+   SET( CMAKE_BUILD_TYPE Debug)
 ENDIF()
 
 enable_testing()
@@ -42,3 +42,6 @@ add_test(
     NAME runUnitTests
     COMMAND TestApp
 )
+
+
+file(COPY ${PROJECT_SOURCE_DIR}/7zpp-TestApp/TestFiles DESTINATION ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
