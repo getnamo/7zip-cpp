@@ -109,22 +109,17 @@ catch (SevenZip::SevenZipException& ex)
 
 In order to compile the tests, the following requirements must be available:
 
-- Download and build Boost v1.66
-- Install binaries into $(SolutionDir)\\..\boost-1_66\ from http://www.boost.org
-- Install GoogleTest into $(SolutionDir)\\..\googletest\ from https://github.com/google/googletest.git
-  - Go into the googletest directory
-  - Make directory ```build```
-  - Change directory into ```build```
-  - Run ```cmake .. -G "Visual Studio 14 2015 Win64"```
-  - OR Run ```cmake .. -G "Visual Studio 15 2017 Win64"```
-  - Open the solution and compile GoogleTest solution.
-- Now you can compile 7zip-cpp
+- Download and build Boost
+- cd into source 
+- ``` mkdir build ```
+- ``` cd build ```
+- Build using ```cmake ../ -DBOOST_ROOT="My boost location" ```
+- Then finally ``` cmake --build ../build```
 
-The solution assumes 7zip is installed in ```C:\Program Files\7-Zip\7z.dll```.
 
 ## Known Issues
 
-There is a bug in the testing program.  The issue has been logged on @keithjjones repository.
+Only 1 test unit is failing.
 
 ## Contributing
 
