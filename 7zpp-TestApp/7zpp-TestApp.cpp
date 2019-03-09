@@ -10,18 +10,18 @@
 //  Wrapper
 #include "../7zpp/7zpp.h"
 
-#define DLL_PATH SOLUTIONDIR L"Exe\\x64\\7z.dll"
-#define TEMPDIR SOLUTIONDIR L"Exe\\x64\\tmp"
-#define ARCHIVE_NAME1 SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive"
-#define ARCHIVE_NAME2 SOLUTIONDIR L"Exe\\x64\\tmp\\MemArchive"
-#define TESTEXTRACTTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\files.zip"
-#define TESTEXTRACTTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt.gz"
-#define TESTEXTRACTTESTFILE3 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt"
-#define TESTEXTRACTTESTFILE4 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\7z.zip"
-#define TESTCOMPRESSTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.md"
-#define TESTCOMPRESSTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\dir"
-#define TESTCOMPRESSTESTFILE3 SOLUTIONDIR L"MemoryFile"
-#define TESTCOMPRESSTESTFILE4 SOLUTIONDIR L"Dir\\MemoryFile"
+#define DLL_PATH  L"Exe\\x64\\7z.dll"
+#define TEMPDIR  L"Exe\\x64\\tmp"
+#define ARCHIVE_NAME1  L"Exe\\x64\\tmp\\MyArchive"
+#define ARCHIVE_NAME2  L"Exe\\x64\\tmp\\MemArchive"
+#define TESTEXTRACTTESTFILE1  L"TestFiles\\files.zip"
+#define TESTEXTRACTTESTFILE2  L"TestFiles\\Readme.txt.gz"
+#define TESTEXTRACTTESTFILE3  L"TestFiles\\Readme.txt"
+#define TESTEXTRACTTESTFILE4  L"TestFiles\\7z.zip"
+#define TESTCOMPRESSTESTFILE1  L"TestFiles\\Readme.md"
+#define TESTCOMPRESSTESTFILE2  L"TestFiles\\dir"
+#define TESTCOMPRESSTESTFILE3  L"MemoryFile"
+#define TESTCOMPRESSTESTFILE4  L"Dir\\MemoryFile"
 
 //
 // Test loading DLL
