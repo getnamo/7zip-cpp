@@ -10,18 +10,20 @@
 //  Wrapper
 #include "../7zpp/7zpp.h"
 
-#define DLL_PATH  L"Exe\\x64\\7z.dll"
+#define DLL_PATH  "Exe\\x64\\7z.dll"
 #define TEMPDIR  L"Exe\\x64\\tmp"
-#define ARCHIVE_NAME1  L"Exe\\x64\\tmp\\MyArchive"
-#define ARCHIVE_NAME2  L"Exe\\x64\\tmp\\MemArchive"
-#define TESTEXTRACTTESTFILE1  L"TestFiles\\files.zip"
-#define TESTEXTRACTTESTFILE2  L"TestFiles\\Readme.txt.gz"
-#define TESTEXTRACTTESTFILE3  L"TestFiles\\Readme.txt"
-#define TESTEXTRACTTESTFILE4  L"TestFiles\\7z.zip"
-#define TESTCOMPRESSTESTFILE1  L"TestFiles\\Readme.md"
-#define TESTCOMPRESSTESTFILE2  L"TestFiles\\dir"
-#define TESTCOMPRESSTESTFILE3  L"MemoryFile"
-#define TESTCOMPRESSTESTFILE4  L"Dir\\MemoryFile"
+#define TEMPDIR_  "Exe\\x64\\tmp"
+#define ARCHIVE_NAME1  "Exe\\x64\\tmp\\MyArchive"
+#define ARCHIVE_NAME2  "Exe\\x64\\tmp\\MemArchive"
+#define TESTEXTRACTTESTFILE1  L"7zpp-TestApp\\TestFiles\\files.zip"
+#define TESTEXTRACTTESTFILE1_  "7zpp-TestApp\\TestFiles\\files.zip"
+#define TESTEXTRACTTESTFILE2  "7zpp-TestApp\\TestFiles\\Readme.txt.gz"
+#define TESTEXTRACTTESTFILE3  "7zpp-TestApp\\TestFiles\\Readme.txt"
+#define TESTEXTRACTTESTFILE4  "7zpp-TestApp\\TestFiles\\7z.zip"
+#define TESTCOMPRESSTESTFILE1  "7zpp-TestApp\\TestFiles\\Readme.md"
+#define TESTCOMPRESSTESTFILE2  "7zpp-TestApp\\TestFiles\\dir"
+#define TESTCOMPRESSTESTFILE3  "MemoryFile"
+#define TESTCOMPRESSTESTFILE4  "Dir\\MemoryFile"
 
 //
 // Test loading DLL
@@ -70,7 +72,7 @@ TEST(List, ListFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1);
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1_);
 
 	//
 	// Lister
@@ -88,8 +90,8 @@ TEST(List, ListFiles_Test1)
 	for (const auto& info : myListCallBack.GetList())
 	{
 		std::wcout
-			<< info.FileName
-			<< L"\n Size: "
+			/*<< info.FileName
+			<< L"\n Size: "*/
 			<< info.Size
 			<< L" Packed Size: "
 			<< info.PackedSize
@@ -116,8 +118,8 @@ TEST(Extract, ExtractFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE1));
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1_);
+	SevenZip::TString myDest(TEMPDIR_);
 
 	// Get rid of our temp directory
 	boost::filesystem::remove_all(TEMPDIR);
@@ -228,7 +230,7 @@ TEST(Extract, ExtractFiles_Test2)
 	ASSERT_EQ(true, result);
 
 	SevenZip::TString myArchive(TESTEXTRACTTESTFILE2);
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myDest(TEMPDIR_);
 
 	// Get rid of our temp directory
 	boost::filesystem::remove_all(TEMPDIR);
@@ -344,8 +346,8 @@ TEST(Extract, ExtractFiles_Test4)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE4));
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myArchive(std::string(TESTEXTRACTTESTFILE4));
+	SevenZip::TString myDest(TEMPDIR_);
 
 	// Get rid of our temp directory
 	boost::filesystem::remove_all(TEMPDIR);
@@ -454,8 +456,8 @@ TEST(Extract, ExtractFiles_Test5)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE4));
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myArchive(std::string(TESTEXTRACTTESTFILE4));
+	SevenZip::TString myDest(TEMPDIR_);
 
 	// Get rid of our temp directory
 	boost::filesystem::remove_all(TEMPDIR);
@@ -533,7 +535,7 @@ TEST(Compress, CompressFiles_Test1)
 	ASSERT_EQ(true, result);
 
 	SevenZip::TString myArchive(ARCHIVE_NAME1);
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myDest(TEMPDIR_);
 
 	boost::filesystem::remove_all(TEMPDIR);
 	boost::filesystem::create_directory(TEMPDIR);
@@ -570,7 +572,7 @@ TEST(Compress, CompressFiles_Test2)
 	boost::filesystem::create_directory(TEMPDIR);
 
 	SevenZip::TString myArchive(ARCHIVE_NAME1);
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myDest(TEMPDIR_);
 
 	SevenZip::SevenZipCompressor compressor(lib, myArchive);
 	compressor.SetCompressionFormat(SevenZip::CompressionFormat::SevenZip);
@@ -596,7 +598,7 @@ TEST(Compress, CompressFiles_Test3)
 	ASSERT_EQ(true, result);
 
 	SevenZip::TString myArchive(ARCHIVE_NAME2);
-	SevenZip::TString myDest(TEMPDIR);
+	SevenZip::TString myDest(TEMPDIR_);
 
 	boost::filesystem::remove_all(TEMPDIR);
 	boost::filesystem::create_directory(TEMPDIR);
