@@ -124,7 +124,7 @@ cmake --build ../build
 Add project into your cmakelists 
 
 ```
-add_subdirectory(${pathto7zip-cpp} ${PROJECT_SOURCE_DIR}/build/build7z)
+add_subdirectory(${pathto7zip-cpp} ${PROJECT_SOURCE_DIR}/build/build7zpp)
 target_include_directories(${my_project} INTERFACE ${pathto7zip-cpp}/Include)
 target_link_libraries(${my_project} 7zpp)
 add_dependencies(${my_project}  7zpp) #might not be necessary
@@ -135,7 +135,7 @@ add_dependencies(${my_project}  7zpp) #might not be necessary
 In order to compile the tests,you must have boost libraries in your path or specify the location where cmake can find them
 
 - Download and build Boost
-- cd into source 
+- cd into 7zpp source 
 - ``` mkdir build ```
 - ``` cd build ```
 - Build using ```cmake ../ -DBOOST_ROOT="My boost location" ```
