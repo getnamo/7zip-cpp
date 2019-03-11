@@ -113,8 +113,9 @@ catch (SevenZip::SevenZipException& ex)
 2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git --recursive```
 3. Navigate into the newly cloned project
 4. Download and build Boost
-5. cd into source 
-``` mkdir build 
+```plain 
+cd 7zip-cpp
+mkdir build 
 cd build 
 cmake ../
 cmake --build ../build 
