@@ -1,17 +1,18 @@
 # 7zip-cpp
 Fork of SevenZip++ for VS2015, VS2017 (https://github.com/getnamo/7zip-cpp)
 
-Implement compress file list paradigm
-
 Uses latest lzma1801 SDK
 
-From:
+#### Notes
+Originally from:
 [http://bitbucket.org/cmcnab/sevenzip/wiki/Home](http://bitbucket.org/cmcnab/sevenzip/wiki/Home)
 
 
 This is a C++ wrapper for accessing the 7-zip COM-like API in 7z.dll and 7za.dll. This code is heavily based off of the Client7z sample found in the [LZMA SDK](http://www.7-zip.org/sdk.html).
 
 The project itself is a static library.
+
+### Basic Usage
 
 To use, first load the 7z DLL into memory:
 
@@ -105,7 +106,17 @@ catch (SevenZip::SevenZipException& ex)
 ...
 ```
 
-## Requirements
+## Setup and Installation
+
+### Using git and cmake
+1. Navigate to folder of choice
+2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git```
+3. Navigate into the newly cloned project
+4. use e.g. ```cmake -G "Visual Studio 15 2017 Win64"``` to generate your solution
+5. open ```7zpp.sln``` select your config and build either just the library (_7zpp_) or if you meet the test requirements, _ALL_BUILD_.
+6. By default e.g. in debug config Output will be found at ```Debug/7zpp.lib``` 
+
+### Test Requirements
 
 In order to compile the tests, the following requirements must be available:
 
