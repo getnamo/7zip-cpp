@@ -110,15 +110,29 @@ catch (SevenZip::SevenZipException& ex)
 
 ### Using git and cmake
 1. Ensure you have [cmake](https://cmake.org/download/) and [git](https://git-scm.com/downloads) installed. Navigate to folder of choice.
-2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git```
+2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git --recursive```
 3. Navigate into the newly cloned project
-4. use e.g. ```cmake -G "Visual Studio 15 2017 Win64"``` to generate your solution
-5. open ```7zpp.sln``` select your config and build either just the library (_7zpp_) or if you meet the test requirements, _ALL_BUILD_.
-6. By default e.g. in debug config Output will be found at ```Debug/7zpp.lib``` 
+4. Download and build Boost
+5. cd into source 
+``` mkdir build 
+cd build 
+cmake ../
+cmake --build ../build 
+```
+
+### How to use this library in my project
+Add project into your cmakelists 
+
+```
+add_subdirectory(${pathto7zip-cpp} ${PROJECT_SOURCE_DIR}/build/build7z)
+target_include_directories(${my_project} INTERFACE ${pathto7zip-cpp}/Include)
+target_link_libraries(${my_project} 7zpp)
+add_dependencies(${my_project}  7zpp) #might not be necessary
+```
 
 ### Test Requirements
 
-In order to compile the tests, the following requirements must be available:
+In order to compile the tests,you must have boost libraries in your path or specify the location where cmake can find them
 
 - Download and build Boost
 - cd into source 
