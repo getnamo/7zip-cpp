@@ -109,7 +109,7 @@ catch (SevenZip::SevenZipException& ex)
 ## Setup and Installation
 
 ### Using git and cmake
-1. Navigate to folder of choice
+1. Ensure you have [cmake](https://cmake.org/download/) and [git](https://git-scm.com/download/win) installed. Navigate to folder of choice.
 2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git```
 3. Navigate into the newly cloned project
 4. use e.g. ```cmake -G "Visual Studio 15 2017 Win64"``` to generate your solution
