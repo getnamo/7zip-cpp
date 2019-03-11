@@ -1,5 +1,5 @@
 # 7zip-cpp
-Fork of SevenZip++ for VS2015, VS2017 (https://github.com/getnamo/7zip-cpp)
+A fork of [SevenZip++](http://bitbucket.org/cmcnab/sevenzip/wiki/Home) for modern builds. Uses cmake to generate build files for desired Visual Studio version, see [setup section for instructions](https://github.com/getnamo/7zip-cpp#using-git-and-cmake).
 
 Uses latest lzma1801 SDK
 
