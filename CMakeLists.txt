@@ -13,45 +13,49 @@ find_package(Boost COMPONENTS filesystem )
 IF( NOT CMAKE_BUILD_TYPE )
    SET( CMAKE_BUILD_TYPE Debug)
 ENDIF()
-
-enable_testing()
-
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/ ${CMAKE_SOURCE_DIR}/googletest/include ${CMAKE_SOURCE_DIR}/googletest/googletest ${CMAKE_SOURCE_DIR}/googletest/googletest/include)
-#find_package(GTest REQUIRED)
-
-add_executable(TestApp  ${PROJECT_SOURCE_DIR}/7zpp-TestApp/7zpp-TestApp.cpp)
-
-target_include_directories(TestApp PRIVATE 
-${PROJECT_SOURCE_DIR}/7zpp-TestApp/ 
-${PROJECT_SOURCE_DIR} 
-${PROJECT_SOURCE_DIR}/7zpp 
-${PROJECT_SOURCE_DIR}/7z/C  
-${PROJECT_SOURCE_DIR}/7z/CPP
-${Boost_INCLUDE_DIRS} 
-)
+if(Boost_FOUND)
+    message("Building and running tests")
+    enable_testing()
 
 
-add_dependencies(TestApp 7zpp)
-set(GTEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/gtest-all.cc)
-add_library(gtest STATIC ${GTEST_SRC}) 
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/ ${CMAKE_SOURCE_DIR}/googletest/include ${CMAKE_SOURCE_DIR}/googletest/googletest ${CMAKE_SOURCE_DIR}/googletest/googletest/include)
+    #find_package(GTest REQUIRED)
 
-target_link_libraries(TestApp 7zpp gtest ${Boost_LIBRARIES})
+    add_executable(TestApp  ${PROJECT_SOURCE_DIR}/7zpp-TestApp/7zpp-TestApp.cpp)
+
+    target_include_directories(TestApp PRIVATE 
+    ${PROJECT_SOURCE_DIR}/7zpp-TestApp/ 
+    ${PROJECT_SOURCE_DIR} 
+    ${PROJECT_SOURCE_DIR}/7zpp 
+    ${PROJECT_SOURCE_DIR}/7z/C  
+    ${PROJECT_SOURCE_DIR}/7z/CPP
+    ${Boost_INCLUDE_DIRS} 
+    )
 
 
-add_test(
-    NAME runUnitTests
-    COMMAND TestApp
-)
+    add_dependencies(TestApp 7zpp)
+    set(GTEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/googletest/googletest/src/gtest-all.cc)
+    add_library(gtest STATIC ${GTEST_SRC}) 
+
+    target_link_libraries(TestApp 7zpp gtest ${Boost_LIBRARIES})
 
 
-file(COPY ${PROJECT_SOURCE_DIR}/7zpp-TestApp/TestFiles DESTINATION ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+    add_test(
+        NAME runUnitTests
+        COMMAND TestApp
+    )
 
-set(UNIT_TEST TestApp)
-add_custom_command(
-     TARGET ${UNIT_TEST}
-     COMMENT "Run tests"
-     POST_BUILD 
-     COMMAND ${UNIT_TEST}
-     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}
-)
+
+    file(COPY ${PROJECT_SOURCE_DIR}/7zpp-TestApp/TestFiles DESTINATION ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+
+    set(UNIT_TEST TestApp)
+    add_custom_command(
+        TARGET ${UNIT_TEST}
+        COMMENT "Run tests"
+        POST_BUILD 
+        COMMAND ${UNIT_TEST}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}
+    )
+else()
+    message("Not running tests:Make sure you have boost installed.")
+endif()
