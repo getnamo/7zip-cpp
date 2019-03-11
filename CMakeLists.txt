@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(7zpp)
+include(CTest)
 
 file(GLOB 7ZPP_SOURCES  ${PROJECT_SOURCE_DIR}/7zpp/*.cpp )
 add_library(7zpp ${7ZPP_SOURCES})
@@ -45,3 +46,12 @@ add_test(
 
 
 file(COPY ${PROJECT_SOURCE_DIR}/7zpp-TestApp/TestFiles DESTINATION ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+
+set(UNIT_TEST TestApp)
+add_custom_command(
+     TARGET ${UNIT_TEST}
+     COMMENT "Run tests"
+     POST_BUILD 
+     COMMAND ${UNIT_TEST}
+     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}
+)
