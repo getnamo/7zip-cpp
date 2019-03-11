@@ -6,23 +6,30 @@
 #include <gtest/gtest.h>
 #include <boost\filesystem.hpp>
 #include <atltime.h>
+#include <locale> 
+#include <codecvt>
 
 //  Wrapper
 #include "../7zpp/7zpp.h"
 
-#define DLL_PATH SOLUTIONDIR L"Exe\\x64\\7z.dll"
-#define TEMPDIR SOLUTIONDIR L"Exe\\x64\\tmp"
-#define ARCHIVE_NAME1 SOLUTIONDIR L"Exe\\x64\\tmp\\MyArchive"
-#define ARCHIVE_NAME2 SOLUTIONDIR L"Exe\\x64\\tmp\\MemArchive"
-#define TESTEXTRACTTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\files.zip"
-#define TESTEXTRACTTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt.gz"
-#define TESTEXTRACTTESTFILE3 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.txt"
-#define TESTEXTRACTTESTFILE4 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\7z.zip"
-#define TESTCOMPRESSTESTFILE1 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\Readme.md"
-#define TESTCOMPRESSTESTFILE2 SOLUTIONDIR L"7zpp-TestApp\\TestFiles\\dir"
-#define TESTCOMPRESSTESTFILE3 SOLUTIONDIR L"MemoryFile"
-#define TESTCOMPRESSTESTFILE4 SOLUTIONDIR L"Dir\\MemoryFile"
 
+#define DLL_PATH  "C:\\Program Files\\7-Zip\\7z.dll"
+#define TEMPDIR  "Exe\\"
+#define ARCHIVE_NAME1  "MyArchive"
+#define ARCHIVE_NAME2  "MemArchive"
+#define TESTEXTRACTTESTFILE1  "TestFiles\\files.zip"
+#define TESTEXTRACTTESTFILE2  "TestFiles\\Readme.txt.gz"
+#define TESTEXTRACTTESTFILE3  "TestFiles\\Readme.txt"
+#define TESTEXTRACTTESTFILE4  "TestFiles\\7z.zip"
+#define TESTCOMPRESSTESTFILE1  "TestFiles\\Readme.md"
+#define TESTCOMPRESSTESTFILE2  "TestFiles\\dir"
+#define TESTCOMPRESSTESTFILE3  "MemoryFile"
+#define TESTCOMPRESSTESTFILE4  "Dir\\MemoryFile"
+
+//found this code here https://stackoverflow.com/questions/4804298/how-to-convert-wstring-into-string
+//setup converter
+using convert_type = std::codecvt_utf8<wchar_t>;
+std::wstring_convert<convert_type, wchar_t> converter;
 //
 // Test loading DLL
 //
@@ -87,21 +94,22 @@ TEST(List, ListFiles_Test1)
 
 	for (const auto& info : myListCallBack.GetList())
 	{
-		std::wcout
-			<< info.FileName
-			<< L"\n Size: "
-			<< info.Size
-			<< L" Packed Size: "
-			<< info.PackedSize
-			<< L" Attributes: "
-			<< info.Attributes
-			<< L"\n Create Time: "
-			<< CTime(info.CreationTime).Format(_T("%F %T")).GetString()
-			<< L" Access Time: "
-			<< CTime(info.LastAccessTime).Format(_T("%F %T")).GetString()
-			<< L" Modify Time: "
-			<< CTime(info.LastWriteTime).Format(_T("%F %T")).GetString()
-			<< std::endl;
+		
+            std::cout << info.FileName
+                      << " Size: ";
+            std::wcout
+                << info.Size
+                << L" Packed Size: "
+                << info.PackedSize
+                << L" Attributes: "
+                << info.Attributes
+                << L"\n Create Time: "
+                << CTime(info.CreationTime).Format(_T("%F %T")).GetString()
+                << L" Access Time: "
+                << CTime(info.LastAccessTime).Format(_T("%F %T")).GetString()
+                << L" Modify Time: "
+                << CTime(info.LastWriteTime).Format(_T("%F %T")).GetString()
+                << std::endl;
 	}
 }
 
@@ -116,7 +124,7 @@ TEST(Extract, ExtractFiles_Test1)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE1));
+	SevenZip::TString myArchive(TESTEXTRACTTESTFILE1);
 	SevenZip::TString myDest(TEMPDIR);
 
 	// Get rid of our temp directory
@@ -151,46 +159,46 @@ TEST(Extract, ExtractFiles_Test1)
 	std::vector<size_t> origsizes = extractor.GetOrigSizes();
 
 	// Set up expected names and sizes
-	std::vector<std::wstring> expecteditemnames;
+	std::vector<std::string> expecteditemnames;
 	std::vector<size_t> expectedorigsizes;
 
-	expecteditemnames.push_back(std::wstring(L"DLL.cpp"));
+	expecteditemnames.push_back(std::string("DLL.cpp"));
 	expectedorigsizes.push_back(1840);
 
-	expecteditemnames.push_back(std::wstring(L"DLL.h"));
+	expecteditemnames.push_back(std::string("DLL.h"));
 	expectedorigsizes.push_back(1310);
 
-	expecteditemnames.push_back(std::wstring(L"ErrorMsg.cpp"));
+	expecteditemnames.push_back(std::string("ErrorMsg.cpp"));
 	expectedorigsizes.push_back(1463);
 
-	expecteditemnames.push_back(std::wstring(L"ErrorMsg.h"));
+	expecteditemnames.push_back(std::string("ErrorMsg.h"));
 	expectedorigsizes.push_back(227);
 
-	expecteditemnames.push_back(std::wstring(L"FileDir.cpp"));
+	expecteditemnames.push_back(std::string("FileDir.cpp"));
 	expectedorigsizes.push_back(15605);
 
-	expecteditemnames.push_back(std::wstring(L"FileDir.h"));
+	expecteditemnames.push_back(std::string("FileDir.h"));
 	expectedorigsizes.push_back(2572);
 
-	expecteditemnames.push_back(std::wstring(L"FileFind.cpp"));
+	expecteditemnames.push_back(std::string("FileFind.cpp"));
 	expectedorigsizes.push_back(18771);
 
-	expecteditemnames.push_back(std::wstring(L"FileFind.h"));
+	expecteditemnames.push_back(std::string("FileFind.h"));
 	expectedorigsizes.push_back(4561);
 
-	expecteditemnames.push_back(std::wstring(L"FileIO.cpp"));
+	expecteditemnames.push_back(std::string("FileIO.cpp"));
 	expectedorigsizes.push_back(12076);
 
-	expecteditemnames.push_back(std::wstring(L"FileIO.h"));
+	expecteditemnames.push_back(std::string("FileIO.h"));
 	expectedorigsizes.push_back(6367);
 
-	expecteditemnames.push_back(std::wstring(L"FileLink.cpp"));
+	expecteditemnames.push_back(std::string("FileLink.cpp"));
 	expectedorigsizes.push_back(10029);
 
 	// Check expected sizes
 	for (int i = 0; i < itemnames.size(); i++)
 	{
-		EXPECT_EQ(expecteditemnames[i], itemnames[i]);
+		EXPECT_EQ(expecteditemnames[i], converter.to_bytes(itemnames[i]));
 		EXPECT_EQ(expectedorigsizes[i], origsizes[i]);
 	}
 
@@ -210,7 +218,7 @@ TEST(Extract, ExtractFiles_Test1)
 	while (itr != end && i < expecteditemnames.size())
 	{
 		boost::filesystem::path myPath = itr->path().leaf();
-		EXPECT_EQ(expecteditemnames[i], myPath.wstring());
+		EXPECT_EQ(expecteditemnames[i], myPath.string());
 		i++;
 		++itr;
 	}
@@ -262,16 +270,16 @@ TEST(Extract, ExtractFiles_Test2)
 	std::vector<size_t> origsizes = extractor.GetOrigSizes();
 
 	// Set up expected names and sizes
-	std::vector<std::wstring> expecteditemnames;
+	std::vector<std::string> expecteditemnames;
 	std::vector<size_t> expectedorigsizes;
 
-	expecteditemnames.push_back(std::wstring(L"ReadMe.txt"));
+	expecteditemnames.push_back(std::string("ReadMe.txt"));
 	expectedorigsizes.push_back(119);
 
 	// Check expected sizes
 	for (int i = 0; i < itemnames.size(); i++)
 	{
-		EXPECT_EQ(expecteditemnames[i], itemnames[i]);
+		EXPECT_EQ(expecteditemnames[i], converter.to_bytes(itemnames[i]));
 		EXPECT_EQ(expectedorigsizes[i], origsizes[i]);
 	}
 
@@ -291,7 +299,7 @@ TEST(Extract, ExtractFiles_Test2)
 	while (itr != boost::filesystem::recursive_directory_iterator())
 	{
 		boost::filesystem::path myPath = itr->path().leaf();
-		EXPECT_EQ(expecteditemnames[i], myPath.wstring());
+		EXPECT_EQ(expecteditemnames[i], myPath.string());
 		i++;
 		++itr;
 	}
@@ -344,7 +352,7 @@ TEST(Extract, ExtractFiles_Test4)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE4));
+	SevenZip::TString myArchive(std::string(TESTEXTRACTTESTFILE4));
 	SevenZip::TString myDest(TEMPDIR);
 
 	// Get rid of our temp directory
@@ -379,28 +387,28 @@ TEST(Extract, ExtractFiles_Test4)
 	std::vector<size_t> origsizes = extractor.GetOrigSizes();
 
 	// Set up first few expected names and sizes
-	std::vector<std::wstring> expecteditemnames;
+	std::vector<std::string> expecteditemnames;
 	std::vector<size_t> expectedorigsizes;
 
-	expecteditemnames.push_back(std::wstring(L"7z\\.git"));
+	expecteditemnames.push_back(std::string("7z\\.git"));
 	expectedorigsizes.push_back(27);
 
-	expecteditemnames.push_back(std::wstring(L"7z\\.gitignore"));
+	expecteditemnames.push_back(std::string("7z\\.gitignore"));
 	expectedorigsizes.push_back(145);
 
-	expecteditemnames.push_back(std::wstring(L"7z\\Asm"));
+	expecteditemnames.push_back(std::string("7z\\Asm"));
 	expectedorigsizes.push_back(0);
 
-	expecteditemnames.push_back(std::wstring(L"7z\\Asm\\arm"));
+	expecteditemnames.push_back(std::string("7z\\Asm\\arm"));
 	expectedorigsizes.push_back(0);
 
-	expecteditemnames.push_back(std::wstring(L"7z\\Asm\\arm\\7zCrcOpt.asm"));
+	expecteditemnames.push_back(std::string("7z\\Asm\\arm\\7zCrcOpt.asm"));
 	expectedorigsizes.push_back(1466);
 
 	// Check expected sizes of the first few files
 	for (int i = 0; i < expecteditemnames.size(); i++)
 	{
-		EXPECT_EQ(expecteditemnames[i], itemnames[i]);
+		EXPECT_EQ(expecteditemnames[i],converter.to_bytes(itemnames[i]));
 		EXPECT_EQ(expectedorigsizes[i], origsizes[i]);
 	}
 
@@ -421,8 +429,8 @@ TEST(Extract, ExtractFiles_Test4)
 	while (itr != boost::filesystem::recursive_directory_iterator() && i < expecteditemnames.size())
 	{
 		boost::filesystem::path myPath = itr->path();
-		std::wstring myActualPath = std::wstring(TEMPDIR) + std::wstring(L"\\") + expecteditemnames[i];
-		EXPECT_EQ(myActualPath, myPath.wstring());
+		std::string myActualPath = std::string(TEMPDIR) + expecteditemnames[i];
+		EXPECT_EQ(myActualPath, myPath.string());
 		i++;
 		++itr;
 	}
@@ -454,7 +462,7 @@ TEST(Extract, ExtractFiles_Test5)
 	// Make sure DLL loads
 	ASSERT_EQ(true, result);
 
-	SevenZip::TString myArchive(std::wstring(TESTEXTRACTTESTFILE4));
+	SevenZip::TString myArchive(std::string(TESTEXTRACTTESTFILE4));
 	SevenZip::TString myDest(TEMPDIR);
 
 	// Get rid of our temp directory
@@ -487,13 +495,13 @@ TEST(Extract, ExtractFiles_Test5)
 	//
 	// Look for the first few actual files
 	//
-	std::vector<std::wstring> expecteditemnames;
+	std::vector<std::string> expecteditemnames;
 	std::vector<size_t> expectedorigsizes;
 
-	expecteditemnames.push_back(std::wstring(L"7z\\.gitignore"));
+	expecteditemnames.push_back(std::string("7z\\.gitignore"));
 	expectedorigsizes.push_back(145);
 
-	expecteditemnames.push_back(std::wstring(L"7z\\Asm\\arm\\7zCrcOpt.asm"));
+	expecteditemnames.push_back(std::string("7z\\Asm\\arm\\7zCrcOpt.asm"));
 	expectedorigsizes.push_back(1466);
 
 	int i = 0;
@@ -504,8 +512,8 @@ TEST(Extract, ExtractFiles_Test5)
 		if(itr->status().type() != boost::filesystem::directory_file)
 		{
 			boost::filesystem::path myPath = itr->path();
-			std::wstring myActualPath = std::wstring(TEMPDIR) + std::wstring(L"\\") + expecteditemnames[i];
-			EXPECT_EQ(myActualPath, myPath.wstring());
+			std::string myActualPath = std::string(TEMPDIR) + std::string("\\") +  expecteditemnames[i];
+			EXPECT_EQ(myActualPath, myPath.string());
 			i++;
 		}
 		++itr;
