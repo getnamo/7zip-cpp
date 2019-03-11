@@ -135,9 +135,8 @@ add_dependencies(${my_project}  7zpp) #might not be necessary
 In order to compile the tests,you must have boost libraries in your path or specify the location where cmake can find them
 
 - Download and build Boost
-- cd into 7zpp source 
-
 ```plain
+cd 7zip-cpp
 mkdir build 
 cd build
 cmake ../ -DBOOST_ROOT="My boost location"
