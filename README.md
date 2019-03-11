@@ -123,7 +123,7 @@ cmake --build ../build
 ### How to use this library in my project
 Add project into your cmakelists 
 
-```
+```plain
 add_subdirectory(${pathto7zip-cpp} ${PROJECT_SOURCE_DIR}/build/build7zpp)
 target_include_directories(${my_project} INTERFACE ${pathto7zip-cpp}/Include)
 target_link_libraries(${my_project} 7zpp)
@@ -137,12 +137,12 @@ In order to compile the tests,you must have boost libraries in your path or spec
 - Download and build Boost
 - cd into 7zpp source 
 
-```
+```plain
 mkdir build 
 cd build
 cmake ../ -DBOOST_ROOT="My boost location"
 ```
-- Then finally ``` cmake --build ../build``` to build
+- Then finally `cmake --build ../build` to build
 
 
 ## Known Issues
