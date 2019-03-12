@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/jywlyxm4s1957le0?svg=true)](https://ci.appveyor.com/project/kenkit/7zip-cpp)
+[![Build status](https://ci.appveyor.com/api/projects/status/11i6cncafgey8lt3?svg=true)](https://ci.appveyor.com/project/getnamo/7zip-cpp)
 
 # 7zip-cpp
 A fork of [SevenZip++](http://bitbucket.org/cmcnab/sevenzip/wiki/Home) for modern builds. Uses cmake to generate build files for desired Visual Studio version, see [setup section for instructions](https://github.com/getnamo/7zip-cpp#using-git-and-cmake).
