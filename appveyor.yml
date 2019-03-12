@@ -1,0 +1,17 @@
+version: 1.0.{build}
+build_script:
+- cmd: >-
+    git submodule update --init --recursive
+
+    mkdir build
+
+    cd build
+
+    cmake ../ -G "Visual Studio 14 2015 Win64" -DBOOST_ROOT=C:\Libraries\boost_1_67_0
+
+    cmake --build ../build --target 7zpp
+test_script:
+- cmd: >-
+    cmake --build ../build --target TestApp
+
+    ctest -VV -C Debug

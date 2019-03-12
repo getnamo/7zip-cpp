@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/jywlyxm4s1957le0?svg=true)](https://ci.appveyor.com/project/kenkit/7zip-cpp)
+
 # 7zip-cpp
 A fork of [SevenZip++](http://bitbucket.org/cmcnab/sevenzip/wiki/Home) for modern builds. Uses cmake to generate build files for desired Visual Studio version, see [setup section for instructions](https://github.com/getnamo/7zip-cpp#using-git-and-cmake).
 
@@ -110,22 +112,41 @@ catch (SevenZip::SevenZipException& ex)
 
 ### Using git and cmake
 1. Ensure you have [cmake](https://cmake.org/download/) and [git](https://git-scm.com/downloads) installed. Navigate to folder of choice.
-2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git```
+2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git --recursive```
 3. Navigate into the newly cloned project
-4. use e.g. ```cmake -G "Visual Studio 15 2017 Win64"``` to generate your solution
-5. open ```7zpp.sln``` select your config and build either just the library (_7zpp_) or if you meet the test requirements, _ALL_BUILD_.
-6. By default e.g. in debug config Output will be found at ```Debug/7zpp.lib``` 
+4. (Optional for Test app only) Download and build [Boost](https://www.boost.org/users/download/)
+5. Example build with cmake using powershell
+```plain 
+cd 7zip-cpp
+mkdir build 
+cd build 
+cmake -G "Visual Studio 15 2017 Win64" ../
+cmake --build ../build --config Release
+```
+6. Commands from 5 will build win64 Release target and output will be found in ```build/Release/7zpp.lib```
+
+### How to use this library in my project
+Add project into your cmakelists 
+
+```plain
+add_subdirectory(${pathto7zip-cpp} ${PROJECT_SOURCE_DIR}/build/build7zpp)
+target_include_directories(${my_project} INTERFACE ${pathto7zip-cpp}/Include)
+target_link_libraries(${my_project} 7zpp)
+add_dependencies(${my_project}  7zpp) #might not be necessary
+```
 
 ### Test Requirements
 
-In order to compile the tests, the following requirements must be available:
+In order to compile the tests,you must have boost libraries in your path or specify the location where cmake can find them
 
 - Download and build Boost
-- cd into source 
-- ``` mkdir build ```
-- ``` cd build ```
-- Build using ```cmake ../ -DBOOST_ROOT="My boost location" ```
-- Then finally ``` cmake --build ../build```
+```plain
+cd 7zip-cpp
+mkdir build 
+cd build
+cmake ../ -DBOOST_ROOT="My boost location"
+```
+- Then finally `cmake --build ../build` to build
 
 
 ## Known Issues
