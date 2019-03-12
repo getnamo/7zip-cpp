@@ -30,4 +30,5 @@ dll/
 # Misc
 *.log
 *.tlog
-build
+build/*
+!build/.gitkeep

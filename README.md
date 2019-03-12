@@ -113,13 +113,11 @@ catch (SevenZip::SevenZipException& ex)
 ### Using git and cmake
 1. Ensure you have [cmake](https://cmake.org/download/) and [git](https://git-scm.com/downloads) installed. Navigate to folder of choice.
 2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git --recursive```
-3. Navigate into the newly cloned project
+3. Navigate into the newly cloned project ```cd 7zip-cpp```
 4. (Optional for Test app only) Download and build [Boost](https://www.boost.org/users/download/)
 5. Example build with cmake using powershell
 ```plain 
-cd 7zip-cpp
-mkdir build 
-cd build 
+cd build
 cmake -G "Visual Studio 15 2017 Win64" ../
 cmake --build ../build --config Release
 ```
@@ -139,14 +137,13 @@ add_dependencies(${my_project}  7zpp) #might not be necessary
 
 In order to compile the tests,you must have boost libraries in your path or specify the location where cmake can find them
 
-- Download and build Boost
+1. Assuming you're in the project directory
+2. Download and build [Boost](https://www.boost.org/users/download/)
 ```plain
-cd 7zip-cpp
-mkdir build 
 cd build
 cmake ../ -DBOOST_ROOT="My boost location"
 ```
-- Then finally `cmake --build ../build` to build
+2. Then finally `cmake --build ../build` to build
 
 
 ## Known Issues
