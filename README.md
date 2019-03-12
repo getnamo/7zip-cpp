@@ -114,7 +114,8 @@ catch (SevenZip::SevenZipException& ex)
 1. Ensure you have [cmake](https://cmake.org/download/) and [git](https://git-scm.com/downloads) installed. Navigate to folder of choice.
 2. Open a powershell window and type ```git clone https://github.com/getnamo/7zip-cpp.git --recursive```
 3. Navigate into the newly cloned project
-4. Download and build Boost
+4. (Optional for Test app only) Download and build [Boost](https://www.boost.org/users/download/)
+5. 
 ```plain 
 cd 7zip-cpp
 mkdir build 
@@ -122,6 +123,7 @@ cd build
 cmake ../
 cmake --build ../build 
 ```
+6. By default win32 debug target will build and will be found in ```/build/Debug/7zpp.lib```
 
 ### How to use this library in my project
 Add project into your cmakelists 
