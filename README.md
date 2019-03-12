@@ -120,10 +120,10 @@ catch (SevenZip::SevenZipException& ex)
 cd 7zip-cpp
 mkdir build 
 cd build 
-cmake ../
-cmake --build ../build 
+cmake -G "Visual Studio 15 2017 Win64" ../
+cmake --build ../build --config Release
 ```
-6. By default win32 debug target will build and will be found in ```/build/Debug/7zpp.lib```
+6. Commands from 5 will build win64 Release target and output will be found in ```build/Release/7zpp.lib```
 
 ### How to use this library in my project
 Add project into your cmakelists 
