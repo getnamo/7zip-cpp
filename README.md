@@ -117,9 +117,7 @@ catch (SevenZip::SevenZipException& ex)
 4. (Optional for Test app only) Download and build [Boost](https://www.boost.org/users/download/)
 5. Example build with cmake using powershell
 ```plain 
-cd 7zip-cpp
-mkdir build 
-cd build 
+cd 7zip-cpp/build
 cmake -G "Visual Studio 15 2017 Win64" ../
 cmake --build ../build --config Release
 ```
@@ -141,9 +139,7 @@ In order to compile the tests,you must have boost libraries in your path or spec
 
 - Download and build Boost
 ```plain
-cd 7zip-cpp
-mkdir build 
-cd build
+cd 7zip-cpp/build
 cmake ../ -DBOOST_ROOT="My boost location"
 ```
 - Then finally `cmake --build ../build` to build
