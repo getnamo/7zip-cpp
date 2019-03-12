@@ -3,7 +3,7 @@ build_script:
 - cmd: >-
     git submodule update --init --recursive
     
-    cd 7zip-cpp
+    cd build
 
     cmake ../ -G "Visual Studio 15 2017 Win64" -DBOOST_ROOT=C:\Libraries\boost_1_67_0
 
