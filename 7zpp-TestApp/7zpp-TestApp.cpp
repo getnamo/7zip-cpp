@@ -512,7 +512,7 @@ TEST(Extract, ExtractFiles_Test5)
 		if(itr->status().type() != boost::filesystem::directory_file)
 		{
 			boost::filesystem::path myPath = itr->path();
-			std::string myActualPath = std::string(TEMPDIR) + std::string("\\") +  expecteditemnames[i];
+			std::string myActualPath = std::string(TEMPDIR) +  expecteditemnames[i];
 			EXPECT_EQ(myActualPath, myPath.string());
 			i++;
 		}
