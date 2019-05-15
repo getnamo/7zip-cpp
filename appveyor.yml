@@ -11,5 +11,3 @@ build_script:
 test_script:
 - cmd: >-
     cmake --build ../build --target TestApp
-
-    ctest -VV -C Debug
