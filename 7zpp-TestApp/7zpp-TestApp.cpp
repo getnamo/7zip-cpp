@@ -425,12 +425,13 @@ TEST(Extract, ExtractFiles_Test4)
 	//
 	boost::filesystem::recursive_directory_iterator itr(TEMPDIR);
 	int i = 0;
+	itr++; // Get rid of the parent directory
 	for(auto&& it : itr) {
 		boost::filesystem::path myPath = it.path();
 		std::string myActualPath = std::string(TEMPDIR) + expecteditemnames[i];
 		EXPECT_EQ(myActualPath, myPath.string());
 	i++;
-	if(i > expecteditemnames.size())
+	if(i+1 > expecteditemnames.size())
 	break;
     }
 

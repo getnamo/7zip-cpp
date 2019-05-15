@@ -53,7 +53,17 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "codecvt": "cpp",
-        "7zfile.h": "c"
+        "7zfile.h": "c",
+        "atomic": "cpp",
+        "chrono": "cpp",
+        "cwctype": "cpp",
+        "fstream": "cpp",
+        "locale": "cpp",
+        "ratio": "cpp",
+        "stack": "cpp",
+        "thread": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp"
     },
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools"
 }
