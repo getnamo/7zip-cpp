@@ -14,7 +14,7 @@
 
 
 #define DLL_PATH  "C:\\Program Files\\7-Zip\\7z.dll"
-#define TEMPDIR  "Exe\\"
+std::string TEMPDIR;
 #define ARCHIVE_NAME1  "MyArchive"
 #define ARCHIVE_NAME2  "MemArchive"
 #define TESTEXTRACTTESTFILE1  "TestFiles\\files.zip"
@@ -423,17 +423,17 @@ TEST(Extract, ExtractFiles_Test4)
 	//
 	// Look for the first few actual files
 	//
-	int i = 0;
 	boost::filesystem::recursive_directory_iterator itr(TEMPDIR);
+	int i = 0;
 	itr++; // Get rid of the parent directory
-	while (itr != boost::filesystem::recursive_directory_iterator() && i < expecteditemnames.size())
-	{
-		boost::filesystem::path myPath = itr->path();
+	for(auto&& it : itr) {
+		boost::filesystem::path myPath = it.path();
 		std::string myActualPath = std::string(TEMPDIR) + expecteditemnames[i];
 		EXPECT_EQ(myActualPath, myPath.string());
-		i++;
-		++itr;
-	}
+	i++;
+	if(i+1 > expecteditemnames.size())
+	break;
+    }
 
 	//
 	//  The line below causes an error with Boost 1.60.
@@ -512,7 +512,7 @@ TEST(Extract, ExtractFiles_Test5)
 		if(itr->status().type() != boost::filesystem::directory_file)
 		{
 			boost::filesystem::path myPath = itr->path();
-			std::string myActualPath = std::string(TEMPDIR) + std::string("\\") +  expecteditemnames[i];
+			std::string myActualPath = std::string(TEMPDIR) +  expecteditemnames[i];
 			EXPECT_EQ(myActualPath, myPath.string());
 			i++;
 		}
@@ -624,15 +624,15 @@ TEST(Compress, CompressFiles_Test3)
 //
 int main(int argc, char **argv)
 {
-	boost::filesystem::remove_all(TEMPDIR);
+	boost::filesystem::path current_path(boost::filesystem::current_path());
+  TEMPDIR =current_path.string()+"\\temp\\";
+  boost::filesystem::remove_all(TEMPDIR);
 
-	::testing::InitGoogleTest(&argc, argv);
-	int result = RUN_ALL_TESTS();
+  ::testing::InitGoogleTest(&argc, argv);
+  int result = RUN_ALL_TESTS();
 
-	boost::filesystem::remove_all(TEMPDIR);
-	char in;
-	std::cin >> in;
+  boost::filesystem::remove_all(TEMPDIR);
 
-	return result;
+  return result;
 }
 

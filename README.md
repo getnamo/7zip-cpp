@@ -148,7 +148,7 @@ cmake ../ -DBOOST_ROOT="My boost location"
 
 ## Known Issues
 
-Only 1 test unit is failing.
+~~Only 1 test unit is failing.~~
 
 ## Contributing
 
