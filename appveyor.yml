@@ -7,7 +7,7 @@ build_script:
 
     cmake ../ -G "Visual Studio 14 2015 Win64" -DBOOST_ROOT=C:\Libraries\boost_1_67_0
 
-    cmake --build ../build --target 7zpp
+    cmake --build ../build
 test_script:
 - cmd: >-
     ctest -VV -C Debug
