@@ -632,8 +632,6 @@ int main(int argc, char **argv)
   int result = RUN_ALL_TESTS();
 
   boost::filesystem::remove_all(TEMPDIR);
-  char in;
-  std::cin >> in;
 
   return result;
 }
