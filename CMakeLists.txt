@@ -46,7 +46,7 @@ if(Boost_FOUND)
     )
 
 
-    file(COPY ${PROJECT_SOURCE_DIR}/7zpp-TestApp/TestFiles DESTINATION ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+    file(COPY ${PROJECT_SOURCE_DIR}/7zpp-TestApp/TestFiles DESTINATION  ${CMAKE_SOURCE_DIR}/build)
 
     set(UNIT_TEST TestApp)
     add_custom_command(
@@ -54,8 +54,15 @@ if(Boost_FOUND)
         COMMENT "Run tests"
         POST_BUILD 
         COMMAND ${UNIT_TEST}
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}
+        WORKING_DIRECTORY  ${CMAKE_SOURCE_DIR}/build
     )
 else()
     message("Not running tests:Make sure you have boost installed.")
 endif()
+
+#The following is needed to run tests properly
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $${CMAKE_SOURCE_DIR}/build)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/build)

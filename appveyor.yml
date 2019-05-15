@@ -10,4 +10,4 @@ build_script:
     cmake --build ../build --target 7zpp
 test_script:
 - cmd: >-
-    cmake --build ../build --target TestApp
+    ctest -VV -C Debug
