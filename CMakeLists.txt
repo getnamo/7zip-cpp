@@ -42,7 +42,7 @@ if(Boost_FOUND)
 
     add_test(
         NAME runUnitTests
-        COMMAND TestApp
+        COMMAND TestApp --gtest_output=xml:tests.xml
     )
 
 
