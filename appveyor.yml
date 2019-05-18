@@ -12,4 +12,5 @@ test_script:
 - cmd: >-
     ctest -VV -C Debug 
     
-    curl -F "file=@tests.xml" "https://ci.appveyor.com/api/testresults/junit/$APPVEYOR_JOB_ID" -v
+on_finish:
+  - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
