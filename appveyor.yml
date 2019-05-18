@@ -11,6 +11,5 @@ build_script:
 test_script:
 - cmd: >-
     ctest -VV -C Debug 
-on_finish:
-  - sh: |
-      find "$APPVEYOR_BUILD_FOLDER" -type f -name 'test.xml' -print0 | xargs -0 -I '{}' curl -F 'file=@{}' "https://ci.appveyor.com/api/testresults/junit/$APPVEYOR_JOB_ID"
+    
+    curl -F 'file=@test.xml' "https://ci.appveyor.com/api/testresults/junit/$APPVEYOR_JOB_ID"
