@@ -228,6 +228,7 @@ namespace SevenZip
 			CComPtr< IInArchive > archive = UsefulFunctions::GetArchiveReader(library, archiveCompressionFormat);
 			if (!archive) continue;
 
+			fileStream->Seek({}, STREAM_SEEK_SET, nullptr); // Seek to beginning of file
 			CComPtr< InStreamWrapper > inFile = new InStreamWrapper(fileStream);
 			CComPtr< ArchiveOpenCallback > openCallback = new ArchiveOpenCallback(password);
 
