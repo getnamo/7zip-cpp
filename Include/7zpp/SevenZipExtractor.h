@@ -20,6 +20,7 @@ namespace SevenZip
 											 const unsigned int numberFiles,
 											 const TString& directory,
 											 ProgressCallback* callback = nullptr);
+		virtual bool ExtractFileToMemory(const unsigned int index, std::vector<BYTE>& out_buffer, ProgressCallback* callback = nullptr);
 
 	private:
 		bool ExtractFilesFromArchive(const CComPtr<IStream>& archiveStream,
